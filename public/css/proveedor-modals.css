@@ -1,0 +1,372 @@
+/* ESTILOS ESPECÍFICOS PARA MODALES DE PROVEEDORES */
+
+/* Mejorar el display de información de contacto en el modal de detalles */
+.detail-table th i {
+    color: #485a1a;
+    margin-right: 8px;
+    width: 16px;
+    text-align: center;
+}
+
+/* Estilos para el checkbox de insumos en modales */
+.modal-body .form-check {
+    margin-bottom: 12px;
+    padding: 12px;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.modal-body .form-check:hover {
+    background-color: #f8f9fa;
+    border-color: #485a1a;
+    transform: translateX(3px);
+}
+
+.modal-body .form-check-input:checked {
+    background-color: #485a1a;
+    border-color: #485a1a;
+}
+
+.modal-body .form-check-input:checked + .form-check-label {
+    font-weight: 600;
+    color: #485a1a;
+}
+
+.modal-body .form-check-label {
+    cursor: pointer;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+/* Estilos para la información comercial */
+.comercial-info {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+/* Textarea personalizado para dirección */
+.modal-body textarea.form-control {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* Input group personalizado para precios */
+.modal-body .input-group .input-group-text {
+    background: linear-gradient(135deg, #485a1a, #5a6d20);
+    border-color: #485a1a;
+    color: white;
+    font-weight: 600;
+}
+
+.modal-body .input-group .form-control {
+    border-left-color: #485a1a;
+}
+
+.modal-body .input-group .form-control:focus {
+    border-color: #485a1a;
+    box-shadow: 0 0 0 0.25rem rgba(72, 90, 26, 0.15);
+}
+
+/* Tabla de insumos en el modal de detalles */
+.modal-body .detail-table thead tr {
+    background: linear-gradient(135deg, #485a1a, #5a6d20);
+    color: white;
+}
+
+.modal-body .detail-table thead th {
+    color: white;
+    font-weight: 600;
+    text-align: center;
+    padding: 12px 8px;
+}
+
+.modal-body .detail-table tbody td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Estados específicos para proveedores */
+.status-activo {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-inactivo {
+    background-color: #e2e3e5;
+    color: #383d41;
+    border: 1px solid #d6d8db;
+}
+
+/* Mejoras en el responsive para modales de proveedores */
+@media (max-width: 768px) {
+    .modal-body .comercial-info {
+        padding: 12px;
+    }
+    
+    .modal-body .detail-table {
+        font-size: 0.85rem;
+    }
+    
+    .modal-body .detail-table th,
+    .modal-body .detail-table td {
+        padding: 8px 6px;
+    }
+    
+    .modal-body .form-check {
+        padding: 10px;
+        margin-bottom: 8px;
+    }
+    
+    .modal-body .form-check-label {
+        font-size: 0.9rem;
+    }
+}
+
+/* Animaciones específicas para proveedores */
+.proveedor-card-animation {
+    animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading específico para proveedores */
+.modal-body .loading {
+    background: linear-gradient(45deg, #f8f9fa, #ffffff);
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+}
+
+.modal-body .loading::before {
+    content: '📦';
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* Error específico para proveedores */
+.modal-body .error {
+    background: linear-gradient(45deg, #fff5f5, #fed7d7);
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    color: #c53030;
+}
+
+/* Mejoras en la accesibilidad */
+.modal-body .form-control:focus,
+.modal-body .form-select:focus {
+    outline: 3px solid rgba(72, 90, 26, 0.1);
+    outline-offset: 2px;
+}
+
+/* Estilo para campos requeridos */
+.modal-body .form-label::after {
+    content: ' *';
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.modal-body .form-label:not([class*="required"])::after {
+    display: none;
+}
+
+/* Separadores visuales */
+.modal-body .section-divider {
+    border-top: 2px solid #e9ecef;
+    margin: 25px 0;
+    position: relative;
+}
+
+.modal-body .section-divider::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 2px;
+    background: linear-gradient(90deg, #485a1a, #ff9900);
+}
+
+/* Aplicar los mismos separadores a los modales de insumos */
+.section-divider {
+    border-top: 2px solid #e9ecef;
+    margin: 25px 0;
+    position: relative;
+}
+
+.section-divider::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 2px;
+    background: linear-gradient(90deg, #485a1a, #ff9900);
+}
+
+/* Tooltips para información adicional */
+.info-tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+    color: #6c757d;
+    margin-left: 5px;
+}
+
+.info-tooltip:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.info-tooltip:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 115%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #333;
+}
+
+
+/* Responsive para tablets */
+@media (max-width: 768px) {
+    .modal-body .form-check {
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .modal-body .form-check-label {
+        font-size: 0.9rem;
+    }
+    
+    .comercial-info {
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+    
+    .modal-body .detail-table {
+        font-size: 0.875rem;
+    }
+    
+    .modal-body .detail-table thead th {
+        padding: 10px 6px;
+    }
+    
+    .modal-body .detail-table tbody td {
+        padding: 8px 4px;
+    }
+    
+    .modal-body textarea.form-control {
+        min-height: 70px;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .modal-actions .btn {
+        width: 100%;
+        margin: 0;
+    }
+}
+
+/* Responsive para móviles */
+@media (max-width: 576px) {
+    .modal-body .form-check {
+        padding: 8px;
+        margin-bottom: 8px;
+        border-radius: 6px;
+    }
+    
+    .modal-body .form-check-label {
+        font-size: 0.85rem;
+        line-height: 1.3;
+    }
+    
+    .modal-body .form-check:hover {
+        transform: none;
+    }
+    
+    .comercial-info {
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+    }
+    
+    .modal-body .detail-table {
+        font-size: 0.8rem;
+    }
+    
+    .modal-body .detail-table thead th {
+        padding: 8px 4px;
+        font-size: 0.75rem;
+    }
+    
+    .modal-body .detail-table tbody td {
+        padding: 6px 2px;
+        font-size: 0.8rem;
+    }
+    
+    .modal-body textarea.form-control {
+        min-height: 60px;
+        font-size: 0.9rem;
+    }
+    
+    .modal-body .input-group .input-group-text {
+        font-size: 0.85rem;
+        padding: 8px 10px;
+    }
+    
+    .modal-body .input-group .form-control {
+        font-size: 0.9rem;
+    }
+    
+    .info-tooltip {
+        font-size: 0.9rem;
+    }
+    
+    .info-tooltip:hover::after {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        white-space: normal;
+        max-width: 200px;
+        word-wrap: break-word;
+    }
+    
+    .section-divider {
+        margin: 20px 0;
+    }
+    
+    .section-divider::before {
+        width: 40px;
+    }
+}
