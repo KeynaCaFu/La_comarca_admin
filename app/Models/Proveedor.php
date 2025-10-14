@@ -8,9 +8,18 @@ class Proveedor extends Model
 {
     protected $table = 'tbproveedor';
     protected $primaryKey = 'proveedor_id';
-    public $timestamps = false; // si la tabla no tiene created_at/updated_at
+    public $timestamps = false;
 
-    // Si quieres relación inversa con insumos
+    protected $fillable = [
+        'nombre',
+        'telefono',
+        'correo',
+        'direccion',
+        'total_compras',
+        'estado'
+    ];
+
+    // Relación inversa con insumos
     public function insumos()
     {
         return $this->belongsToMany(\App\Models\Insumo::class, 'tbproveedor_insumo', 'proveedor_id', 'insumo_id');

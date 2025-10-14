@@ -2,6 +2,7 @@
 
 namespace App\Data;
 
+use App\Models\Proveedor;
 use Illuminate\Support\Facades\DB;
 
 class ProveedorData
@@ -10,26 +11,43 @@ class ProveedorData
 
     public function all()
     {
-        return DB::table($this->table)->get();
+        return Proveedor::with('insumos')->get();
     }
 
     public function find($id)
     {
-        return DB::table($this->table)->where('proveedor_id', $id)->first();
+        return Proveedor::with('insumos')->find($id);
     }
 
-    public function create(array $data)
+    public function create(array $data, array $insumos = [])
     {
-        return DB::table($this->table)->insertGetId($data);
+        $proveedor = Proveedor::create($data);
+        
+        // Asociar insumos si se proporcionaron
+        if (count($insumos) > 0) {
+            $proveedor->insumos()->attach($insumos);
+        }
+        
+        return $proveedor->proveedor_id;
     }
 
-    public function update($id, array $data)
+    public function update($id, array $data, array $insumos = null)
     {
-        return DB::table($this->table)->where('proveedor_id', $id)->update($data);
+        $proveedor = Proveedor::findOrFail($id);
+        $proveedor->update($data);
+        
+        // Sincronizar insumos si se proporcionaron
+        if (is_array($insumos)) {
+            $proveedor->insumos()->sync($insumos);
+        }
+        
+        return true;
     }
 
     public function delete($id)
     {
-        return DB::table($this->table)->where('proveedor_id', $id)->delete();
+        $proveedor = Proveedor::findOrFail($id);
+        $proveedor->insumos()->detach();
+        return $proveedor->delete();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Data;
 
+use App\Models\Insumo;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -12,7 +13,7 @@ class InsumoData
 
     public function all(array $filters = [])
     {
-        $q = DB::table($this->table);
+        $q = Insumo::with('proveedores');
 
         if (!empty($filters['buscar'])) {
             $term = '%'.$filters['buscar'].'%';
@@ -52,54 +53,35 @@ class InsumoData
 
     public function find($id)
     {
-        $insumo = DB::table($this->table)->where('insumo_id', $id)->first();
-        if ($insumo) {
-            $proveedores = DB::table('tbproveedor')
-                ->join($this->pivot, 'tbproveedor.proveedor_id', '=', $this->pivot.'.proveedor_id')
-                ->where($this->pivot.'.insumo_id', $id)
-                ->select('tbproveedor.*')
-                ->get();
-            $insumo->proveedores = $proveedores;
-        }
-        return $insumo;
+        return Insumo::with('proveedores')->find($id);
     }
 
     public function create(array $data, array $proveedores = [])
     {
-        $id = DB::table($this->table)->insertGetId($data);
-        if ($id && count($proveedores) > 0) {
-            $rows = [];
-            foreach ($proveedores as $p) {
-                $rows[] = ['insumo_id' => $id, 'proveedor_id' => $p];
-            }
-            DB::table($this->pivot)->insert($rows);
+        $insumo = Insumo::create($data);
+        if (count($proveedores) > 0) {
+            $insumo->proveedores()->attach($proveedores);
         }
-        return $id;
+        return $insumo->insumo_id;
     }
 
     public function update($id, array $data, array $proveedores = null)
     {
-        DB::table($this->table)->where('insumo_id', $id)->update($data);
+        $insumo = Insumo::findOrFail($id);
+        $insumo->update($data);
 
         if (is_array($proveedores)) {
-            // sync pivot: eliminar y volver a insertar
-            DB::table($this->pivot)->where('insumo_id', $id)->delete();
-            if (count($proveedores) > 0) {
-                $rows = [];
-                foreach ($proveedores as $p) {
-                    $rows[] = ['insumo_id' => $id, 'proveedor_id' => $p];
-                }
-                DB::table($this->pivot)->insert($rows);
-            }
+            $insumo->proveedores()->sync($proveedores);
         }
 
-        return $this->find($id);
+        return $insumo->fresh('proveedores');
     }
 
     public function delete($id)
     {
-        DB::table($this->pivot)->where('insumo_id', $id)->delete();
-        return DB::table($this->table)->where('insumo_id', $id)->delete();
+        $insumo = Insumo::findOrFail($id);
+        $insumo->proveedores()->detach();
+        return $insumo->delete();
     }
 
     public function countTotals()
