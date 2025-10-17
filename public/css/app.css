@@ -45,10 +45,22 @@ body {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.sidebar-header h3 {
-    color: white;
+.sidebar-header .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar-logo {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+}
+
+.brand-text {
+    color: #fff;
     font-size: 1.5rem;
-    text-align: center;
+    font-weight: 700;
 }
 
 .sidebar-menu {

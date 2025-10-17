@@ -19,7 +19,10 @@
         <!-- Sidebar -->
         <nav class="sidebar">
             <div class="sidebar-header">
-                <h3><i class="fas fa-utensils"></i> La Comarca</h3>
+                <a href="{{ route('dashboard') }}" class="brand text-decoration-none">
+                    <img src="{{ asset('images/logo_comarca.png') }}" alt="Logo La Comarca" class="sidebar-logo">
+                    <span class="brand-text">La Comarca</span>
+                </a>
             </div>
             <div class="sidebar-menu">
                 <ul>
@@ -40,7 +43,7 @@
                     </li>
                     <li class="mt-3">
                         <a href="{{ route('welcome') }}" class="text-danger">
-                            <i class="fas fa-sign-out-alt"></i> Salir
+                            <i class="fas fa-sign-out-alt"></i> Cerrar sesión
                         </a>
                     </li>
                 </ul>
