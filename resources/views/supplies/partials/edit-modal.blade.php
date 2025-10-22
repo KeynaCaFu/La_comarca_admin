@@ -5,7 +5,7 @@
     <ul class="mb-0" id="editErrorsList"></ul>
 </div>
 
-<form id="editForm" action="{{ route('insumos.update', $insumo->insumo_id) }}" method="POST">
+<form id="editForm" action="{{ route('supplies.update', $supply->supply_id) }}" method="POST">
     @csrf
     @method('PUT')
     
@@ -14,7 +14,7 @@
             <div class="mb-3">
                 <label for="edit_nombre" class="form-label">Nombre del Insumo *</label>
                 <input type="text" class="form-control" id="edit_nombre" name="nombre" 
-                       value="{{ $insumo->nombre }}" required 
+                       value="{{ $supply->name }}" required 
                        placeholder="Ej: Harina de Trigo" 
                        pattern="^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s\-\.]+$"
                        title="Solo se permiten letras, espacios, guiones y puntos"
@@ -29,24 +29,24 @@
                 <select class="form-select" id="edit_unidad_medida" name="unidad_medida" required>
                     <option value="">Seleccionar unidad...</option>
                     <optgroup label="Peso">
-                        <option value="kg" {{ $insumo->unidad_medida == 'kg' ? 'selected' : '' }}>Kilogramos (kg)</option>
-                        <option value="gramos" {{ $insumo->unidad_medida == 'gramos' ? 'selected' : '' }}>Gramos (g)</option>
+                        <option value="kg" {{ $supply->unit_of_measure == 'kg' ? 'selected' : '' }}>Kilogramos (kg)</option>
+                        <option value="gramos" {{ $supply->unit_of_measure == 'gramos' ? 'selected' : '' }}>Gramos (g)</option>
                     </optgroup>
                     <optgroup label="Volumen">
-                        <option value="litros" {{ $insumo->unidad_medida == 'litros' ? 'selected' : '' }}>Litros (L)</option>
-                        <option value="ml" {{ $insumo->unidad_medida == 'ml' ? 'selected' : '' }}>Mililitros (ml)</option>
+                        <option value="litros" {{ $supply->unit_of_measure == 'litros' ? 'selected' : '' }}>Litros (L)</option>
+                        <option value="ml" {{ $supply->unit_of_measure == 'ml' ? 'selected' : '' }}>Mililitros (ml)</option>
                     </optgroup>
                     <optgroup label="Longitud">
-                        <option value="metros" {{ $insumo->unidad_medida == 'metros' ? 'selected' : '' }}>Metros (m)</option>
-                        <option value="cm" {{ $insumo->unidad_medida == 'cm' ? 'selected' : '' }}>Centímetros (cm)</option>
+                        <option value="metros" {{ $supply->unit_of_measure == 'metros' ? 'selected' : '' }}>Metros (m)</option>
+                        <option value="cm" {{ $supply->unit_of_measure == 'cm' ? 'selected' : '' }}>Centímetros (cm)</option>
                     </optgroup>
                     <optgroup label="Cantidad">
-                        <option value="unidades" {{ $insumo->unidad_medida == 'unidades' ? 'selected' : '' }}>Unidades</option>
-                        <option value="cajas" {{ $insumo->unidad_medida == 'cajas' ? 'selected' : '' }}>Cajas</option>
-                        <option value="bolsas" {{ $insumo->unidad_medida == 'bolsas' ? 'selected' : '' }}>Bolsas</option>
-                        <option value="botellas" {{ $insumo->unidad_medida == 'botellas' ? 'selected' : '' }}>Botellas</option>
-                        <option value="latas" {{ $insumo->unidad_medida == 'latas' ? 'selected' : '' }}>Latas</option>
-                        <option value="paquetes" {{ $insumo->unidad_medida == 'paquetes' ? 'selected' : '' }}>Paquetes</option>
+                        <option value="unidades" {{ $supply->unit_of_measure == 'unidades' ? 'selected' : '' }}>Unidades</option>
+                        <option value="cajas" {{ $supply->unit_of_measure == 'cajas' ? 'selected' : '' }}>Cajas</option>
+                        <option value="bolsas" {{ $supply->unit_of_measure == 'bolsas' ? 'selected' : '' }}>Bolsas</option>
+                        <option value="botellas" {{ $supply->unit_of_measure == 'botellas' ? 'selected' : '' }}>Botellas</option>
+                        <option value="latas" {{ $supply->unit_of_measure == 'latas' ? 'selected' : '' }}>Latas</option>
+                        <option value="paquetes" {{ $supply->unit_of_measure == 'paquetes' ? 'selected' : '' }}>Paquetes</option>
                     </optgroup>
                 </select>
                 <div class="invalid-feedback"></div>
@@ -59,7 +59,7 @@
             <div class="mb-3">
                 <label for="edit_stock_actual" class="form-label">Stock Actual *</label>
                 <input type="number" class="form-control" id="edit_stock_actual" name="stock_actual" 
-                       value="{{ $insumo->stock_actual }}" required min="0" max="999999" step="1"
+                       value="{{ $supply->current_stock }}" required min="0" max="999999" step="1"
                        title="Solo números enteros del 0 al 999,999">
                 <div class="invalid-feedback"></div>
                 <small class="form-text text-muted">Números enteros del 0 al 999,999</small>
@@ -69,7 +69,7 @@
             <div class="mb-3">
                 <label for="edit_stock_minimo" class="form-label">Stock Mínimo *</label>
                 <input type="number" class="form-control" id="edit_stock_minimo" name="stock_minimo" 
-                       value="{{ $insumo->stock_minimo }}" required min="0" max="999999" step="1"
+                       value="{{ $supply->minimum_stock }}" required min="0" max="999999" step="1"
                        title="Solo números enteros del 0 al 999,999">
                 <div class="invalid-feedback"></div>
                 <small class="form-text text-muted">Números enteros del 0 al 999,999</small>
@@ -79,7 +79,7 @@
             <div class="mb-3">
                 <label for="edit_cantidad" class="form-label">Cantidad *</label>
                 <input type="number" class="form-control" id="edit_cantidad" name="cantidad" 
-                       value="{{ $insumo->cantidad }}" required min="1" max="999999" step="1"
+                       value="{{ $supply->quantity }}" required min="1" max="999999" step="1"
                        title="Solo números enteros del 1 al 999,999">
                 <div class="invalid-feedback"></div>
                 <small class="form-text text-muted">Números enteros del 1 al 999,999</small>
@@ -94,7 +94,7 @@
                 <div class="input-group">
                     <span class="input-group-text">₡</span>
                     <input type="number" step="0.01" class="form-control" id="edit_precio" name="precio" 
-                           value="{{ $insumo->precio }}" required min="0.01" max="999999.99"
+                           value="{{ $supply->price }}" required min="0.01" max="999999.99"
                            title="Precio válido entre ₡0.01 y ₡999,999.99">
                 </div>
                 <div class="invalid-feedback"></div>
@@ -105,7 +105,7 @@
             <div class="mb-3">
                 <label for="edit_fecha_vencimiento" class="form-label">Fecha de Vencimiento</label>
                 <input type="date" class="form-control" id="edit_fecha_vencimiento" name="fecha_vencimiento"
-                       value="{{ $insumo->fecha_vencimiento }}"
+                       value="{{ $supply->expiration_date }}"
                        min="{{ date('Y-m-d', strtotime('+1 day')) }}"
                        title="La fecha debe ser posterior a hoy">
                 <div class="invalid-feedback"></div>
@@ -118,9 +118,9 @@
         <label for="edit_estado" class="form-label">Estado *</label>
         <select class="form-select" id="edit_estado" name="estado" required>
             <option value="">Seleccionar estado...</option>
-            <option value="Disponible" {{ $insumo->estado == 'Disponible' ? 'selected' : '' }}>✅ Disponible</option>
-            <option value="Agotado" {{ $insumo->estado == 'Agotado' ? 'selected' : '' }}>❌ Agotado</option>
-            <option value="Vencido" {{ $insumo->estado == 'Vencido' ? 'selected' : '' }}>💀 Vencido</option>
+            <option value="Disponible" {{ $supply->status_in_spanish == 'Disponible' ? 'selected' : '' }}>✅ Disponible</option>
+            <option value="Agotado" {{ $supply->status_in_spanish == 'Agotado' ? 'selected' : '' }}>❌ Agotado</option>
+            <option value="Vencido" {{ $supply->status_in_spanish == 'Vencido' ? 'selected' : '' }}>💀 Vencido</option>
         </select>
         <div class="invalid-feedback"></div>
     </div>
@@ -128,18 +128,18 @@
     <div class="mb-3">
         <label class="form-label">Proveedores</label>
         <div class="border p-3 rounded">
-            @foreach($proveedores as $proveedor)
+            @foreach($suppliers as $supplier)
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" name="proveedores[]" 
-                       value="{{ $proveedor->proveedor_id }}" 
-                       id="edit_proveedor{{ $proveedor->proveedor_id }}"
-                       {{ $insumo->proveedores->contains('proveedor_id', $proveedor->proveedor_id) ? 'checked' : '' }}>
-                <label class="form-check-label" for="edit_proveedor{{ $proveedor->proveedor_id }}">
-                    {{ $proveedor->nombre }} - {{ $proveedor->telefono }}
+                       value="{{ $supplier->supplier_id }}" 
+                       id="edit_proveedor{{ $supplier->supplier_id }}"
+                       {{ $supply->suppliers->contains('supplier_id', $supplier->supplier_id) ? 'checked' : '' }}>
+                <label class="form-check-label" for="edit_proveedor{{ $supplier->supplier_id }}">
+                    {{ $supplier->name }} - {{ $supplier->phone }}
                 </label>
             </div>
             @endforeach
-            @if($proveedores->count() == 0)
+            @if($suppliers->count() == 0)
             <p class="text-muted">No hay proveedores activos.</p>
             @endif
         </div>

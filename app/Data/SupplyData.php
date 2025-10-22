@@ -1,0 +1,196 @@
+<?php
+
+namespace App\Data;
+
+use App\Models\Supply;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
+class SupplyData
+{
+    protected $table = 'supplies';
+    protected $pivot = 'supplier_supply';
+
+    /**
+     * Obtener todos los supplies con filtros opcionales
+     */
+    public function all(array $filters = [])
+    {
+        $query = Supply::with('suppliers');
+
+        // Filtro de búsqueda por nombre
+        if (!empty($filters['search'])) {
+            $query->search($filters['search']);
+        }
+
+        // Filtro por estado
+        if (!empty($filters['status'])) {
+            $query->byStatus($filters['status']);
+        }
+
+        // Filtro por stock
+        if (!empty($filters['stock'])) {
+            if ($filters['stock'] === 'low') {
+                $query->lowStock();
+            }
+        }
+
+        // Filtro por vencimiento
+        if (!empty($filters['expiration'])) {
+            switch ($filters['expiration']) {
+                case 'expiring_soon':
+                    $query->expiringSoon();
+                    break;
+                case 'expired':
+                    $query->expired();
+                    break;
+                case 'good':
+                    $query->goodCondition();
+                    break;
+            }
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * Buscar supply por ID
+     */
+    public function find($id)
+    {
+        return Supply::with('suppliers')->find($id);
+    }
+
+    /**
+     * Crear nuevo supply
+     */
+    public function create(array $data, array $suppliers = [])
+    {
+        $supply = Supply::create($data);
+        
+        if (count($suppliers) > 0) {
+            $supply->suppliers()->attach($suppliers);
+        }
+        
+        return $supply->supply_id;
+    }
+
+    /**
+     * Actualizar supply existente
+     */
+    public function update($id, array $data, array $suppliers = null)
+    {
+        $supply = Supply::findOrFail($id);
+        $supply->update($data);
+
+        // Si se proporciona array de suppliers, sincronizar
+        if (is_array($suppliers)) {
+            $supply->suppliers()->sync($suppliers);
+        }
+
+        return $supply->fresh('suppliers');
+    }
+
+    /**
+     * Eliminar supply
+     */
+    public function delete($id)
+    {
+        $supply = Supply::findOrFail($id);
+        $supply->suppliers()->detach();
+        return $supply->delete();
+    }
+
+    /**
+     * Contar totales para dashboard/filtros
+     */
+    public function countTotals()
+    {
+        $totals = [];
+        
+        // Total de supplies
+        $totals['all'] = Supply::count();
+        
+        // Por estado
+        $totals['available'] = Supply::where('status', 'Available')->count();
+        $totals['out_of_stock'] = Supply::where('status', 'Out of Stock')->count();
+        $totals['expired'] = Supply::where('status', 'Expired')->count();
+        
+        // Stock bajo
+        $totals['low_stock'] = Supply::lowStock()->count();
+        
+        // Por vencer (próximos 30 días)
+        $totals['expiring_soon'] = Supply::expiringSoon()->count();
+        
+        // Buenos (sin fecha de vencimiento o más de 30 días)
+        $totals['good'] = Supply::goodCondition()->count();
+
+        return $totals;
+    }
+
+    /**
+     * Obtener supplies con stock bajo
+     */
+    public function getLowStock()
+    {
+        return Supply::with('suppliers')
+            ->lowStock()
+            ->get();
+    }
+
+    /**
+     * Obtener supplies por vencer
+     */
+    public function getExpiringSoon()
+    {
+        return Supply::with('suppliers')
+            ->expiringSoon()
+            ->get();
+    }
+
+    /**
+     * Obtener supplies vencidos
+     */
+    public function getExpired()
+    {
+        return Supply::with('suppliers')
+            ->expired()
+            ->get();
+    }
+
+    /**
+     * Actualizar stock de un supply
+     */
+    public function updateStock($id, $newStock)
+    {
+        $supply = Supply::findOrFail($id);
+        
+        $supply->current_stock = $newStock;
+        
+        // Actualizar estado automáticamente
+        if ($newStock <= 0) {
+            $supply->status = 'Out of Stock';
+        } else if ($supply->status === 'Out of Stock') {
+            $supply->status = 'Available';
+        }
+        
+        $supply->save();
+        
+        return $supply;
+    }
+
+    /**
+     * Verificar y actualizar estados de vencimiento
+     */
+    public function updateExpirationStatuses()
+    {
+        $now = Carbon::now();
+        
+        // Marcar como vencidos
+        Supply::where('expiration_date', '<', $now)
+            ->where('status', '!=', 'Expired')
+            ->update(['status' => 'Expired']);
+        
+        return Supply::where('status', 'Expired')->count();
+    }
+}

@@ -1,12 +1,12 @@
 <div class="detail-section">
     <div class="row mb-4">
         <div class="col-md-8">
-            <h4 style="color: #485a1a; margin-bottom: 5px;">{{ $insumo->nombre }}</h4>
-            <p class="text-muted">ID: {{ $insumo->insumo_id }}</p>
+            <h4 style="color: #485a1a; margin-bottom: 5px;">{{ $supply->name }}</h4>
+            <p class="text-muted">ID: {{ $supply->supply_id }}</p>
         </div>
         <div class="col-md-4 text-end">
-            <span class="status-badge status-{{ strtolower($insumo->estado) }}">
-                {{ $insumo->estado }}
+            <span class="status-badge status-{{ strtolower($supply->status_in_spanish) }}">
+                {{ $supply->status_in_spanish }}
             </span>
         </div>
     </div>
@@ -17,19 +17,19 @@
             <table class="detail-table">
                 <tr>
                     <th>Unidad de Medida:</th>
-                    <td>{{ $insumo->unidad_medida }}</td>
+                    <td>{{ $supply->unit_of_measure }}</td>
                 </tr>
                 <tr>
                     <th>Cantidad:</th>
-                    <td>{{ $insumo->cantidad }}</td>
+                    <td>{{ $supply->quantity }}</td>
                 </tr>
                 <tr>
                     <th>Precio:</th>
-                    <td>₡{{ number_format($insumo->precio, 2) }}</td>
+                    <td>₡{{ number_format($supply->price, 2) }}</td>
                 </tr>
                 <tr>
                     <th>Fecha Vencimiento:</th>
-                    <td>{{ $insumo->fecha_vencimiento ? $insumo->fecha_vencimiento->format('d/m/Y') : 'No especificada' }}</td>
+                    <td>{{ $supply->expiration_date ? $supply->expiration_date->format('d/m/Y') : 'No especificada' }}</td>
                 </tr>
             </table>
         </div>
@@ -39,20 +39,20 @@
                 <tr>
                     <th>Stock Actual:</th>
                     <td>
-                        <span class="status-badge {{ $insumo->stock_actual > $insumo->stock_minimo ? 'status-disponible' : 'status-agotado' }}">
-                            {{ $insumo->stock_actual }}
+                        <span class="status-badge {{ $supply->current_stock > $supply->minimum_stock ? 'status-disponible' : 'status-agotado' }}">
+                            {{ $supply->current_stock }}
                         </span>
                     </td>
                 </tr>
                 <tr>
                     <th>Stock Mínimo:</th>
-                    <td>{{ $insumo->stock_minimo }}</td>
+                    <td>{{ $supply->minimum_stock }}</td>
                 </tr>
                 <tr>
                     <th>Diferencia:</th>
                     <td>
-                        <span class="status-badge {{ ($insumo->stock_actual - $insumo->stock_minimo) >= 0 ? 'status-disponible' : 'status-agotado' }}">
-                            {{ $insumo->stock_actual - $insumo->stock_minimo }}
+                        <span class="status-badge {{ ($supply->current_stock - $supply->minimum_stock) >= 0 ? 'status-disponible' : 'status-agotado' }}">
+                            {{ $supply->current_stock - $supply->minimum_stock }}
                         </span>
                     </td>
                 </tr>
@@ -62,15 +62,15 @@
 
     <div class="mt-4">
         <h5>Proveedores</h5>
-        @if($insumo->proveedores->count() > 0)
+        @if($supply->suppliers->count() > 0)
         <div class="row">
-            @foreach($insumo->proveedores as $proveedor)
+            @foreach($supply->suppliers as $supplier)
             <div class="col-md-6 mb-2">
                 <div class="proveedor-card">
-                    <h6>{{ $proveedor->nombre }}</h6>
+                    <h6>{{ $supplier->name }}</h6>
                     <p>
-                        <i class="fas fa-phone"></i> {{ $proveedor->telefono }}<br>
-                        <i class="fas fa-envelope"></i> {{ $proveedor->correo }}
+                        <i class="fas fa-phone"></i> {{ $supplier->phone }}<br>
+                        <i class="fas fa-envelope"></i> {{ $supplier->email }}
                     </p>
                 </div>
             </div>
