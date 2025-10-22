@@ -157,24 +157,23 @@
 <div class="mb-3">
     <div class="row align-items-center">
         <div class="col-md-5">
-            <form method="GET" action="{{ route('supplies.index') }}" id="filtrosForm">
-                <div class="input-group">
-                    <span class="input-group-text bg-white">
-                        <i class="fas fa-search"></i>
-                    </span>
-                    <input type="text" 
-                           class="form-control" 
-                           name="buscar" 
-                           value="{{ request('buscar') }}" 
-                           placeholder="Buscar insumo por nombre..."
-                           onkeyup="buscarEnTiempoReal()">
-                    @if(request('buscar'))
-                    <button type="button" class="btn btn-outline-secondary" onclick="document.querySelector('input[name=buscar]').value=''; buscarEnTiempoReal();">
-                        <i class="fas fa-times"></i>
-                    </button>
-                    @endif
-                </div>
-            </form>
+            <div class="input-group">
+                <span class="input-group-text bg-white">
+                    <i class="fas fa-search"></i>
+                </span>
+                <input type="text" 
+                       class="form-control" 
+                       id="filtroNombre"
+                       name="buscar" 
+                       value="{{ request('buscar') }}" 
+                       placeholder="Buscar insumo por nombre..."
+                       autocomplete="off">
+                @if(request('buscar'))
+                <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('filtroNombre').value=''; buscarEnTiempoReal();">
+                    <i class="fas fa-times"></i>
+                </button>
+                @endif
+            </div>
         </div>
         <div class="col-md-3">
             <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">
@@ -185,7 +184,7 @@
             </button>
         </div>
         <div class="col-md-4 text-end">
-            <span class="h6 text-muted">
+            <span class="h6 text-muted" id="totalSuppliesText">
                 📦 <strong>{{ $supplies->count() }}</strong> de <strong>{{ $totals['all'] ?? 0 }}</strong> insumos
             </span>
         </div>
@@ -197,7 +196,7 @@
     <div class="filtros-simples">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h6 class="mb-0"><i class="fas fa-sliders-h"></i> <strong>Opciones de Filtrado</strong></h6>
-            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="limpiarFiltros()">
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="limpiarFiltrosSupply()">
                 <i class="fas fa-eraser"></i> Limpiar Filtros
             </button>
         </div>
@@ -207,26 +206,30 @@
             <div class="col-md-12">
                 <h6 class="mb-2">📊 <strong>Estado del Insumo:</strong></h6>
                 <div class="d-flex flex-wrap gap-2">
-                    <a href="{{ route('supplies.index') }}" 
-                       class="btn btn-filtro {{ !request('estado') ? 'activo' : '' }}">
+                    <a href="#" 
+                       class="btn btn-filtro filtro-estado {{ !request('estado') ? 'activo' : '' }}"
+                       data-estado="">
                         <i class="fas fa-list"></i> Todos
                         <span class="contador-filtro">{{ $totals['all'] ?? 0 }}</span>
                     </a>
                     
-                    <a href="{{ route('supplies.index', ['estado' => 'Disponible']) }}" 
-                       class="btn btn-filtro {{ request('estado') == 'Disponible' ? 'activo' : '' }}">
+                    <a href="#" 
+                       class="btn btn-filtro filtro-estado {{ request('estado') == 'Disponible' ? 'activo' : '' }}"
+                       data-estado="Disponible">
                         <i class="fas fa-check-circle text-success"></i> Disponibles
                         <span class="contador-filtro">{{ $totals['available'] ?? 0 }}</span>
                     </a>
                     
-                    <a href="{{ route('supplies.index', ['estado' => 'Agotado']) }}" 
-                       class="btn btn-filtro {{ request('estado') == 'Agotado' ? 'activo' : '' }}">
+                    <a href="#" 
+                       class="btn btn-filtro filtro-estado {{ request('estado') == 'Agotado' ? 'activo' : '' }}"
+                       data-estado="Agotado">
                         <i class="fas fa-times-circle text-danger"></i> Agotados
                         <span class="contador-filtro">{{ $totals['out_of_stock'] ?? 0 }}</span>
                     </a>
                     
-                    <a href="{{ route('supplies.index', ['estado' => 'Vencido']) }}" 
-                       class="btn btn-filtro {{ request('estado') == 'Vencido' ? 'activo' : '' }}">
+                    <a href="#" 
+                       class="btn btn-filtro filtro-estado {{ request('estado') == 'Vencido' ? 'activo' : '' }}"
+                       data-estado="Vencido">
                         <i class="fas fa-exclamation-triangle text-warning"></i> Vencidos
                         <span class="contador-filtro">{{ $totals['expired'] ?? 0 }}</span>
                     </a>
@@ -239,26 +242,30 @@
             <div class="col-md-12">
                 <h6 class="mb-2">⚠️ <strong>Alertas de Inventario:</strong></h6>
                 <div class="d-flex flex-wrap gap-2">
-                    <a href="{{ route('supplies.index', ['stock' => 'bajo']) }}" 
-                       class="btn btn-filtro {{ request('stock') == 'bajo' ? 'activo' : '' }}">
+                    <a href="#" 
+                       class="btn btn-filtro filtro-stock {{ request('stock') == 'bajo' ? 'activo' : '' }}"
+                       data-stock="bajo">
                         <i class="fas fa-exclamation-circle text-warning"></i> Stock Bajo
                         <span class="contador-filtro">{{ $totals['low_stock'] ?? 0 }}</span>
                     </a>
                     
-                    <a href="{{ route('supplies.index', ['vencimiento' => 'por_vencer']) }}" 
-                       class="btn btn-filtro {{ request('vencimiento') == 'por_vencer' ? 'activo' : '' }}">
+                    <a href="#" 
+                       class="btn btn-filtro filtro-vencimiento {{ request('vencimiento') == 'por_vencer' ? 'activo' : '' }}"
+                       data-vencimiento="por_vencer">
                         <i class="fas fa-clock text-info"></i> Por Vencer (30 días)
                         <span class="contador-filtro">{{ $totals['expiring_soon'] ?? 0 }}</span>
                     </a>
                     
-                    <a href="{{ route('supplies.index', ['vencimiento' => 'vencidos']) }}" 
-                       class="btn btn-filtro {{ request('vencimiento') == 'vencidos' ? 'activo' : '' }}">
+                    <a href="#" 
+                       class="btn btn-filtro filtro-vencimiento {{ request('vencimiento') == 'vencidos' ? 'activo' : '' }}"
+                       data-vencimiento="vencidos">
                         <i class="fas fa-calendar-times text-danger"></i> Ya Vencidos
                         <span class="contador-filtro">{{ $totals['expired'] ?? 0 }}</span>
                     </a>
                     
-                    <a href="{{ route('supplies.index', ['vencimiento' => 'buenos']) }}" 
-                       class="btn btn-filtro {{ request('vencimiento') == 'buenos' ? 'activo' : '' }}">
+                    <a href="#" 
+                       class="btn btn-filtro filtro-vencimiento {{ request('vencimiento') == 'buenos' ? 'activo' : '' }}"
+                       data-vencimiento="buenos">
                         <i class="fas fa-calendar-check text-success"></i> En Buen Estado
                         <span class="contador-filtro">{{ $totals['good'] ?? 0 }}</span>
                     </a>
@@ -285,7 +292,7 @@
         <span class="badge bg-info">Vencimiento: {{ ucfirst(str_replace('_', ' ', request('vencimiento'))) }}</span>
     @endif
     
-    <a href="{{ route('supplies.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
+    <a href="#" class="btn btn-sm btn-outline-secondary ms-2" onclick="limpiarFiltrosSupply(); return false;">
         <i class="fas fa-times"></i> Quitar todos los filtros
     </a>
 </div>
@@ -319,7 +326,23 @@
                 </thead>
                 <tbody>
                     @foreach($supplies as $supply)
-                    <tr class="{{ $supply->status_in_spanish == 'Vencido' ? 'table-danger' : ($supply->current_stock <= $supply->minimum_stock ? 'table-warning' : '') }}">
+                    @php
+                        $fechaVencimiento = $supply->expiration_date ? \Carbon\Carbon::parse($supply->expiration_date) : null;
+                        $diasRestantes = $fechaVencimiento ? \Carbon\Carbon::now()->diffInDays($fechaVencimiento, false) : null;
+                        $vencimientoEstado = 'bueno';
+                        if ($diasRestantes !== null) {
+                            if ($diasRestantes < 0) {
+                                $vencimientoEstado = 'vencido';
+                            } elseif ($diasRestantes <= 30) {
+                                $vencimientoEstado = 'por_vencer';
+                            }
+                        }
+                    @endphp
+                    <tr class="supply-row {{ $supply->status_in_spanish == 'Vencido' ? 'table-danger' : ($supply->current_stock <= $supply->minimum_stock ? 'table-warning' : '') }}"
+                        data-nombre="{{ strtolower($supply->name) }}"
+                        data-estado="{{ $supply->status_in_spanish }}"
+                        data-stock-bajo="{{ $supply->current_stock <= $supply->minimum_stock ? 'true' : 'false' }}"
+                        data-vencimiento="{{ $vencimientoEstado }}">
                         <td>{{ $supply->supply_id }}</td>
                         <td>
                             <strong>{{ $supply->name }}</strong>
@@ -338,11 +361,6 @@
                         <td>₡{{ number_format($supply->price, 0) }}</td>
                         <td>
                             @if($supply->expiration_date)
-                                @php
-                                    $fechaVencimiento = \Carbon\Carbon::parse($supply->expiration_date);
-                                    $diasRestantes = \Carbon\Carbon::now()->diffInDays($fechaVencimiento, false);
-                                @endphp
-                                
                                 <span class="badge bg-{{ $diasRestantes < 0 ? 'danger' : ($diasRestantes <= 30 ? 'warning' : 'success') }}">
                                     {{ $fechaVencimiento->format('d/m/Y') }}
                                 </span>
@@ -379,10 +397,14 @@
                         </td>
                         <td>
                             <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-info btn-sm" title="Ver detalles" onclick="openShowModal({{ $supply->supply_id }})">
+                                <button type="button" class="btn btn-info btn-sm" title="Ver detalles" 
+                                    onclick="openShowModal({{ $supply->supply_id }})"
+                                    onmouseenter="preloadShowModal({{ $supply->supply_id }})">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button type="button" class="btn btn-warning btn-sm" title="Editar" onclick="openEditModal({{ $supply->supply_id }})">
+                                <button type="button" class="btn btn-warning btn-sm" title="Editar" 
+                                    onclick="openEditModal({{ $supply->supply_id }})"
+                                    onmouseenter="preloadEditModal({{ $supply->supply_id }})">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <form action="{{ route('supplies.destroy', $supply->supply_id) }}" method="POST" class="d-inline">
@@ -406,7 +428,7 @@
                 <i class="fas fa-search fa-3x text-muted mb-3"></i>
                 <h4>😔 No se encontraron insumos</h4>
                 <p class="text-muted">No hay insumos que coincidan con los filtros seleccionados.</p>
-                <button type="button" class="btn btn-outline-secondary me-2" onclick="limpiarFiltros()">
+                <button type="button" class="btn btn-outline-secondary me-2" onclick="limpiarFiltrosSupply()">
                     <i class="fas fa-eraser"></i> Quitar Filtros
                 </button>
             @else
@@ -614,21 +636,5 @@
 @push('scripts')
 <script src="{{ asset('js/supply-modals.js') }}"></script>
 <script src="{{ asset('js/supply-validations.js') }}"></script>
-
-<script>
-// Búsqueda en tiempo real simple
-let timeoutBusqueda;
-
-function buscarEnTiempoReal() {
-    clearTimeout(timeoutBusqueda);
-    timeoutBusqueda = setTimeout(function() {
-        document.getElementById('filtrosForm').submit();
-    }, 500); // Espera 500ms después de que el usuario deje de escribir
-}
-
-function limpiarFiltros() {
-    // Ir a la página sin filtros
-    window.location.href = "{{ route('supplies.index') }}";
-}
-</script>
+<script src="{{ asset('js/supply-filters.js') }}"></script>
 @endpush

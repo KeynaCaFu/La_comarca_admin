@@ -1,6 +1,8 @@
 // Gestión de Modales para Insumos
 class InsumoModals {
     constructor() {
+        this.cache = new Map(); // Cache para contenido de modales
+        this.preloadTimeout = null;
         this.initEventListeners();
     }
 
@@ -40,6 +42,45 @@ class InsumoModals {
         });
     }
 
+    // Precargar contenido del modal al pasar el mouse
+    preloadModal(type, insumoId) {
+        if (this.preloadTimeout) {
+            clearTimeout(this.preloadTimeout);
+        }
+        
+        this.preloadTimeout = setTimeout(() => {
+            const cacheKey = `${type}-${insumoId}`;
+            if (!this.cache.has(cacheKey)) {
+                this.fetchModalContent(type, insumoId);
+            }
+        }, 200); // Espera 200ms antes de precargar
+    }
+
+    // Obtener contenido del modal
+    async fetchModalContent(type, insumoId) {
+        const cacheKey = `${type}-${insumoId}`;
+        
+        if (this.cache.has(cacheKey)) {
+            return this.cache.get(cacheKey);
+        }
+
+        try {
+            const url = `/insumos/${insumoId}/${type}-modal`;
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const html = await response.text();
+            this.cache.set(cacheKey, html);
+            return html;
+        } catch (error) {
+            console.error('Error fetching modal content:', error);
+            throw error;
+        }
+    }
+
     // Abrir modal de crear
     openCreateModal() {
         const modal = document.getElementById('createModal');
@@ -62,63 +103,75 @@ class InsumoModals {
         
         if (!modal || !content) return;
 
-        // Mostrar loading
-        content.innerHTML = '<div class="loading">Cargando detalles...</div>';
+        // Mostrar modal inmediatamente
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden';
         
+        // Verificar si ya está en caché
+        const cacheKey = `show-${insumoId}`;
+        if (this.cache.has(cacheKey)) {
+            content.innerHTML = this.cache.get(cacheKey);
+            return;
+        }
+
+        // Mostrar loading solo si no está en caché
+        content.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
+        
         try {
-            const response = await fetch(`/insumos/${insumoId}/show-modal`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const html = await response.text();
+            const html = await this.fetchModalContent('show', insumoId);
             content.innerHTML = html;
         } catch (error) {
-            console.error('Error loading modal content:', error);
             content.innerHTML = `
-                <div class="error">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Error al cargar los detalles del insumo
-                    <br><small>Por favor, inténtalo de nuevo</small>
+                <div class="error text-center p-4">
+                    <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
+                    <p>Error al cargar los detalles del insumo</p>
+                    <button class="btn btn-sm btn-primary" onclick="closeModal('showModal')">Cerrar</button>
                 </div>
             `;
         }
     }
 
     // Abrir modal de editar
-    openEditModal(insumoId) {
+    async openEditModal(insumoId) {
         const modal = document.getElementById('editModal');
         const content = document.getElementById('editModalContent');
         
         if (!modal || !content) return;
 
-        // Mostrar loading
-        content.innerHTML = '<div class="loading">Cargando formulario...</div>';
+        // Mostrar modal inmediatamente
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden';
         
-        fetch(`/insumos/${insumoId}/edit-modal`)
-            .then(response => response.text())
-            .then(html => {
-                content.innerHTML = html;
-                
-                // Configurar validaciones después de cargar el contenido
-                if (typeof setupEditValidations === 'function') {
-                    setupEditValidations();
-                }
-            })
-            .catch(error => {
-                console.error('Error loading modal content:', error);
-                content.innerHTML = `
-                    <div class="error">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        Error al cargar el formulario de edición
-                        <br><small>Por favor, inténtalo de nuevo</small>
-                    </div>
-                `;
-            });
+        // Verificar si ya está en caché
+        const cacheKey = `edit-${insumoId}`;
+        if (this.cache.has(cacheKey)) {
+            content.innerHTML = this.cache.get(cacheKey);
+            if (typeof setupEditValidations === 'function') {
+                setupEditValidations();
+            }
+            return;
+        }
+
+        // Mostrar loading solo si no está en caché
+        content.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>';
+        
+        try {
+            const html = await this.fetchModalContent('edit', insumoId);
+            content.innerHTML = html;
+            
+            // Configurar validaciones después de cargar el contenido
+            if (typeof setupEditValidations === 'function') {
+                setupEditValidations();
+            }
+        } catch (error) {
+            content.innerHTML = `
+                <div class="error text-center p-4">
+                    <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
+                    <p>Error al cargar el formulario de edición</p>
+                    <button class="btn btn-sm btn-primary" onclick="closeModal('editModal')">Cerrar</button>
+                </div>
+            `;
+        }
     }
 
     // Cerrar modal
@@ -333,23 +386,23 @@ function openShowModal(insumoId) {
     }
 }
 
-// Función para abrir el modal de editar
-function openEditModal(id) {
-    fetch(`/insumos/${id}/edit-modal`)
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('editModalContent').innerHTML = html;
-            document.getElementById('editModal').style.display = 'block';
-            
-            // Configurar validaciones después de cargar el contenido
-            if (typeof setupEditValidations === 'function') {
-                setupEditValidations();
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('Error al cargar el formulario de edición', 'error');
-        });
+function openEditModal(insumoId) {
+    if (window.insumoModals) {
+        window.insumoModals.openEditModal(insumoId);
+    }
+}
+
+// Función para precargar modal al pasar el mouse
+function preloadShowModal(insumoId) {
+    if (window.insumoModals) {
+        window.insumoModals.preloadModal('show', insumoId);
+    }
+}
+
+function preloadEditModal(insumoId) {
+    if (window.insumoModals) {
+        window.insumoModals.preloadModal('edit', insumoId);
+    }
 }
 
 function closeModal(modalId) {

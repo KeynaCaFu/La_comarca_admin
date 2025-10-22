@@ -142,7 +142,8 @@ class Supply extends Model
             return false;
         }
         
-        return $this->expiration_date->isPast();
+        // Ensure Carbon instance to avoid analyzer warnings
+        return \Carbon\Carbon::parse($this->expiration_date)->isPast();
     }
 
     /**
@@ -157,7 +158,8 @@ class Supply extends Model
         $now = Carbon::now();
         $future = Carbon::now()->addDays(30);
         
-        return $this->expiration_date->between($now, $future);
+        $date = \Carbon\Carbon::parse($this->expiration_date);
+        return $date->between($now, $future);
     }
 
     /**

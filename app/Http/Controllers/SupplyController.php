@@ -32,7 +32,8 @@ class SupplyController extends Controller
 
         $supplies = $this->supplyData->all($filters);
         $totals = $this->supplyData->countTotals();
-        $suppliers = $this->supplierData->allActive();
+        // Solo cargar nombre e ID de suppliers para el modal de crear
+        $suppliers = $this->supplierData->allActiveMinimal();
 
         return view('supplies.index', compact('supplies', 'totals', 'suppliers'));
     }
@@ -163,7 +164,8 @@ class SupplyController extends Controller
      */
     public function showModal($id)
     {
-        $supply = $this->supplyData->find($id);
+        // Solo cargar el supply con los campos necesarios para el modal
+        $supply = $this->supplyData->findForModal($id);
         
         if (!$supply) {
             return response()->json(['error' => 'Insumo no encontrado'], 404);
@@ -177,13 +179,15 @@ class SupplyController extends Controller
      */
     public function editModal($id)
     {
-        $supply = $this->supplyData->find($id);
+        // Solo cargar el supply con IDs de suppliers (sin todos sus datos)
+        $supply = $this->supplyData->findForEdit($id);
         
         if (!$supply) {
             return response()->json(['error' => 'Insumo no encontrado'], 404);
         }
         
-        $suppliers = $this->supplierData->allActive();
+        // Solo cargar nombre e ID de suppliers activos (no todos sus datos)
+        $suppliers = $this->supplierData->allActiveMinimal();
         
         return view('supplies.partials.edit-modal', compact('supply', 'suppliers'));
     }

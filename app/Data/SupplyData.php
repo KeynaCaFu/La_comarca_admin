@@ -16,7 +16,8 @@ class SupplyData
      */
     public function all(array $filters = [])
     {
-        $query = Supply::with('suppliers');
+        // Solo cargar conteo de suppliers, no todos los datos
+        $query = Supply::withCount('suppliers');
 
         // Filtro de búsqueda por nombre
         if (!empty($filters['search'])) {
@@ -54,11 +55,39 @@ class SupplyData
     }
 
     /**
+     * Obtener todos los supplies con datos mínimos (para select/modales)
+     */
+    public function allMinimal()
+    {
+        return Supply::select('supply_id', 'name')
+            ->orderBy('name')
+            ->get();
+    }
+
+    /**
      * Buscar supply por ID
      */
     public function find($id)
     {
         return Supply::with('suppliers')->find($id);
+    }
+
+    /**
+     * Buscar supply por ID para modal de ver (con suppliers mínimos)
+     */
+    public function findForModal($id)
+    {
+        return Supply::with(['suppliers' => function($query) {
+            $query->select('suppliers.supplier_id', 'suppliers.name', 'suppliers.phone', 'suppliers.email');
+        }])->find($id);
+    }
+
+    /**
+     * Buscar supply por ID para modal de editar (solo IDs de suppliers)
+     */
+    public function findForEdit($id)
+    {
+        return Supply::with(['suppliers:supplier_id'])->find($id);
     }
 
     /**

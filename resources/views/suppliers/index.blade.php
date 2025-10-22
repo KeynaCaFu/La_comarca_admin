@@ -23,6 +23,44 @@
         </div>
     </div>
 
+    <!-- Resumen y atajos de filtros -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-2 p-3 bg-light rounded border">
+                <div class="text-muted">
+                    🚚 <strong>{{ $suppliers->count() }}</strong> de <strong>{{ $totals['all'] ?? 0 }}</strong> proveedores
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="#" class="btn btn-sm btn-outline-secondary" role="button"
+                       onclick="document.getElementById('filtroEstado').value='';document.getElementById('filtroInsumos').value='';aplicarFiltros();return false;">
+                        <i class="fas fa-list"></i> Todos
+                        <span class="badge bg-secondary ms-1">{{ $totals['all'] ?? 0 }}</span>
+                    </a>
+                    <a href="#" class="btn btn-sm btn-outline-success" role="button"
+                       onclick="document.getElementById('filtroEstado').value='Activo';document.getElementById('filtroInsumos').value='';aplicarFiltros();return false;">
+                        <i class="fas fa-check-circle"></i> Activos
+                        <span class="badge bg-success ms-1">{{ $totals['active'] ?? 0 }}</span>
+                    </a>
+                    <a href="#" class="btn btn-sm btn-outline-danger" role="button"
+                       onclick="document.getElementById('filtroEstado').value='Inactivo';document.getElementById('filtroInsumos').value='';aplicarFiltros();return false;">
+                        <i class="fas fa-times-circle"></i> Inactivos
+                        <span class="badge bg-danger ms-1">{{ $totals['inactive'] ?? 0 }}</span>
+                    </a>
+                    <a href="#" class="btn btn-sm btn-outline-primary" role="button"
+                       onclick="document.getElementById('filtroEstado').value='';document.getElementById('filtroInsumos').value='con-insumos';aplicarFiltros();return false;">
+                        <i class="fas fa-boxes"></i> Con insumos
+                        <span class="badge bg-primary ms-1">{{ $totals['with_supplies'] ?? 0 }}</span>
+                    </a>
+                    <a href="#" class="btn btn-sm btn-outline-dark" role="button"
+                       onclick="document.getElementById('filtroEstado').value='';document.getElementById('filtroInsumos').value='sin-insumos';aplicarFiltros();return false;">
+                        <i class="fas fa-box-open"></i> Sin insumos
+                        <span class="badge bg-dark ms-1">{{ $totals['without_supplies'] ?? 0 }}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Panel de Filtros -->
     <div class="row mb-4">
         <div class="col-12">
@@ -130,10 +168,14 @@
                             </td>
                             <td class="baction">
                                 <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-info btn-sm" title="Ver" onclick="openShowProveedorModal({{ $supplier->supplier_id }})">
+                                    <button type="button" class="btn btn-info btn-sm" title="Ver" 
+                                        onclick="openShowProveedorModal({{ $supplier->supplier_id }})"
+                                        onmouseenter="preloadShowProveedorModal({{ $supplier->supplier_id }})">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button type="button" class="btn btn-warning btn-sm" title="Editar" onclick="openEditProveedorModal({{ $supplier->supplier_id }})">
+                                    <button type="button" class="btn btn-warning btn-sm" title="Editar" 
+                                        onclick="openEditProveedorModal({{ $supplier->supplier_id }})"
+                                        onmouseenter="preloadEditProveedorModal({{ $supplier->supplier_id }})">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                     <form action="{{ route('suppliers.destroy', $supplier->supplier_id) }}" method="POST" class="d-inline">
@@ -220,11 +262,15 @@
                         </div>
                         <div class="card-footer">
                             <div class="d-flex gap-2 justify-content-center">
-                                <button type="button" class="btn btn-info btn-sm flex-fill" onclick="openShowProveedorModal({{ $supplier->supplier_id }})">
+                                <button type="button" class="btn btn-info btn-sm flex-fill" 
+                                    onclick="openShowProveedorModal({{ $supplier->supplier_id }})"
+                                    onmouseenter="preloadShowProveedorModal({{ $supplier->supplier_id }})">
                                     <i class="fas fa-eye me-1"></i>
                                     <span class="d-none d-sm-inline">Ver</span>
                                 </button>
-                                <button type="button" class="btn btn-warning btn-sm flex-fill" onclick="openEditProveedorModal({{ $supplier->supplier_id }})">
+                                <button type="button" class="btn btn-warning btn-sm flex-fill" 
+                                    onclick="openEditProveedorModal({{ $supplier->supplier_id }})"
+                                    onmouseenter="preloadEditProveedorModal({{ $supplier->supplier_id }})">
                                     <i class="fas fa-edit me-1"></i>
                                     <span class="d-none d-sm-inline">Editar</span>
                                 </button>
