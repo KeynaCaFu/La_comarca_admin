@@ -6,13 +6,14 @@
 <link href="{{ asset('css/validations.css') }}" rel="stylesheet">
 <link href="{{ asset('css/pages/insumos.css') }}" rel="stylesheet">
 <style>
-/* Estilos simples para los filtros */
+/* Estilos para los filtros colapsables */
 .filtros-simples {
     background: white;
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     margin-bottom: 20px;
+    border: 2px solid #e9ecef;
 }
 
 .filtros-simples .form-control, .filtros-simples .form-select {
@@ -27,30 +28,85 @@
     box-shadow: 0 0 0 0.2rem rgba(72, 90, 26, 0.25);
 }
 
+/* Estilos para barra de búsqueda */
+.input-group .input-group-text {
+    border: 2px solid #e9ecef;
+    border-right: none;
+}
+
+.input-group .form-control {
+    border: 2px solid #e9ecef;
+    border-left: none;
+}
+
+.input-group .form-control:focus {
+    border-color: #485a1a;
+    box-shadow: none;
+}
+
+.input-group .form-control:focus + .input-group-text,
+.input-group .input-group-text + .form-control:focus {
+    border-color: #485a1a;
+}
+
+/* Botones de filtro */
 .btn-filtro {
     border-radius: 20px;
     padding: 8px 16px;
-    margin: 2px;
     border: 2px solid #dee2e6;
     background: white;
     color: #6c757d;
     transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
 
-.btn-filtro:hover, .btn-filtro.activo {
+.btn-filtro:hover {
+    background: #f8f9fa;
+    border-color: #485a1a;
+    color: #485a1a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn-filtro.activo {
     background: #485a1a;
     border-color: #485a1a;
     color: white;
-    transform: translateY(-1px);
+    font-weight: bold;
+}
+
+.btn-filtro.activo:hover {
+    background: #3a4815;
+    border-color: #3a4815;
+    color: white;
 }
 
 .contador-filtro {
     background: #ff9900;
     color: white;
-    font-size: 0.7rem;
-    padding: 2px 6px;
+    font-size: 0.75rem;
+    padding: 2px 8px;
     border-radius: 10px;
-    margin-left: 5px;
+    font-weight: bold;
+    min-width: 25px;
+    text-align: center;
+}
+
+.btn-filtro.activo .contador-filtro {
+    background: white;
+    color: #485a1a;
+}
+
+/* Animación del collapse */
+#filtrosCollapse {
+    transition: all 0.3s ease;
+}
+
+#filtrosCollapse.collapsing {
+    transition: height 0.35s ease;
 }
 
 .resumen-resultados {
@@ -59,6 +115,32 @@
     border-radius: 8px;
     border-left: 4px solid #485a1a;
     margin-bottom: 20px;
+}
+
+/* Botón de filtrar */
+.btn-outline-primary {
+    border: 2px solid #485a1a;
+    color: #485a1a;
+}
+
+.btn-outline-primary:hover {
+    background: #485a1a;
+    border-color: #485a1a;
+    color: white;
+}
+
+/* Badge de filtros activos */
+.badge.bg-danger {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
 }
 </style>
 @endpush
@@ -71,90 +153,116 @@
     </button>
 </div>
 
-<!-- Filtros Simples -->
-<div class="filtros-simples">
-    <form method="GET" action="{{ route('insumos.index') }}" id="filtrosForm">
-        <div class="row align-items-end">
-            <!-- Búsqueda por nombre -->
-            <div class="col-md-4">
-                <label class="form-label fw-bold">🔍 Buscar por nombre:</label>
-                <input type="text" 
-                       class="form-control" 
-                       name="buscar" 
-                       value="{{ request('buscar') }}" 
-                       placeholder="Escribe el nombre del insumo..."
-                       onkeyup="buscarEnTiempoReal()">
-            </div>
-            
-            <!-- Botón de limpiar -->
-            <div class="col-md-2">
-                <button type="button" class="btn btn-outline-secondary w-100" onclick="limpiarFiltros()">
-                    <i class="fas fa-eraser"></i> Limpiar
-                </button>
-            </div>
-            
-            <!-- Mostrar total -->
-            <div class="col-md-6 text-end">
-                <span class="h5 text-muted">
-                    📦 Total: <strong>{{ $insumos->count() }}</strong> de <strong>{{ $totales['todos'] }}</strong> insumos
-                </span>
-            </div>
+<!-- Barra de Búsqueda y Botón de Filtros -->
+<div class="mb-3">
+    <div class="row align-items-center">
+        <div class="col-md-5">
+            <form method="GET" action="{{ route('insumos.index') }}" id="filtrosForm">
+                <div class="input-group">
+                    <span class="input-group-text bg-white">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" 
+                           class="form-control" 
+                           name="buscar" 
+                           value="{{ request('buscar') }}" 
+                           placeholder="Buscar insumo por nombre..."
+                           onkeyup="buscarEnTiempoReal()">
+                    @if(request('buscar'))
+                    <button type="button" class="btn btn-outline-secondary" onclick="document.querySelector('input[name=buscar]').value=''; buscarEnTiempoReal();">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    @endif
+                </div>
+            </form>
         </div>
-    </form>
-</div>
-
-<!-- Filtros Rápidos con Botones -->
-<div class="mb-4">
-    <div class="row">
-        <div class="col-md-12">
-            <h6 class="mb-3">📊 <strong>Filtrar por Estado:</strong></h6>
-            <div class="d-flex flex-wrap">
-                <a href="{{ route('insumos.index') }}" 
-                   class="btn btn-filtro {{ !request('estado') ? 'activo' : '' }}">
-                    📋 Todos <span class="contador-filtro">{{ $totales['todos'] }}</span>
-                </a>
-                
-                <a href="{{ route('insumos.index', ['estado' => 'Disponible']) }}" 
-                   class="btn btn-filtro {{ request('estado') == 'Disponible' ? 'activo' : '' }}">
-                    ✅ Disponibles <span class="contador-filtro">{{ $totales['disponibles'] }}</span>
-                </a>
-                
-                <a href="{{ route('insumos.index', ['estado' => 'Agotado']) }}" 
-                   class="btn btn-filtro {{ request('estado') == 'Agotado' ? 'activo' : '' }}">
-                    ❌ Agotados <span class="contador-filtro">{{ $totales['agotados'] }}</span>
-                </a>
-                
-                <a href="{{ route('insumos.index', ['estado' => 'Vencido']) }}" 
-                   class="btn btn-filtro {{ request('estado') == 'Vencido' ? 'activo' : '' }}">
-                    💀 Vencidos <span class="contador-filtro">{{ $totales['vencidos'] }}</span>
-                </a>
-            </div>
+        <div class="col-md-3">
+            <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">
+                <i class="fas fa-filter"></i> Filtrar
+                @if(request()->hasAny(['estado', 'stock', 'vencimiento']))
+                    <span class="badge bg-danger ms-1">{{ collect([request('estado'), request('stock'), request('vencimiento')])->filter()->count() }}</span>
+                @endif
+            </button>
+        </div>
+        <div class="col-md-4 text-end">
+            <span class="h6 text-muted">
+                📦 <strong>{{ $insumos->count() }}</strong> de <strong>{{ $totales['todos'] }}</strong> insumos
+            </span>
         </div>
     </div>
-    
-    <div class="row mt-3">
-        <div class="col-md-12">
-            <h6 class="mb-3">⚠️ <strong>Filtros de Alerta:</strong></h6>
-            <div class="d-flex flex-wrap">
-                <a href="{{ route('insumos.index', ['stock' => 'bajo']) }}" 
-                   class="btn btn-filtro {{ request('stock') == 'bajo' ? 'activo' : '' }}">
-                    📉 Stock Bajo <span class="contador-filtro">{{ $totales['stock_bajo'] }}</span>
-                </a>
-                
-                <a href="{{ route('insumos.index', ['vencimiento' => 'por_vencer']) }}" 
-                   class="btn btn-filtro {{ request('vencimiento') == 'por_vencer' ? 'activo' : '' }}">
-                    ⏰ Por Vencer <span class="contador-filtro">{{ $totales['por_vencer'] }}</span>
-                </a>
-                
-                <a href="{{ route('insumos.index', ['vencimiento' => 'vencidos']) }}" 
-                   class="btn btn-filtro {{ request('vencimiento') == 'vencidos' ? 'activo' : '' }}">
-                    💀 Ya Vencidos
-                </a>
-                
-                <a href="{{ route('insumos.index', ['vencimiento' => 'buenos']) }}" 
-                   class="btn btn-filtro {{ request('vencimiento') == 'buenos' ? 'activo' : '' }}">
-                    👍 En Buen Estado
-                </a>
+</div>
+
+<!-- Filtros Colapsables -->
+<div class="collapse {{ request()->hasAny(['estado', 'stock', 'vencimiento']) ? 'show' : '' }}" id="filtrosCollapse">
+    <div class="filtros-simples">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0"><i class="fas fa-sliders-h"></i> <strong>Opciones de Filtrado</strong></h6>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="limpiarFiltros()">
+                <i class="fas fa-eraser"></i> Limpiar Filtros
+            </button>
+        </div>
+        
+        <!-- Filtros por Estado -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <h6 class="mb-2">📊 <strong>Estado del Insumo:</strong></h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{{ route('insumos.index') }}" 
+                       class="btn btn-filtro {{ !request('estado') ? 'activo' : '' }}">
+                        <i class="fas fa-list"></i> Todos
+                        <span class="contador-filtro">{{ $totales['todos'] }}</span>
+                    </a>
+                    
+                    <a href="{{ route('insumos.index', ['estado' => 'Disponible']) }}" 
+                       class="btn btn-filtro {{ request('estado') == 'Disponible' ? 'activo' : '' }}">
+                        <i class="fas fa-check-circle text-success"></i> Disponibles
+                        <span class="contador-filtro">{{ $totales['disponibles'] }}</span>
+                    </a>
+                    
+                    <a href="{{ route('insumos.index', ['estado' => 'Agotado']) }}" 
+                       class="btn btn-filtro {{ request('estado') == 'Agotado' ? 'activo' : '' }}">
+                        <i class="fas fa-times-circle text-danger"></i> Agotados
+                        <span class="contador-filtro">{{ $totales['agotados'] }}</span>
+                    </a>
+                    
+                    <a href="{{ route('insumos.index', ['estado' => 'Vencido']) }}" 
+                       class="btn btn-filtro {{ request('estado') == 'Vencido' ? 'activo' : '' }}">
+                        <i class="fas fa-exclamation-triangle text-warning"></i> Vencidos
+                        <span class="contador-filtro">{{ $totales['vencidos'] }}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filtros de Alertas -->
+        <div class="row">
+            <div class="col-md-12">
+                <h6 class="mb-2">⚠️ <strong>Alertas de Inventario:</strong></h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{{ route('insumos.index', ['stock' => 'bajo']) }}" 
+                       class="btn btn-filtro {{ request('stock') == 'bajo' ? 'activo' : '' }}">
+                        <i class="fas fa-exclamation-circle text-warning"></i> Stock Bajo
+                        <span class="contador-filtro">{{ $totales['stock_bajo'] }}</span>
+                    </a>
+                    
+                    <a href="{{ route('insumos.index', ['vencimiento' => 'por_vencer']) }}" 
+                       class="btn btn-filtro {{ request('vencimiento') == 'por_vencer' ? 'activo' : '' }}">
+                        <i class="fas fa-clock text-info"></i> Por Vencer (30 días)
+                        <span class="contador-filtro">{{ $totales['por_vencer'] }}</span>
+                    </a>
+                    
+                    <a href="{{ route('insumos.index', ['vencimiento' => 'vencidos']) }}" 
+                       class="btn btn-filtro {{ request('vencimiento') == 'vencidos' ? 'activo' : '' }}">
+                        <i class="fas fa-calendar-times text-danger"></i> Ya Vencidos
+                        <span class="contador-filtro">{{ $totales['vencidos'] }}</span>
+                    </a>
+                    
+                    <a href="{{ route('insumos.index', ['vencimiento' => 'buenos']) }}" 
+                       class="btn btn-filtro {{ request('vencimiento') == 'buenos' ? 'activo' : '' }}">
+                        <i class="fas fa-calendar-check text-success"></i> En Buen Estado
+                        <span class="contador-filtro">{{ $totales['buenos'] }}</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>

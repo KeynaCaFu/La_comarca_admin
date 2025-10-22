@@ -3,6 +3,18 @@
 @section('title', 'Detalles del Insumo')
 
 @section('content')
+<!-- Encabezado de página -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-info-circle"></i> Detalles del Insumo</h1>
+    <div>
+        <a href="{{ route('insumos.index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver
+        </a>
+        <a href="{{ url('insumos/'.$insumo->insumo_id.'/edit') }}" class="btn btn-primary">
+            <i class="fas fa-edit"></i> Editar
+        </a>
+    </div>
+</div>
 <div class="row">
     <div class="col-md-8 mx-auto">
         <div class="card">
@@ -100,9 +112,16 @@
                     <a href="{{ route('insumos.index') }}" class="btn btn-secondary me-md-2">
                         <i class="fas fa-arrow-left"></i> Volver a la lista
                     </a>
-                    <a href="{{ route('insumos.edit', $insumo->insumo_id) }}" class="btn btn-primary">
+                    <a href="{{ url('insumos/'.$insumo->insumo_id.'/edit') }}" class="btn btn-primary">
                         <i class="fas fa-edit"></i> Editar Insumo
                     </a>
+                    <form action="{{ route('insumos.destroy', $insumo->insumo_id) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de eliminar este insumo?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
