@@ -1,6 +1,11 @@
 // Gestión de Modales para Proveedores
 class ProveedorModals {
     constructor() {
+        // Cache para almacenar contenido de modales
+        this.cache = new Map();
+        // Timeout para prelado
+        this.preloadTimeout = null;
+        
         this.initEventListeners();
     }
 
@@ -67,18 +72,22 @@ class ProveedorModals {
         
         if (!modal || !content) return;
 
-        // Mostrar loading
-        content.innerHTML = '<div class="loading">Cargando detalles del proveedor...</div>';
+        // Mostrar modal inmediatamente
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden';
         
+        // Verificar si tenemos el contenido en caché
+        const cacheKey = `show-${proveedorId}`;
+        if (this.cache.has(cacheKey)) {
+            content.innerHTML = this.cache.get(cacheKey);
+            return;
+        }
+        
+        // Si no está en caché, mostrar loading y cargar
+        content.innerHTML = '<div class="loading">Cargando detalles del proveedor...</div>';
+        
         try {
-            const response = await fetch(`/proveedores/${proveedorId}/show-modal`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const html = await response.text();
+            const html = await this.fetchModalContent('show', proveedorId);
             content.innerHTML = html;
         } catch (error) {
             console.error('Error loading modal content:', error);
@@ -105,22 +114,22 @@ class ProveedorModals {
             return;
         }
 
-        // Mostrar loading
-        content.innerHTML = '<div class="loading text-center p-4"><i class="fas fa-spinner fa-spin"></i> Cargando formulario de edición...</div>';
+        // Mostrar modal inmediatamente
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden';
         
+        // Verificar si tenemos el contenido en caché
+        const cacheKey = `edit-${proveedorId}`;
+        if (this.cache.has(cacheKey)) {
+            content.innerHTML = this.cache.get(cacheKey);
+            return;
+        }
+        
+        // Si no está en caché, mostrar loading y cargar
+        content.innerHTML = '<div class="loading text-center p-4"><i class="fas fa-spinner fa-spin"></i> Cargando formulario de edición...</div>';
+        
         try {
-            const url = `/proveedores/${proveedorId}/edit-modal`;
-            console.log('Fetching:', url);
-            
-            const response = await fetch(url);
-            
-            if (!response.ok) {
-                throw new Error(`Error ${response.status}: ${response.statusText}`);
-            }
-            
-            const html = await response.text();
+            const html = await this.fetchModalContent('edit', proveedorId);
             content.innerHTML = html;
             console.log('Modal content loaded successfully');
         } catch (error) {
@@ -134,6 +143,58 @@ class ProveedorModals {
                 </div>
             `;
         }
+    }
+
+    // Obtener contenido del modal (con caché)
+    async fetchModalContent(type, proveedorId) {
+        const cacheKey = `${type}-${proveedorId}`;
+        
+        // Si ya está en caché, devolverlo
+        if (this.cache.has(cacheKey)) {
+            return this.cache.get(cacheKey);
+        }
+        
+        // Construir URL según el tipo de modal
+        const url = type === 'show' 
+            ? `/proveedores/${proveedorId}/show-modal`
+            : `/proveedores/${proveedorId}/edit-modal`;
+        
+        console.log('Fetching:', url);
+        
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+        
+        const html = await response.text();
+        
+        // Guardar en caché
+        this.cache.set(cacheKey, html);
+        
+        return html;
+    }
+
+    // Precargar contenido del modal (para hover)
+    preloadModal(type, proveedorId) {
+        const cacheKey = `${type}-${proveedorId}`;
+        
+        // Si ya está en caché, no hacer nada
+        if (this.cache.has(cacheKey)) {
+            return;
+        }
+        
+        // Cancelar precarga anterior si existe
+        if (this.preloadTimeout) {
+            clearTimeout(this.preloadTimeout);
+        }
+        
+        // Esperar un poco antes de precargar (para evitar precargas innecesarias)
+        this.preloadTimeout = setTimeout(() => {
+            this.fetchModalContent(type, proveedorId).catch(err => {
+                console.warn('Preload failed:', err);
+            });
+        }, 200);
     }
 
     // Cerrar modal
@@ -355,5 +416,18 @@ function openEditProveedorModal(proveedorId) {
 function closeProveedorModal(modalId) {
     if (window.proveedorModals) {
         window.proveedorModals.closeModal(modalId);
+    }
+}
+
+// Funciones de precarga para optimizar UX
+function preloadShowProveedorModal(proveedorId) {
+    if (window.proveedorModals) {
+        window.proveedorModals.preloadModal('show', proveedorId);
+    }
+}
+
+function preloadEditProveedorModal(proveedorId) {
+    if (window.proveedorModals) {
+        window.proveedorModals.preloadModal('edit', proveedorId);
     }
 }

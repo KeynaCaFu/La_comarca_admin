@@ -32,12 +32,12 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('insumos.index') }}" class="{{ request()->routeIs('insumos*') ? 'active' : '' }}">
+                        <a href="{{ route('supplies.index') }}" class="{{ request()->routeIs('supplies*') ? 'active' : '' }}">
                             <i class="fas fa-boxes"></i> Insumos
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('proveedores.index') }}" class="{{ request()->routeIs('proveedores*') ? 'active' : '' }}">
+                        <a href="{{ route('suppliers.index') }}" class="{{ request()->routeIs('suppliers*') ? 'active' : '' }}">
                             <i class="fas fa-truck"></i> Proveedores
                         </a>
                     </li>

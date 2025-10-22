@@ -4,7 +4,20 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplyController;
 use App\Http\Controllers\SupplierController;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes - Backend en Inglés, URLs en Español
+|--------------------------------------------------------------------------
+|
+| Backend: Modelos, Controladores, Variables en INGLÉS
+| Frontend: URLs y textos para usuario en ESPAÑOL
+|
+*/
+
 // ============================================================================
+// RUTAS PÚBLICAS
+// ============================================================================
+
 // Ruta de bienvenida
 Route::get('/', function () {
     return view('welcome');
@@ -16,6 +29,10 @@ Route::get('/dashboard', function () {
 })->name('dashboard');
 
 // ============================================================================
+// RUTAS DE SUPPLIES (Insumos)
+// ============================================================================
+// URLs en español para el usuario: /insumos
+// Nombres de ruta en inglés: supplies.*
 
 Route::prefix('insumos')->name('supplies.')->group(function () {
     // Lista de supplies
@@ -39,7 +56,10 @@ Route::prefix('insumos')->name('supplies.')->group(function () {
 });
 
 // ============================================================================
-
+// RUTAS DE SUPPLIERS (Proveedores)
+// ============================================================================
+// URLs en español para el usuario: /proveedores
+// Nombres de ruta en inglés: suppliers.*
 
 Route::prefix('proveedores')->name('suppliers.')->group(function () {
     // Lista de suppliers
@@ -62,3 +82,27 @@ Route::prefix('proveedores')->name('suppliers.')->group(function () {
     Route::get('/{id}/edit-modal', [SupplierController::class, 'editModal'])->name('edit.modal');
 });
 
+// ============================================================================
+// EJEMPLO DE USO EN VISTAS
+// ============================================================================
+/*
+
+ANTES (Todo en español):
+-----------------------------
+Route: route('insumos.index')
+Model: Insumo::all()
+Variable: $insumo->nombre
+
+
+DESPUÉS (Backend inglés, Frontend español):
+--------------------------------------------
+Route: route('supplies.index')  ← Cambió el nombre de la ruta
+URL: /insumos                   ← URL sigue en español para usuario
+Model: Supply::all()            ← Modelo en inglés
+Variable: $supply->name         ← Propiedades en inglés
+
+En la vista (Blade):
+{{ $supply->name }}             ← Valor en español (ej: "Harina de Trigo")
+{{ $supply->status_in_spanish }} ← "Disponible" (usando accessor)
+
+*/
