@@ -5,6 +5,7 @@
 @push('styles')
     <link href="{{ asset('css/pages/suppliers.css') }}" rel="stylesheet">
     <link href="{{ asset('css/supplier-modals.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/supplier-enhancements.css') }}" rel="stylesheet">
 @endpush
 
 @section('content')
@@ -284,6 +285,16 @@
             </div>
         </div>
     @endif
+
+    @if(method_exists($suppliers, 'links'))
+    <div class="row mt-3">
+        <div class="col-12 d-flex justify-content-center">
+            <div class="pagination-container">
+                {{ $suppliers->onEachSide(1)->links() }}
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 
 <!-- Modal para Ver Detalles de Proveedor -->
@@ -312,14 +323,14 @@
                 
                 <div class="mb-3">
                     <label for="create_proveedor_nombre" class="form-label">Nombre del Proveedor *</label>
-                    <input type="text" class="form-control" id="create_proveedor_nombre" name="nombre" required placeholder="Ej: Distribuidora Alimentos Frescos">
+                    <input type="text" class="form-control" id="create_proveedor_nombre" name="nombre" required placeholder="Ej: Distribuidora">
                 </div>
 
                 <div class="row">
                     <div class="col-12 col-md-6">
                         <div class="mb-3">
                             <label for="create_proveedor_telefono" class="form-label">Teléfono *</label>
-                            <input type="text" class="form-control" id="create_proveedor_telefono" name="telefono" required placeholder="Ej: 3001234567">
+                            <input type="text" class="form-control" id="create_proveedor_telefono" name="telefono" required placeholder="Ej: 88888888">
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
@@ -332,7 +343,7 @@
 
                 <div class="mb-3">
                     <label for="create_proveedor_direccion" class="form-label">Dirección *</label>
-                    <textarea class="form-control" id="create_proveedor_direccion" name="direccion" required placeholder="Ej: Calle 123 #45-67, Bogotá"></textarea>
+                    <textarea class="form-control" id="create_proveedor_direccion" name="direccion" required placeholder="Ej: Calle 123 #45-67, Guápiles"></textarea>
                 </div>
 
                 <div class="section-divider"></div>
@@ -455,6 +466,11 @@
                         <i class="fas fa-keyboard"></i> Atajos
                     </button>
                 </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="help-glossary-tab" data-bs-toggle="tab" data-bs-target="#help-glossary" type="button">
+                        <i class="fas fa-book"></i> Glosario
+                    </button>
+                </li>
             </ul>
             
             <div class="tab-content mt-3" id="helpTabContent">
@@ -537,6 +553,18 @@
                                 <td>Abrir formulario de Nuevo Proveedor</td>
                             </tr>
                             <tr>
+                                <td><kbd>Ctrl</kbd> + <kbd>F</kbd></td>
+                                <td>Enfocar en el campo de búsqueda</td>
+                            </tr>
+                            <tr>
+                                <td><kbd>Ctrl</kbd> + <kbd>H</kbd></td>
+                                <td>Mostrar esta ayuda</td>
+                            </tr>
+                            <tr>
+                                <td><kbd>Alt</kbd> + <kbd>N</kbd></td>
+                                <td>Nuevo Proveedor (alternativo)</td>
+                            </tr>
+                            <tr>
                                 <td><kbd>Enter</kbd></td>
                                 <td>Guardar formulario (cuando está en un campo de texto)</td>
                             </tr>
@@ -549,6 +577,47 @@
                     
                     <div class="alert alert-warning">
                         <i class="fas fa-exclamation-triangle"></i> <strong>Nota:</strong> Los atajos no funcionan cuando está escribiendo en un área de texto (dirección).
+                    </div>
+                </div>
+                
+                <!-- Pestaña Glosario -->
+                <div class="tab-pane fade" id="help-glossary" role="tabpanel">
+                    <h5><i class="fas fa-book text-primary"></i> Glosario de Términos</h5>
+                    
+                    <dl class="row">
+                        <dt class="col-sm-3">Proveedor</dt>
+                        <dd class="col-sm-9">Empresa o persona que suministra productos o materias primas al negocio.</dd>
+                        
+                        <dt class="col-sm-3">Insumos</dt>
+                        <dd class="col-sm-9">Productos o materias primas que un proveedor puede suministrar. Un proveedor puede ofrecer múltiples tipos de insumos.</dd>
+                        
+                        <dt class="col-sm-3">Estado: Activo</dt>
+                        <dd class="col-sm-9">Proveedor disponible para realizar nuevas compras. Puede tener insumos asociados.</dd>
+                        
+                        <dt class="col-sm-3">Estado: Inactivo</dt>
+                        <dd class="col-sm-9">Proveedor temporalmente no disponible. <span class="text-warning"><strong>⚠️ Se recomienda no tener insumos asociados a proveedores inactivos.</strong></span></dd>
+                        
+                        <dt class="col-sm-3">Total Compras</dt>
+                        <dd class="col-sm-9">Monto acumulado de todas las compras realizadas a este proveedor.</dd>
+                        
+                        <dt class="col-sm-3">Deshacer</dt>
+                        <dd class="col-sm-9">Al eliminar un proveedor, tiene <strong>10 segundos</strong> para deshacer la eliminación. Después de ese tiempo, los datos se eliminan permanentemente.</dd>
+                    </dl>
+                    
+                    <div class="help-panel">
+                        <div class="help-title">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Buenas Prácticas</span>
+                        </div>
+                        <div class="help-content">
+                            <ul>
+                                <li>Mantenga actualizada la información de contacto de sus proveedores</li>
+                                <li>Asocie insumos solo a proveedores activos</li>
+                                <li>Revise regularmente el estado de sus proveedores</li>
+                                <li>Use los filtros para encontrar rápidamente proveedores específicos</li>
+                                <li>Verifique las dependencias antes de eliminar un proveedor</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -681,4 +750,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+<!-- Scripts de mejoras heurísticas -->
+<script src="{{ asset('js/supplier-enhancements.js') }}"></script>
+
 @endpush

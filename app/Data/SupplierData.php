@@ -28,7 +28,8 @@ class SupplierData
             $query->byStatus($filters['status']);
         }
 
-        return $query->get();
+        // Paginación de 6 por página y mantener query string para filtros
+        return $query->orderBy('supplier_id', 'desc')->paginate(6)->withQueryString();
     }
 
     /**
@@ -114,20 +115,55 @@ class SupplierData
     public function delete($id)
     {
         $supplier = Supplier::findOrFail($id);
-        // Soft delete: no desvincular insumos para permitir restauración completa
+        // Desvincular insumos para evitar restricciones de FK y luego eliminar definitivamente
+        $supplier->supplies()->detach();
         return $supplier->delete();
     }
 
     /**
-     * Restaurar supplier eliminado (soft deleted)
+     * Crear un snapshot para poder restaurar tras eliminar.
+     * Contiene los atributos del supplier y los IDs de sus supplies.
      */
-    public function restore($id)
+    public function snapshotForRestore($id)
     {
-        $supplier = Supplier::withTrashed()->findOrFail($id);
-        if ($supplier->trashed()) {
-            $supplier->restore();
+        $supplier = Supplier::with(['supplies:supply_id'])->findOrFail($id);
+        $supplierData = [
+            'supplier_id' => $supplier->supplier_id,
+            'name' => $supplier->name,
+            'email' => $supplier->email ?? null,
+            'phone' => $supplier->phone ?? null,
+            'address' => $supplier->address ?? null,
+            'status' => $supplier->status ?? null,
+            'created_at' => $supplier->created_at,
+            'updated_at' => $supplier->updated_at,
+        ];
+
+        return [
+            'supplier' => $supplierData,
+            'supply_ids' => $supplier->supplies->pluck('supply_id')->all(),
+        ];
+    }
+
+    /**
+     * Recrear un supplier a partir de un snapshot y re-asociar sus supplies.
+     */
+    public function recreateFromSnapshot(array $snapshot)
+    {
+        $data = $snapshot['supplier'] ?? [];
+        $supplyIds = $snapshot['supply_ids'] ?? [];
+
+        // Crear el registro con el mismo supplier_id si es posible
+        $supplier = new Supplier();
+        foreach ($data as $key => $value) {
+            $supplier->setAttribute($key, $value);
         }
-        return $supplier->fresh();
+        $supplier->save();
+
+        if (!empty($supplyIds)) {
+            $supplier->supplies()->attach($supplyIds);
+        }
+
+        return $supplier->fresh('supplies');
     }
 
     /**
