@@ -59,7 +59,8 @@ class SupplyData
      */
     public function allMinimal()
     {
-        return Supply::select('supply_id', 'name')
+        // Incluir precio porque algunas vistas de proveedores muestran nombre y precio
+        return Supply::select('supply_id', 'name', 'price')
             ->orderBy('name')
             ->get();
     }
