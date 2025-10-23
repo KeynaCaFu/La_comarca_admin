@@ -173,8 +173,6 @@
     </button>
 </div>
 
-<!-- Barra de Búsqueda (movida dentro del acordeón) -->
-
 <!-- Acordeón de Filtros -->
 <div class="accordion-filtros mb-3">
     <div class="accordion-filtros-header" role="button"

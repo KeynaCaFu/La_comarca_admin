@@ -48,6 +48,14 @@
                     </li>
                 </ul>
             </div>
+            
+            <!-- Usuario administrador al final del sidebar -->
+            <div class="sidebar-footer">
+                <div class="admin-info">
+                    <i class="fas fa-user-circle fa-2x"></i>
+                    <span>Administrador</span>
+                </div>
+            </div>
         </nav>
 
         <!-- Contenido principal -->
@@ -55,10 +63,6 @@
             <!-- Header -->
             <div class="header">
                 <h1>@yield('title', 'Dashboard')</h1>
-                <div class="user-info">
-                    <i class="fas fa-user-circle fa-2x"></i>
-                    <span>Administrador</span>
-                </div>
             </div>
 
             <!-- Alertas de Bootstrap/Laravel -->
