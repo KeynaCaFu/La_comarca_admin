@@ -410,8 +410,7 @@
                                 <form action="{{ route('supplies.destroy', $supply->supply_id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" title="Eliminar" 
-                                        onclick="return confirm('¿Estás seguro de eliminar este insumo?')">
+                                    <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
