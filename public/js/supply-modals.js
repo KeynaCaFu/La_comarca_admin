@@ -609,74 +609,87 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(style);
     }
 
-    // Interceptar formularios DELETE de supplies para habilitar "Eliminar con deshacer"
-    const deleteForms = Array.from(document.querySelectorAll('form.d-inline'))
-        .filter(f => f.action && /suppl|insum|supplie|supplies/i.test(f.action) && f.querySelector('input[name="_method"][value="DELETE"]'));
+    // Exponer función para interceptar formularios DELETE de supplies
+    window.initSupplyDeleteInterceptors = function(root) {
+        const scope = root || document;
+        const deleteForms = Array.from(scope.querySelectorAll('form.d-inline'))
+            .filter(f => f.action && /suppl|insum|supplie|supplies/i.test(f.action) && f.querySelector('input[name="_method"][value="DELETE"]'));
 
-    deleteForms.forEach(form => {
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            e.stopPropagation();
+        deleteForms.forEach(form => {
+            // Evitar duplicar listeners
+            if (form.dataset.deleteBound === 'true') return;
+            form.dataset.deleteBound = 'true';
 
-            // Mostrar confirmación elegante primero
-            const confirmed = await window.insumoModals.showConfirmDialog(
-                '¿Está seguro de eliminar este insumo?',
-                'Esta acción se puede deshacer en los próximos segundos.',
-                'Sí, eliminar',
-                'Cancelar'
-            );
-            
-            if (!confirmed) {
-                return; // Usuario canceló
-            }
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                e.stopPropagation();
 
-            const row = form.closest('tr');
-            if (row) row.classList.add('about-to-delete');
-
-            const tokenInput = form.querySelector('input[name="_token"]');
-            const methodInput = form.querySelector('input[name="_method"]');
-
-            // Función para ejecutar el DELETE real (tras el delay del toast)
-            const doDelete = async () => {
-                try {
-                    const fd = new FormData();
-                    if (tokenInput) fd.append('_token', tokenInput.value);
-                    fd.append('_method', 'DELETE');
-
-                    const resp = await fetch(form.action, {
-                        method: 'POST',
-                        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
-                        body: fd,
-                        credentials: 'same-origin'
-                    });
-
-                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-                    // Intentar parsear JSON, pero no es obligatorio
-                    try { await resp.json(); } catch(_) {}
-
-                    showNotification('success', 'Insumo eliminado');
-                    setTimeout(() => { window.location.reload(); }, 700);
-                } catch (err) {
-                    console.error(err);
-                    showNotification('error', 'No se pudo eliminar el insumo');
-                    if (row) row.classList.remove('about-to-delete');
+                // Mostrar confirmación elegante primero
+                const confirmed = await window.insumoModals.showConfirmDialog(
+                    '¿Está seguro de eliminar este insumo?',
+                    'Esta acción se puede deshacer en los próximos segundos.',
+                    'Sí, eliminar',
+                    'Cancelar'
+                );
+                
+                if (!confirmed) {
+                    return; // Usuario canceló
                 }
-            };
 
-            // Restaurar visualmente si se deshace
-            const undo = async () => {
-                if (row) row.classList.remove('about-to-delete');
-            };
+                const row = form.closest('tr');
+                if (row) row.classList.add('about-to-delete');
 
-            // Mostrar toast con opción de deshacer y programar el delete real
-            confirmWithUndo({
-                message: 'Insumo marcado para eliminar',
-                delayMs: 8000,
-                onConfirm: doDelete,
-                onUndo: undo
-            });
-        }, { capture: true });
-    });
+                const tokenInput = form.querySelector('input[name="_token"]');
+
+                // Función para ejecutar el DELETE real (tras el delay del toast)
+                const doDelete = async () => {
+                    try {
+                        const fd = new FormData();
+                        if (tokenInput) fd.append('_token', tokenInput.value);
+                        fd.append('_method', 'DELETE');
+
+                        const resp = await fetch(form.action, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+                            body: fd,
+                            credentials: 'same-origin'
+                        });
+
+                        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                        try { await resp.json(); } catch(_) {}
+
+                        showNotification('success', 'Insumo eliminado');
+                        // Tras eliminar, refrescar solo la tabla si existe loader global
+                        if (window.reloadSuppliesTable) {
+                            setTimeout(() => window.reloadSuppliesTable(), 700);
+                        } else {
+                            setTimeout(() => window.location.reload(), 700);
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        showNotification('error', 'No se pudo eliminar el insumo');
+                        if (row) row.classList.remove('about-to-delete');
+                    }
+                };
+
+                // Restaurar visualmente si se deshace
+                const undo = async () => {
+                    if (row) row.classList.remove('about-to-delete');
+                };
+
+                // Mostrar toast con opción de deshacer y programar el delete real
+                confirmWithUndo({
+                    message: 'Insumo marcado para eliminar',
+                    delayMs: 8000,
+                    onConfirm: doDelete,
+                    onUndo: undo
+                });
+            }, { capture: true });
+        });
+    };
+
+    // Ejecutar una vez al cargar la página
+    window.initSupplyDeleteInterceptors(document);
 });
 
 // ========== BUSCADOR DE PROVEEDORES ==========
