@@ -609,74 +609,178 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(style);
     }
 
-    // Interceptar formularios DELETE de supplies para habilitar "Eliminar con deshacer"
-    const deleteForms = Array.from(document.querySelectorAll('form.d-inline'))
-        .filter(f => f.action && /suppl|insum|supplie|supplies/i.test(f.action) && f.querySelector('input[name="_method"][value="DELETE"]'));
+    // Exponer función para interceptar formularios DELETE de supplies
+    window.initSupplyDeleteInterceptors = function(root) {
+        const scope = root || document;
+        const deleteForms = Array.from(scope.querySelectorAll('form.d-inline'))
+            .filter(f => f.action && /suppl|insum|supplie|supplies/i.test(f.action) && f.querySelector('input[name="_method"][value="DELETE"]'));
 
-    deleteForms.forEach(form => {
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            e.stopPropagation();
+        deleteForms.forEach(form => {
+            // Evitar duplicar listeners
+            if (form.dataset.deleteBound === 'true') return;
+            form.dataset.deleteBound = 'true';
 
-            // Mostrar confirmación elegante primero
-            const confirmed = await window.insumoModals.showConfirmDialog(
-                '¿Está seguro de eliminar este insumo?',
-                'Esta acción se puede deshacer en los próximos segundos.',
-                'Sí, eliminar',
-                'Cancelar'
-            );
-            
-            if (!confirmed) {
-                return; // Usuario canceló
-            }
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                e.stopPropagation();
 
-            const row = form.closest('tr');
-            if (row) row.classList.add('about-to-delete');
-
-            const tokenInput = form.querySelector('input[name="_token"]');
-            const methodInput = form.querySelector('input[name="_method"]');
-
-            // Función para ejecutar el DELETE real (tras el delay del toast)
-            const doDelete = async () => {
-                try {
-                    const fd = new FormData();
-                    if (tokenInput) fd.append('_token', tokenInput.value);
-                    fd.append('_method', 'DELETE');
-
-                    const resp = await fetch(form.action, {
-                        method: 'POST',
-                        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
-                        body: fd,
-                        credentials: 'same-origin'
-                    });
-
-                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-                    // Intentar parsear JSON, pero no es obligatorio
-                    try { await resp.json(); } catch(_) {}
-
-                    showNotification('success', 'Insumo eliminado');
-                    setTimeout(() => { window.location.reload(); }, 700);
-                } catch (err) {
-                    console.error(err);
-                    showNotification('error', 'No se pudo eliminar el insumo');
-                    if (row) row.classList.remove('about-to-delete');
+                // Mostrar confirmación elegante primero
+                const confirmed = await window.insumoModals.showConfirmDialog(
+                    '¿Está seguro de eliminar este insumo?',
+                    'Esta acción se puede deshacer en los próximos segundos.',
+                    'Sí, eliminar',
+                    'Cancelar'
+                );
+                
+                if (!confirmed) {
+                    return; // Usuario canceló
                 }
-            };
 
-            // Restaurar visualmente si se deshace
-            const undo = async () => {
-                if (row) row.classList.remove('about-to-delete');
-            };
+                const row = form.closest('tr');
+                if (row) row.classList.add('about-to-delete');
 
-            // Mostrar toast con opción de deshacer y programar el delete real
-            confirmWithUndo({
-                message: 'Insumo marcado para eliminar',
-                delayMs: 8000,
-                onConfirm: doDelete,
-                onUndo: undo
-            });
-        }, { capture: true });
+                const tokenInput = form.querySelector('input[name="_token"]');
+
+                // Función para ejecutar el DELETE real (tras el delay del toast)
+                const doDelete = async () => {
+                    try {
+                        const fd = new FormData();
+                        if (tokenInput) fd.append('_token', tokenInput.value);
+                        fd.append('_method', 'DELETE');
+
+                        const resp = await fetch(form.action, {
+                            method: 'POST',
+                            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+                            body: fd,
+                            credentials: 'same-origin'
+                        });
+
+                        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                        try { await resp.json(); } catch(_) {}
+
+                        showNotification('success', 'Insumo eliminado');
+                        // Tras eliminar, refrescar solo la tabla si existe loader global
+                        if (window.reloadSuppliesTable) {
+                            setTimeout(() => window.reloadSuppliesTable(), 700);
+                        } else {
+                            setTimeout(() => window.location.reload(), 700);
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        showNotification('error', 'No se pudo eliminar el insumo');
+                        if (row) row.classList.remove('about-to-delete');
+                    }
+                };
+
+                // Restaurar visualmente si se deshace
+                const undo = async () => {
+                    if (row) row.classList.remove('about-to-delete');
+                };
+
+                // Mostrar toast con opción de deshacer y programar el delete real
+                confirmWithUndo({
+                    message: 'Insumo marcado para eliminar',
+                    delayMs: 8000,
+                    onConfirm: doDelete,
+                    onUndo: undo
+                });
+            }, { capture: true });
+        });
+    };
+
+    // Ejecutar una vez al cargar la página
+    window.initSupplyDeleteInterceptors(document);
+});
+
+// ========== BUSCADOR DE PROVEEDORES ==========
+// Función para filtrar proveedores en tiempo real
+function initSupplierSearch() {
+    // Buscador en modal de crear
+    const createSearchInput = document.getElementById('create_buscarProveedor');
+    if (createSearchInput && !createSearchInput.dataset.initialized) {
+        createSearchInput.dataset.initialized = 'true';
+        createSearchInput.addEventListener('input', function() {
+            filterSuppliers('create');
+        });
+        
+        // Limpiar búsqueda al abrir modal
+        createSearchInput.addEventListener('focus', function() {
+            this.value = '';
+            filterSuppliers('create');
+        });
+    }
+    
+    // Buscador en modal de editar
+    const editSearchInput = document.getElementById('edit_buscarProveedor');
+    if (editSearchInput && !editSearchInput.dataset.initialized) {
+        editSearchInput.dataset.initialized = 'true';
+        editSearchInput.addEventListener('input', function() {
+            filterSuppliers('edit');
+        });
+    }
+}
+
+// Función helper para filtrar proveedores
+function filterSuppliers(modalType) {
+    const searchInput = document.getElementById(`${modalType}_buscarProveedor`);
+    const proveedoresList = document.getElementById(`${modalType}_proveedoresList`);
+    
+    if (!searchInput || !proveedoresList) return;
+    
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const items = proveedoresList.querySelectorAll('.proveedor-item');
+    
+    let visibleCount = 0;
+    items.forEach(item => {
+        const nombre = item.getAttribute('data-nombre') || '';
+        const telefono = item.getAttribute('data-telefono') || '';
+        
+        const matches = nombre.includes(searchTerm) || telefono.includes(searchTerm);
+        
+        if (matches) {
+            item.style.display = 'block';
+            visibleCount++;
+        } else {
+            item.style.display = 'none';
+        }
     });
+    
+    // Mostrar mensaje si no hay resultados
+    let noResultsMsg = proveedoresList.querySelector('.no-results-msg');
+    if (visibleCount === 0 && searchTerm !== '') {
+        if (!noResultsMsg) {
+            noResultsMsg = document.createElement('p');
+            noResultsMsg.className = 'text-muted text-center no-results-msg mt-2';
+            noResultsMsg.innerHTML = '<i class="fas fa-search"></i> No se encontraron proveedores';
+            proveedoresList.appendChild(noResultsMsg);
+        }
+        noResultsMsg.style.display = 'block';
+    } else if (noResultsMsg) {
+        noResultsMsg.style.display = 'none';
+    }
+}
+
+// Inicializar buscador cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', initSupplierSearch);
+
+// Observador para detectar cuando se carga contenido dinámico en el modal de editar
+const editModalObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.addedNodes.length) {
+            initSupplierSearch();
+        }
+    });
+});
+
+// Observar cambios en el contenido del modal de editar
+document.addEventListener('DOMContentLoaded', () => {
+    const editModalContent = document.getElementById('editModalContent');
+    if (editModalContent) {
+        editModalObserver.observe(editModalContent, {
+            childList: true,
+            subtree: true
+        });
+    }
 });
 
 // Funciones globales para compatibilidad
