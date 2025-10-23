@@ -27,7 +27,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="card shadow-sm">
-                <div class="card-header bg-light">
+                <div class="card-header bg-light" id="filtrosCardHeader">
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="mb-0"><i class="fas fa-filter me-2"></i>Filtros de Búsqueda</h6>
                         <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">
@@ -404,4 +404,22 @@
 <script src="{{ asset('js/supplier-modals.js') }}"></script>
 <script src="{{ asset('js/supplier-validations.js') }}"></script>
 <script src="{{ asset('js/supplier-filters.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var filtrosCollapse = document.getElementById('filtrosCollapse');
+    var cardHeader = document.getElementById('filtrosCardHeader');
+    if (filtrosCollapse && cardHeader) {
+        filtrosCollapse.addEventListener('show.bs.collapse', function() {
+            cardHeader.classList.add('filtros-abiertos');
+        });
+        filtrosCollapse.addEventListener('hide.bs.collapse', function() {
+            cardHeader.classList.remove('filtros-abiertos');
+        });
+        // Si el filtro inicia abierto, poner la clase
+        if (filtrosCollapse.classList.contains('show')) {
+            cardHeader.classList.add('filtros-abiertos');
+        }
+    }
+});
+</script>
 @endpush

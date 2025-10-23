@@ -41,14 +41,19 @@
 }
 
 .card-header .btn:focus {
-    box-shadow: none;
+.card-header {
+    background: #485a1a;
+    color: black;
+    border-radius: 8px 8px 0 0;
+    padding: 15px 20px;
+    margin: -20px -20px 15px -20px;
+    border-bottom: none;
 }
 
-/* Inputs de filtro */
-.form-control:focus,
-.form-select:focus {
-    border-color: #485a1a;
-    box-shadow: 0 0 0 0.25rem rgba(72, 90, 26, 0.15);
+/* Línea verde solo cuando el filtro está abierto */
+.card-header.filtros-abiertos {
+    border-bottom: 3px solid #ff9900;
+}
 }
 
 /* Animación para filtros */
