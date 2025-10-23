@@ -496,19 +496,23 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="create_nombre" class="form-label">Nombre del Insumo *</label>
+                            <label for="create_nombre" class="form-label">
+                                Nombre del Insumo *
+                            </label>
                             <input type="text" class="form-control" id="create_nombre" name="nombre" required 
                                    placeholder="Ej: Harina de Trigo" 
                                    pattern="^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s\-\.]+$"
                                    title="Solo se permiten letras, espacios, guiones y puntos"
                                    maxlength="255">
                             <div class="invalid-feedback"></div>
-                            <small class="form-text text-muted">Solo letras, espacios, guiones y puntos</small>
+                            {{-- <small class="form-text text-muted">Solo letras, espacios, guiones y puntos</small> --}}
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="create_unidad_medida" class="form-label">Unidad de Medida *</label>
+                            <label for="create_unidad_medida" class="form-label">
+                                Unidad de Medida *
+                            </label>
                             <select class="form-select" id="create_unidad_medida" name="unidad_medida" required>
                                 <option value="">Seleccionar unidad...</option>
                                 <optgroup label="Peso">
@@ -540,32 +544,42 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="mb-3">
-                            <label for="create_stock_actual" class="form-label">Stock Actual *</label>
+                            <label for="create_stock_actual" class="form-label">
+                                Stock Actual *
+                                <i class="fas fa-info-circle text-info ms-1" 
+                                   data-bs-toggle="tooltip" 
+                                   data-bs-placement="right" 
+                                   title="Cantidad actual disponible en inventario de este insumo."></i>
+                            </label>
                             <input type="number" class="form-control" id="create_stock_actual" name="stock_actual" 
                                    required value="0" min="0" max="999999" step="1"
                                    title="Solo números enteros del 0 al 999,999">
                             <div class="invalid-feedback"></div>
-                            <small class="form-text text-muted">Números enteros del 0 al 999,999</small>
+                            {{-- <small class="form-text text-muted">Números enteros del 0 al 999,999</small> --}}
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="mb-3">
-                            <label for="create_stock_minimo" class="form-label">Stock Mínimo *</label>
+                            <label for="create_stock_minimo" class="form-label">
+                                Stock Mínimo *
+                            </label>
                             <input type="number" class="form-control" id="create_stock_minimo" name="stock_minimo" 
                                    required value="0" min="0" max="999999" step="1"
                                    title="Solo números enteros del 0 al 999,999">
                             <div class="invalid-feedback"></div>
-                            <small class="form-text text-muted">Números enteros del 0 al 999,999</small>
+                            {{-- <small class="form-text text-muted">Números enteros del 0 al 999,999</small> --}}
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="mb-3">
-                            <label for="create_cantidad" class="form-label">Cantidad *</label>
+                            <label for="create_cantidad" class="form-label">
+                                Cantidad *
+                            </label>
                             <input type="number" class="form-control" id="create_cantidad" name="cantidad" 
                                    required value="1" min="1" max="999999" step="1"
                                    title="Solo números enteros del 1 al 999,999">
                             <div class="invalid-feedback"></div>
-                            <small class="form-text text-muted">Números enteros del 1 al 999,999</small>
+                            {{-- <small class="form-text text-muted">Números enteros del 1 al 999,999</small> --}}
                         </div>
                     </div>
                 </div>
@@ -573,7 +587,9 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="create_precio" class="form-label">Precio *</label>
+                            <label for="create_precio" class="form-label">
+                                Precio *
+                            </label>
                             <div class="input-group">
                                 <span class="input-group-text">₡</span>
                                 <input type="number" step="0.01" class="form-control" id="create_precio" name="precio" 
@@ -581,12 +597,18 @@
                                        title="Precio válido entre ₡0.01 y ₡999,999.99">
                             </div>
                             <div class="invalid-feedback"></div>
-                            <small class="form-text text-muted">Precio entre ₡0.01 y ₡999,999.99</small>
+                            {{-- <small class="form-text text-muted">Precio entre ₡0.01 y ₡999,999.99</small> --}}
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="create_fecha_vencimiento" class="form-label">Fecha de Vencimiento</label>
+                            <label for="create_fecha_vencimiento" class="form-label">
+                                Fecha de Vencimiento
+                                <i class="fas fa-info-circle text-info ms-1" 
+                                   data-bs-toggle="tooltip" 
+                                   data-bs-placement="right" 
+                                   title="Fecha en la que el insumo expirará. Recibirá alertas 30 días antes del vencimiento."></i>
+                            </label>
                             <input type="date" class="form-control" id="create_fecha_vencimiento" name="fecha_vencimiento"
                                    min="{{ date('Y-m-d', strtotime('+1 day')) }}"
                                    title="La fecha debe ser posterior a hoy">
@@ -597,7 +619,13 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="create_estado" class="form-label">Estado *</label>
+                    <label for="create_estado" class="form-label">
+                        Estado *
+                        <i class="fas fa-info-circle text-info ms-1" 
+                           data-bs-toggle="tooltip" 
+                           data-bs-placement="right" 
+                           title="Estado actual del insumo. Disponible: listo para usar, Agotado: sin stock, Vencido: expirado."></i>
+                    </label>
                     <select class="form-select" id="create_estado" name="estado" required>
                         <option value="">Seleccionar estado...</option>
                         <option value="Disponible">✅ Disponible</option>
@@ -608,10 +636,29 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Proveedores</label>
-                    <div class="border p-3 rounded">
+                    <label class="form-label">
+                        Proveedores
+                        <i class="fas fa-info-circle text-info ms-1" 
+                           data-bs-toggle="tooltip" 
+                           data-bs-placement="right" 
+                           title="Seleccione uno o más proveedores que suministran este insumo. Puede buscar por nombre o teléfono."></i>
+                    </label>
+                    <!-- Buscador de proveedores -->
+                    <div class="mb-2">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="create_buscarProveedor" 
+                                   placeholder="Buscar proveedor por nombre o teléfono..."
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="border p-3 rounded" style="max-height: 250px; overflow-y: auto;" id="create_proveedoresList">
                         @foreach($suppliers as $supplier)
-                        <div class="form-check">
+                        <div class="form-check proveedor-item" data-nombre="{{ strtolower($supplier->name) }}" data-telefono="{{ $supplier->phone }}">
                             <input class="form-check-input" type="checkbox" name="proveedores[]" 
                                    value="{{ $supplier->supplier_id }}" id="create_proveedor{{ $supplier->supplier_id }}">
                             <label class="form-check-label" for="create_proveedor{{ $supplier->supplier_id }}">
@@ -658,4 +705,32 @@
 <script src="{{ asset('js/supply-modals.js') }}"></script>
 <script src="{{ asset('js/supply-validations.js') }}"></script>
 <script src="{{ asset('js/supply-filters.js') }}"></script>
+<!-- Inicializar tooltips de Bootstrap en la página y dentro de los modales -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar tooltips presentes en el DOM
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach(function (el) {
+        const existing = bootstrap.Tooltip.getInstance(el);
+        if (existing) existing.dispose();
+        new bootstrap.Tooltip(el);
+    });
+
+    // Re-inicializar tooltips cuando cambie el contenido del modal de editar
+    const editModalContent = document.getElementById('editModalContent');
+    if (editModalContent) {
+        const obs = new MutationObserver(() => {
+            setTimeout(() => {
+                const innerEls = [].slice.call(editModalContent.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                innerEls.forEach(function (el) {
+                    const existing = bootstrap.Tooltip.getInstance(el);
+                    if (existing) existing.dispose();
+                    new bootstrap.Tooltip(el);
+                });
+            }, 100);
+        });
+        obs.observe(editModalContent, { childList: true, subtree: true });
+    }
+});
+</script>
 @endpush

@@ -679,6 +679,97 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// ========== BUSCADOR DE PROVEEDORES ==========
+// Función para filtrar proveedores en tiempo real
+function initSupplierSearch() {
+    // Buscador en modal de crear
+    const createSearchInput = document.getElementById('create_buscarProveedor');
+    if (createSearchInput && !createSearchInput.dataset.initialized) {
+        createSearchInput.dataset.initialized = 'true';
+        createSearchInput.addEventListener('input', function() {
+            filterSuppliers('create');
+        });
+        
+        // Limpiar búsqueda al abrir modal
+        createSearchInput.addEventListener('focus', function() {
+            this.value = '';
+            filterSuppliers('create');
+        });
+    }
+    
+    // Buscador en modal de editar
+    const editSearchInput = document.getElementById('edit_buscarProveedor');
+    if (editSearchInput && !editSearchInput.dataset.initialized) {
+        editSearchInput.dataset.initialized = 'true';
+        editSearchInput.addEventListener('input', function() {
+            filterSuppliers('edit');
+        });
+    }
+}
+
+// Función helper para filtrar proveedores
+function filterSuppliers(modalType) {
+    const searchInput = document.getElementById(`${modalType}_buscarProveedor`);
+    const proveedoresList = document.getElementById(`${modalType}_proveedoresList`);
+    
+    if (!searchInput || !proveedoresList) return;
+    
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const items = proveedoresList.querySelectorAll('.proveedor-item');
+    
+    let visibleCount = 0;
+    items.forEach(item => {
+        const nombre = item.getAttribute('data-nombre') || '';
+        const telefono = item.getAttribute('data-telefono') || '';
+        
+        const matches = nombre.includes(searchTerm) || telefono.includes(searchTerm);
+        
+        if (matches) {
+            item.style.display = 'block';
+            visibleCount++;
+        } else {
+            item.style.display = 'none';
+        }
+    });
+    
+    // Mostrar mensaje si no hay resultados
+    let noResultsMsg = proveedoresList.querySelector('.no-results-msg');
+    if (visibleCount === 0 && searchTerm !== '') {
+        if (!noResultsMsg) {
+            noResultsMsg = document.createElement('p');
+            noResultsMsg.className = 'text-muted text-center no-results-msg mt-2';
+            noResultsMsg.innerHTML = '<i class="fas fa-search"></i> No se encontraron proveedores';
+            proveedoresList.appendChild(noResultsMsg);
+        }
+        noResultsMsg.style.display = 'block';
+    } else if (noResultsMsg) {
+        noResultsMsg.style.display = 'none';
+    }
+}
+
+// Inicializar buscador cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', initSupplierSearch);
+
+// Observador para detectar cuando se carga contenido dinámico en el modal de editar
+const editModalObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.addedNodes.length) {
+            initSupplierSearch();
+        }
+    });
+});
+
+// Observar cambios en el contenido del modal de editar
+document.addEventListener('DOMContentLoaded', () => {
+    const editModalContent = document.getElementById('editModalContent');
+    if (editModalContent) {
+        editModalObserver.observe(editModalContent, {
+            childList: true,
+            subtree: true
+        });
+    }
+});
+
 // Funciones globales para compatibilidad
 function openCreateModal() {
     if (window.insumoModals) {
