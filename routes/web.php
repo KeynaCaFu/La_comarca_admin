@@ -20,6 +20,9 @@ Route::get('/dashboard', function () {
 Route::prefix('insumos')->name('supplies.')->group(function () {
     // Lista de supplies
     Route::get('/', [SupplyController::class, 'index'])->name('index');
+
+    // Formulario crear supply
+    Route::get('/create', [SupplyController::class, 'create'])->name('create');
     
     // Crear supply
     Route::post('/', [SupplyController::class, 'store'])->name('store');
@@ -45,8 +48,8 @@ Route::prefix('proveedores')->name('suppliers.')->group(function () {
     // Lista de suppliers
     Route::get('/', [SupplierController::class, 'index'])->name('index');
     
-    // Restaurar supplier (URL firmada por 10s)
-    Route::get('/{id}/restore', [SupplierController::class, 'restore'])
+    // Restaurar supplier (URL firmada por 10s) con token de restauración
+    Route::get('/restore/{token}', [SupplierController::class, 'restore'])
         ->name('restore')
         ->middleware('signed');
 

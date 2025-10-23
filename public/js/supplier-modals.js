@@ -5,9 +5,121 @@ class ProveedorModals {
         this.cache = new Map();
         // Timeout para prelado
         this.preloadTimeout = null;
+        // Estado de cambios no guardados
+        this.hasUnsavedChanges = false;
         
         this.initEventListeners();
         this.ensureModalsOnBody();
+        this.createLoadingOverlay();
+        this.createUnsavedIndicator();
+    }
+
+    // Crear overlay de loading
+    createLoadingOverlay() {
+        if (!document.getElementById('loadingOverlay')) {
+            const overlay = document.createElement('div');
+            overlay.id = 'loadingOverlay';
+            overlay.className = 'loading-overlay';
+            overlay.innerHTML = '<div class="loading-spinner"></div>';
+            document.body.appendChild(overlay);
+        }
+    }
+
+    // Crear indicador de cambios no guardados
+    createUnsavedIndicator() {
+        if (!document.getElementById('unsavedIndicator')) {
+            const indicator = document.createElement('div');
+            indicator.id = 'unsavedIndicator';
+            indicator.className = 'unsaved-changes-indicator';
+            indicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i> <span>Tienes cambios sin guardar</span>';
+            document.body.appendChild(indicator);
+        }
+    }
+
+    // Mostrar loading overlay
+    showLoading(message = 'Procesando...') {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            overlay.classList.add('active');
+        }
+        this.showOperationStatus('processing', message);
+    }
+
+    // Ocultar loading overlay
+    hideLoading() {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            overlay.classList.remove('active');
+        }
+    }
+
+    // Mostrar estado de operación (processing, success, error, warning)
+    showOperationStatus(type, message) {
+        // Remover estados previos
+        const existing = document.querySelector('.operation-status');
+        if (existing) {
+            existing.remove();
+        }
+
+        const status = document.createElement('div');
+        status.className = `operation-status ${type}`;
+        
+        let icon = '';
+        switch(type) {
+            case 'processing':
+                icon = '<div class="mini-spinner"></div>';
+                break;
+            case 'success':
+                icon = '<i class="fas fa-check-circle"></i>';
+                break;
+            case 'error':
+                icon = '<i class="fas fa-times-circle"></i>';
+                break;
+            case 'warning':
+                icon = '<i class="fas fa-exclamation-triangle"></i>';
+                break;
+        }
+
+        status.innerHTML = `${icon} <span>${message}</span>`;
+        document.body.appendChild(status);
+
+        // Auto-remover después de 3 segundos (excepto processing)
+        if (type !== 'processing') {
+            setTimeout(() => {
+                status.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => status.remove(), 300);
+            }, 3000);
+        }
+
+        return status;
+    }
+
+    // Marcar formulario con cambios no guardados
+    markUnsavedChanges(hasChanges = true) {
+        this.hasUnsavedChanges = hasChanges;
+        const indicator = document.getElementById('unsavedIndicator');
+        if (indicator) {
+            if (hasChanges) {
+                indicator.classList.add('visible');
+            } else {
+                indicator.classList.remove('visible');
+            }
+        }
+    }
+
+    // Mostrar loading en botón específico
+    setButtonLoading(button, loading = true) {
+        if (loading) {
+            button.classList.add('loading');
+            button.disabled = true;
+            button.dataset.originalText = button.innerHTML;
+        } else {
+            button.classList.remove('loading');
+            button.disabled = false;
+            if (button.dataset.originalText) {
+                button.innerHTML = button.dataset.originalText;
+            }
+        }
     }
 
     // Inicializar event listeners
@@ -294,6 +406,7 @@ class ProveedorModals {
         
         // Deshabilitar botón y mostrar loading
         this.setButtonLoading(submitButton, true);
+        this.showLoading('Creando proveedor...');
         
         try {
             const response = await fetch(form.action, {
@@ -307,8 +420,12 @@ class ProveedorModals {
 
             const data = await response.json();
             
+            this.hideLoading();
+            
             if (response.ok && data.success) {
+                this.showOperationStatus('success', data.message || 'Proveedor creado exitosamente');
                 this.closeModal('createProveedorModal');
+                this.markUnsavedChanges(false);
                 this.showNotification('success', data.message || 'Proveedor creado exitosamente');
                 setTimeout(() => location.reload(), 1000);
             } else {
@@ -323,10 +440,13 @@ class ProveedorModals {
                     errorMessage = data.message;
                 }
                 
+                this.showOperationStatus('error', errorMessage);
                 this.showNotification('error', errorMessage);
             }
         } catch (error) {
             console.error('Error:', error);
+            this.hideLoading();
+            
             let errorMessage = 'Error al crear el proveedor. Por favor, inténtalo de nuevo.';
             
             // Manejar diferentes tipos de errores
@@ -348,6 +468,7 @@ class ProveedorModals {
                 }
             }
             
+            this.showOperationStatus('error', errorMessage);
             this.showNotification('error', errorMessage);
         } finally {
             this.setButtonLoading(submitButton, false);
@@ -364,6 +485,7 @@ class ProveedorModals {
         
         // Deshabilitar botón y mostrar loading
         this.setButtonLoading(submitButton, true);
+        this.showLoading('Actualizando proveedor...');
         
         try {
             const response = await fetch(form.action, {
@@ -377,8 +499,12 @@ class ProveedorModals {
 
             const data = await response.json();
             
+            this.hideLoading();
+            
             if (response.ok && data.success) {
+                this.showOperationStatus('success', data.message || 'Proveedor actualizado exitosamente');
                 this.closeModal('editProveedorModal');
+                this.markUnsavedChanges(false);
                 this.showNotification('success', data.message || 'Proveedor actualizado exitosamente');
                 setTimeout(() => location.reload(), 1000);
             } else {
@@ -466,10 +592,6 @@ class ProveedorModals {
                             <li><strong>${suppliesCount}</strong> insumo(s) asociado(s)</li>
                         </ul>
                         ` : '<p class="text-muted">Este proveedor no tiene insumos asociados.</p>'}
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-circle"></i> 
-                            <strong>Esta acción no se puede deshacer</strong>
-                        </div>
                     </div>
                     <div class="modal-actions d-flex gap-2">
                         <button type="button" class="btn btn-secondary flex-fill" onclick="this.closest('.custom-modal').remove()">

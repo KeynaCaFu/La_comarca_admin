@@ -2,48 +2,32 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Supplier extends Model
 {
-    use SoftDeletes;
+    use HasFactory;
+
     protected $table = 'suppliers';
     protected $primaryKey = 'supplier_id';
     public $timestamps = true; // Usando created_at y updated_at
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
     protected $fillable = [
-        'name',
-        'phone',
-        'email',
-        'address',
-        'total_purchases',
-        'status'
-    ];
-
-    protected $dates = [
-        'deleted_at'
+        'name', 'email', 'phone', 'address', 'status', 'total_purchases'
     ];
 
     protected $casts = [
-        'total_purchases' => 'decimal:2'
+        'total_purchases' => 'decimal:2',
     ];
 
-    /**
-     * Relación muchos a muchos con Supplies (Insumos)
-     */
     public function supplies()
     {
-        return $this->belongsToMany(
-            Supply::class,
-            'supplier_supply',
-            'supplier_id',
-            'supply_id'
-        )
-            // Only select pivot created_at; the pivot table doesn't have updated_at
+        // Only select pivot created_at; the pivot table doesn't have updated_at
+        return $this->belongsToMany(Supply::class, 'supplier_supply', 'supplier_id', 'supply_id')
             ->withPivot('created_at');
     }
 
@@ -57,7 +41,7 @@ class Supplier extends Model
             'Active' => 'Activo',
             'Inactive' => 'Inactivo'
         ];
-        
+
         return $statusMap[$this->status] ?? $this->status;
     }
 
