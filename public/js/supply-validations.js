@@ -259,7 +259,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Validar precio
     function validatePrecio(input) {
-        const value = parseFloat(input.value);
+        if (!input) return true;
+        // Normalizar separador decimal: permitir coma o punto
+        const normalized = (input.value || '').toString().replace(',', '.');
+        const value = parseFloat(normalized);
         
         if (isNaN(value)) {
             showFieldError(input, 'Debe ser un precio válido');
@@ -402,6 +405,21 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             
             precioInput.addEventListener('input', precioInput._validateHandler);
+            // Formatear a 2 decimales al salir
+            precioInput.removeEventListener('blur', precioInput._formatHandler);
+            precioInput._formatHandler = function() {
+                const ok = validatePrecio(this);
+                if (!ok) return;
+                let v = (this.value || '').toString().replace(',', '.');
+                const num = parseFloat(v);
+                if (!isNaN(num)) {
+                    // Mostrar con 2 decimales, usando coma si el usuario ingresó coma
+                    const usedComma = /,/.test(this.value);
+                    const formatted = num.toFixed(2);
+                    this.value = usedComma ? formatted.replace('.', ',') : formatted;
+                }
+            };
+            precioInput.addEventListener('blur', precioInput._formatHandler);
         }
 
         // Validar fecha de vencimiento
