@@ -142,6 +142,26 @@
         transform: scale(1.1);
     }
 }
+
+/* Acordeón de filtros (look limpio como la captura) */
+.accordion-filtros { border-radius: 10px; overflow: hidden; }
+.accordion-filtros-header {
+    background: #ffffff;
+    border: 2px solid #e1e7e4;
+    border-radius: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: background .2s ease, border-color .2s ease;
+}
+.accordion-filtros-header:hover { background: #f9fbfa; border-color: #cfd8d4; }
+.accordion-filtros-header .chevron { transition: transform .2s ease; color: #6c757d; }
+.accordion-filtros-header[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+.accordion-filtros-body {
+    border: 2px solid #e1e7e4;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    background: #e7edeb; /* gris verdoso suave como en la captura */
+}
 </style>
 @endpush
 
@@ -153,54 +173,58 @@
     </button>
 </div>
 
-<!-- Barra de Búsqueda y Botón de Filtros -->
-<div class="mb-3">
-    <div class="row align-items-center">
-        <div class="col-md-5">
-            <div class="input-group">
-                <span class="input-group-text bg-white">
-                    <i class="fas fa-search"></i>
-                </span>
-                <input type="text" 
-                       class="form-control" 
-                       id="filtroNombre"
-                       name="buscar" 
-                       value="{{ request('buscar') }}" 
-                       placeholder="Buscar insumo por nombre..."
-                       autocomplete="off">
-                @if(request('buscar'))
-                <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('filtroNombre').value=''; buscarEnTiempoReal();">
-                    <i class="fas fa-times"></i>
-                </button>
-                @endif
+<!-- Acordeón de Filtros -->
+<div class="accordion-filtros mb-3">
+    <div class="accordion-filtros-header" role="button"
+         data-bs-toggle="collapse" data-bs-target="#filtrosCollapse"
+         aria-controls="filtrosCollapse"
+         aria-expanded="{{ request()->hasAny(['estado', 'stock', 'vencimiento']) ? 'true' : 'false' }}">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-filter"></i>
+                <span class="fw-semibold">Filtros de Búsqueda</span>
+                <i class="fas fa-chevron-down chevron"></i>
             </div>
-        </div>
-        <div class="col-md-3">
-            <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">
-                <i class="fas fa-filter"></i> Filtrar
-                @if(request()->hasAny(['estado', 'stock', 'vencimiento']))
-                    <span class="badge bg-danger ms-1">{{ collect([request('estado'), request('stock'), request('vencimiento')])->filter()->count() }}</span>
-                @endif
-            </button>
-        </div>
-        <div class="col-md-4 text-end">
-            <span class="h6 text-muted" id="totalSuppliesText">
+            <span class="h6 text-muted m-0" id="totalSuppliesText">
                 📦 <strong>{{ $supplies->count() }}</strong> de <strong>{{ $totals['all'] ?? 0 }}</strong> insumos
             </span>
         </div>
     </div>
-</div>
 
-<!-- Filtros Colapsables -->
-<div class="collapse {{ request()->hasAny(['estado', 'stock', 'vencimiento']) ? 'show' : '' }}" id="filtrosCollapse">
-    <div class="filtros-simples">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="mb-0"><i class="fas fa-sliders-h"></i> <strong>Opciones de Filtrado</strong></h6>
-            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="limpiarFiltrosSupply()">
-                <i class="fas fa-eraser"></i> Limpiar Filtros
-            </button>
-        </div>
-        
+    <div id="filtrosCollapse" class="collapse {{ request()->hasAny(['estado', 'stock', 'vencimiento']) ? 'show' : '' }}">
+        <div class="accordion-filtros-body filtros-simples">
+            <!-- Búsqueda por nombre -->
+            <div class="mb-3">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text"
+                                   class="form-control"
+                                   id="filtroNombre"
+                                   name="buscar"
+                                   value="{{ request('buscar') }}"
+                                   placeholder="Buscar insumo por nombre..."
+                                   autocomplete="off">
+                            @if(request('buscar'))
+                            <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('filtroNombre').value=''; buscarEnTiempoReal();">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0"><i class="fas fa-sliders-h"></i> <strong>Opciones de Filtrado</strong></h6>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="limpiarFiltrosSupply()">
+                    <i class="fas fa-eraser"></i> Limpiar Filtros
+                </button>
+            </div>
+
         <!-- Filtros por Estado -->
         <div class="row mb-3">
             <div class="col-md-12">
@@ -236,8 +260,8 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Filtros de Alertas -->
+            
+            <!-- Filtros de Alertas -->
         <div class="row">
             <div class="col-md-12">
                 <h6 class="mb-2">⚠️ <strong>Alertas de Inventario:</strong></h6>
@@ -271,6 +295,8 @@
                     </a>
                 </div>
             </div>
+            </div>
+        </div>
         </div>
     </div>
 </div>
@@ -307,25 +333,23 @@
 @endif
 
 <!-- Tabla de Insumos -->
-<div class="card">
-    <div class="card-body">
-        @if($supplies->count() > 0)
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Stock</th>
-                        <th>Precio</th>
-                        <th>Vencimiento</th>
-                        <th>Proveedores</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($supplies as $supply)
+@if($supplies->count() > 0)
+<div class="table-responsive">
+    <table class="table">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Stock</th>
+                <th>Precio</th>
+                <th>Vencimiento</th>
+                <th>Proveedores</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($supplies as $supply)
                     @php
                         $fechaVencimiento = $supply->expiration_date ? \Carbon\Carbon::parse($supply->expiration_date) : null;
                         $diasRestantes = $fechaVencimiento ? \Carbon\Carbon::now()->diffInDays($fechaVencimiento, false) : null;
@@ -417,31 +441,29 @@
                             </div>
                         </td>
                     </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        @else
-        <div class="text-center py-5">
-            @if(request()->hasAny(['buscar', 'estado', 'stock', 'vencimiento']))
-                <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                <h4>😔 No se encontraron insumos</h4>
-                <p class="text-muted">No hay insumos que coincidan con los filtros seleccionados.</p>
-                <button type="button" class="btn btn-outline-secondary me-2" onclick="limpiarFiltrosSupply()">
-                    <i class="fas fa-eraser"></i> Quitar Filtros
-                </button>
-            @else
-                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
-                <h4>📦 No hay insumos registrados</h4>
-                <p class="text-muted">Comienza agregando tu primer insumo.</p>
-            @endif
-            <button type="button" class="btn btn-primary" onclick="openCreateModal()">
-                <i class="fas fa-plus"></i> Crear Insumo
-            </button>
-        </div>
-        @endif
-    </div>
+            @endforeach
+        </tbody>
+    </table>
 </div>
+@else
+<div class="text-center py-5">
+    @if(request()->hasAny(['buscar', 'estado', 'stock', 'vencimiento']))
+        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+        <h4>😔 No se encontraron insumos</h4>
+        <p class="text-muted">No hay insumos que coincidan con los filtros seleccionados.</p>
+        <button type="button" class="btn btn-outline-secondary me-2" onclick="limpiarFiltrosSupply()">
+            <i class="fas fa-eraser"></i> Quitar Filtros
+        </button>
+    @else
+        <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+        <h4>📦 No hay insumos registrados</h4>
+        <p class="text-muted">Comienza agregando tu primer insumo.</p>
+    @endif
+    <button type="button" class="btn btn-primary" onclick="openCreateModal()">
+        <i class="fas fa-plus"></i> Crear Insumo
+    </button>
+</div>
+@endif
 
 <!-- Modal para Ver Detalles -->
 <div id="showModal" class="custom-modal">
