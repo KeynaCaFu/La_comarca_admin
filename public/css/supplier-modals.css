@@ -1,5 +1,14 @@
 /* ESTILOS ESPECÍFICOS PARA MODALES DE PROVEEDORES */
 
+/* Contenedor de lista de insumos */
+.insumos-list-container {
+    background-color: white;
+    border-radius: 10px;
+    max-height: 220px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
 /* Mejorar el display de información de contacto en el modal de detalles */
 .detail-table th i {
     color: #485a1a;
@@ -10,8 +19,8 @@
 
 /* Estilos para el checkbox de insumos en modales */
 .modal-body .form-check {
-    margin-bottom: 12px;
-    padding: 12px;
+    margin-bottom: 8px;
+    padding: 10px;
     background-color: white;
     border-radius: 8px;
     border: 1px solid #e0e0e0;
@@ -42,10 +51,11 @@
 
 /* Estilos para la información comercial */
 .comercial-info {
-    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    background: #f8f9fa;
     border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 15px;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #e9ecef;
 }
 
 /* Textarea personalizado para dirección */
@@ -72,6 +82,10 @@
 }
 
 /* Tabla de insumos en el modal de detalles */
+.modal-body .detail-table {
+    background-color: #ffffff;
+}
+
 .modal-body .detail-table thead tr {
     background: linear-gradient(135deg, #485a1a, #5a6d20);
     color: white;
@@ -87,6 +101,15 @@
 .modal-body .detail-table tbody td {
     text-align: center;
     vertical-align: middle;
+    background-color: #ffffff;
+}
+
+.modal-body .detail-table tbody tr {
+    background-color: #ffffff;
+}
+
+.modal-body .detail-table tbody tr:hover {
+    background-color: #f8f9fa;
 }
 
 /* Estados específicos para proveedores */
@@ -145,10 +168,11 @@
 
 /* Loading específico para proveedores */
 .modal-body .loading {
-    background: linear-gradient(45deg, #f8f9fa, #ffffff);
+    background: #ffffff;
     border-radius: 10px;
     padding: 40px;
     text-align: center;
+    border: 1px solid #e9ecef;
 }
 
 .modal-body .loading::before {
@@ -160,11 +184,30 @@
 
 /* Error específico para proveedores */
 .modal-body .error {
-    background: linear-gradient(45deg, #fff5f5, #fed7d7);
+    background: #fff5f5;
     border-radius: 10px;
     padding: 40px;
     text-align: center;
     color: #c53030;
+    border: 1px solid #fed7d7;
+}
+
+/* Fondo limpio para el área de detalles */
+.detail-section {
+    background-color: #ffffff;
+    padding: 0;
+}
+
+.detail-section .row {
+    background-color: #ffffff;
+}
+
+.detail-section h5 {
+    color: #485a1a;
+    font-weight: 600;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e9ecef;
 }
 
 /* Mejoras en la accesibilidad */
@@ -188,7 +231,7 @@
 /* Separadores visuales */
 .modal-body .section-divider {
     border-top: 2px solid #e9ecef;
-    margin: 25px 0;
+    margin: 15px 0;
     position: relative;
 }
 
@@ -206,7 +249,7 @@
 /* Aplicar los mismos separadores a los modales de insumos */
 .section-divider {
     border-top: 2px solid #e9ecef;
-    margin: 25px 0;
+    margin: 15px 0;
     position: relative;
 }
 
@@ -258,6 +301,10 @@
 
 /* Responsive para tablets */
 @media (max-width: 768px) {
+    .insumos-list-container {
+        max-height: 250px;
+    }
+    
     .modal-body .form-check {
         padding: 10px;
         margin-bottom: 10px;
@@ -301,6 +348,10 @@
 
 /* Responsive para móviles */
 @media (max-width: 576px) {
+    .insumos-list-container {
+        max-height: 200px;
+    }
+    
     .modal-body .form-check {
         padding: 8px;
         margin-bottom: 8px;
