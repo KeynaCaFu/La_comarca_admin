@@ -53,18 +53,8 @@
         }
 
         setupCollapseIcon() {
-            // Auto-expandir filtros en pantallas grandes
-            if (window.innerWidth >= 992) {
-                const collapse = document.getElementById('filtrosCollapse');
-                if (collapse) {
-                    collapse.classList.add('show');
-                    const icon = document.getElementById('filtrosIcon');
-                    if (icon) {
-                        icon.classList.remove('fa-chevron-down');
-                        icon.classList.add('fa-chevron-up');
-                    }
-                }
-            }
+            // El acordeón permanece cerrado por defecto
+            // El usuario debe hacer clic para abrirlo
         }
 
         countTotalProveedores() {

@@ -7,6 +7,7 @@ class ProveedorModals {
         this.preloadTimeout = null;
         
         this.initEventListeners();
+        this.ensureModalsOnBody();
     }
 
     // Inicializar event listeners
@@ -45,12 +46,30 @@ class ProveedorModals {
         });
     }
 
+    // Asegurar que los modales estén adjuntos directamente al <body>
+    // para evitar que queden debajo o recortados por contenedores con overflow/transform
+    ensureModalsOnBody() {
+        const modalIds = ['showProveedorModal', 'createProveedorModal', 'editProveedorModal'];
+        modalIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el && el.parentElement !== document.body) {
+                try {
+                    document.body.appendChild(el);
+                } catch (e) {
+                    // Si falla por alguna razón, no bloquear la app
+                    console.warn(`No se pudo mover el modal ${id} al body:`, e);
+                }
+            }
+        });
+    }
+
     // Abrir modal de crear
     openCreateModal() {
         const modal = document.getElementById('createProveedorModal');
         if (modal) {
             modal.style.display = 'block';
             document.body.style.overflow = 'hidden';
+            document.body.classList.add('modal-open');
             
             // Limpiar formulario
             const form = document.getElementById('createProveedorForm');
@@ -72,9 +91,10 @@ class ProveedorModals {
         
         if (!modal || !content) return;
 
-        // Mostrar modal inmediatamente
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
+    // Mostrar modal inmediatamente
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    document.body.classList.add('modal-open');
         
         // Verificar si tenemos el contenido en caché
         const cacheKey = `show-${proveedorId}`;
@@ -114,9 +134,10 @@ class ProveedorModals {
             return;
         }
 
-        // Mostrar modal inmediatamente
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
+    // Mostrar modal inmediatamente
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    document.body.classList.add('modal-open');
         
         // Verificar si tenemos el contenido en caché
         const cacheKey = `edit-${proveedorId}`;
@@ -203,6 +224,7 @@ class ProveedorModals {
         if (modal) {
             modal.style.display = 'none';
             document.body.style.overflow = 'auto';
+            document.body.classList.remove('modal-open');
         }
     }
 
