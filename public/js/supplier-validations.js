@@ -333,17 +333,60 @@ class ProveedorValidations {
     checkDuplicateEmail(emailInput) {
         if (!emailInput.value) return;
 
-        // Simular verificación de email duplicado
-        // En una implementación real, esto haría una llamada AJAX al servidor
-        const commonEmails = [
-            'admin@test.com',
-            'proveedor@test.com',
-            'info@proveedor.com'
-        ];
-
-        if (commonEmails.includes(emailInput.value.toLowerCase())) {
-            this.showFieldWarning(emailInput, 'Este correo podría estar en uso. Verifique que sea correcto.');
-        }
+        // Debounce para evitar múltiples llamadas
+        clearTimeout(this.emailCheckTimeout);
+        
+        this.emailCheckTimeout = setTimeout(async () => {
+            try {
+                // Obtener el ID del proveedor si estamos editando
+                const form = emailInput.closest('form');
+                const isEditForm = form && form.id === 'editProveedorForm';
+                let currentSupplierId = null;
+                
+                if (isEditForm) {
+                    // Extraer ID de la URL del action del formulario
+                    const actionUrl = form.action;
+                    const matches = actionUrl.match(/\/proveedores\/(\d+)/);
+                    if (matches) {
+                        currentSupplierId = matches[1];
+                    }
+                }
+                
+                // Hacer llamada AJAX para verificar duplicado
+                const response = await fetch('/proveedores/check-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: emailInput.value,
+                        supplier_id: currentSupplierId
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.exists) {
+                    this.showFieldError(emailInput, 'Este correo ya está registrado en otro proveedor');
+                } else {
+                    this.clearFieldError(emailInput);
+                }
+            } catch (error) {
+                console.warn('No se pudo verificar el correo:', error);
+                // Fallback a validación simple
+                const commonEmails = [
+                    'admin@test.com',
+                    'proveedor@test.com',
+                    'info@proveedor.com'
+                ];
+                
+                if (commonEmails.includes(emailInput.value.toLowerCase())) {
+                    this.showFieldWarning(emailInput, 'Este correo podría estar en uso. Verifique que sea correcto.');
+                }
+            }
+        }, 500); // Esperar 500ms después de que el usuario deje de escribir
     }
 
     // Métodos de UI para mostrar errores, advertencias e información

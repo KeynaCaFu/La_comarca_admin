@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Supplier extends Model
 {
+    use SoftDeletes;
     protected $table = 'suppliers';
     protected $primaryKey = 'supplier_id';
     public $timestamps = true; // Usando created_at y updated_at
@@ -20,6 +22,10 @@ class Supplier extends Model
         'address',
         'total_purchases',
         'status'
+    ];
+
+    protected $dates = [
+        'deleted_at'
     ];
 
     protected $casts = [

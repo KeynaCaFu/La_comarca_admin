@@ -45,6 +45,14 @@ Route::prefix('proveedores')->name('suppliers.')->group(function () {
     // Lista de suppliers
     Route::get('/', [SupplierController::class, 'index'])->name('index');
     
+    // Restaurar supplier (URL firmada por 10s)
+    Route::get('/{id}/restore', [SupplierController::class, 'restore'])
+        ->name('restore')
+        ->middleware('signed');
+
+    // Verificar email duplicado
+    Route::post('/check-email', [SupplierController::class, 'checkEmail'])->name('check.email');
+    
     // Crear supplier
     Route::post('/', [SupplierController::class, 'store'])->name('store');
     

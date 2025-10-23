@@ -20,7 +20,7 @@
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre del Proveedor *</label>
                     <input type="text" class="form-control" id="nombre" name="nombre" required 
-                           value="{{ old('nombre') }}" placeholder="Ej: Distribuidora Alimentos Frescos">
+                           value="{{ old('nombre') }}" placeholder="Ej: Distribuidora">
                 </div>
 
                 <div class="row">
@@ -28,7 +28,7 @@
                         <div class="mb-3">
                             <label for="telefono" class="form-label">Teléfono *</label>
                             <input type="text" class="form-control" id="telefono" name="telefono" required 
-                                   value="{{ old('telefono') }}" placeholder="Ej: 3001234567">
+                                   value="{{ old('telefono') }}" placeholder="Ej: 88888888">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -43,7 +43,7 @@
                 <div class="mb-3">
                     <label for="direccion" class="form-label">Dirección *</label>
                     <textarea class="form-control" id="direccion" name="direccion" required 
-                              placeholder="Ej: Calle 123 #45-67, Bogotá">{{ old('direccion') }}</textarea>
+                              placeholder="Ej: Calle 123 #45-67, Guápiles">{{ old('direccion') }}</textarea>
                 </div>
 
                 <div class="row">
@@ -94,6 +94,7 @@
                     <button type="submit" class="btn btn-save">
                         <i class="fas fa-save"></i> Guardar Proveedor
                     </button>
+                </div>
                 </div>
             </form>
         </div>

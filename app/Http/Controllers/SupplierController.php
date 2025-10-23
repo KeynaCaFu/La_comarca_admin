@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Data\SupplierData;
 use App\Data\SupplyData;
+use Illuminate\Support\Facades\URL;
 
 class SupplierController extends Controller
 {
@@ -136,17 +137,42 @@ class SupplierController extends Controller
     public function destroy($id)
     {
         $this->supplierData->delete($id);
+
+        // Generar URL firmada temporal para restaurar (10 segundos)
+        $restoreUrl = URL::temporarySignedRoute('suppliers.restore', now()->addSeconds(10), ['id' => $id]);
         
         // Si es una petición AJAX, devolver JSON
         if (request()->wantsJson() || request()->ajax()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Proveedor eliminado exitosamente'
+                'message' => 'Proveedor eliminado exitosamente',
+                'restore_url' => $restoreUrl
             ]);
         }
-        
+
         return redirect()->route('suppliers.index')
-            ->with('success', 'Proveedor eliminado exitosamente');
+            ->with('success', 'Proveedor eliminado exitosamente')
+            ->with('restore_url', $restoreUrl);
+    }
+
+    /**
+     * Restaurar supplier eliminado
+     */
+    public function restore(Request $request, $id)
+    {
+        // La ruta estará protegida por middleware 'signed'
+        $supplier = $this->supplierData->restore($id);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Proveedor restaurado correctamente',
+                'supplier_id' => $supplier->supplier_id,
+            ]);
+        }
+
+        return redirect()->route('suppliers.index')
+            ->with('success', 'Proveedor restaurado correctamente');
     }
 
     /**
@@ -180,6 +206,29 @@ class SupplierController extends Controller
         $supplies = $this->supplyData->allMinimal();
         
         return view('suppliers.partials.edit-modal', compact('supplier', 'supplies'));
+    }
+
+    /**
+     * Verificar si un email ya está registrado
+     */
+    public function checkEmail(Request $request)
+    {
+        $email = $request->input('email');
+        $supplierId = $request->input('supplier_id');
+        
+        $query = $this->supplierData->getModel()->where('email', $email);
+        
+        // Si estamos editando, excluir el proveedor actual
+        if ($supplierId) {
+            $query->where('supplier_id', '!=', $supplierId);
+        }
+        
+        $exists = $query->exists();
+        
+        return response()->json([
+            'exists' => $exists,
+            'message' => $exists ? 'Este correo ya está registrado' : 'Correo disponible'
+        ]);
     }
 
     /**

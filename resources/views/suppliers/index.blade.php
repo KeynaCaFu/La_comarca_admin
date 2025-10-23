@@ -14,11 +14,17 @@
         <div class="col-12">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
                <h1 class="h3 mb-0"><i class="fas fa-truck me-2"></i> Gestión de Proveedores</h1>
-                <button type="button" class="btn btn-add btn-responsive" onclick="openCreateProveedorModal()">
-                    <i class="fas fa-plus me-1"></i> 
-                    <span class="d-none d-sm-inline">Nuevo Proveedor</span>
-                    <span class="d-sm-none">Nuevo</span>
-                </button>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary btn-responsive" onclick="showHelpModal()" title="Ayuda">
+                        <i class="fas fa-question-circle me-1"></i> 
+                        <span class="d-none d-sm-inline">Ayuda</span>
+                    </button>
+                    <button type="button" class="btn btn-add btn-responsive" onclick="openCreateProveedorModal()">
+                        <i class="fas fa-plus me-1"></i> 
+                        <span class="d-none d-sm-inline">Nuevo Proveedor</span>
+                        <span class="d-sm-none">Nuevo</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -111,6 +117,11 @@
                                 <strong>{{ $supplier->name }}</strong>
                                 <br>
                                 <small class="text-muted">{{ Str::limit($supplier->address, 50) }}</small>
+                                <br>
+                                <small class="text-muted">
+                                    <i class="fas fa-clock"></i> 
+                                    Actualizado {{ $supplier->updated_at->diffForHumans() }}
+                                </small>
                             </td>
                             <td class="contacto-info">
                                 <i class="fas fa-phone"></i> {{ $supplier->phone }}<br>
@@ -143,11 +154,11 @@
                                         onmouseenter="preloadEditProveedorModal({{ $supplier->supplier_id }})">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <form action="{{ route('suppliers.destroy', $supplier->supplier_id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('suppliers.destroy', $supplier->supplier_id) }}" method="POST" class="d-inline" id="deleteForm{{ $supplier->supplier_id }}">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" title="Eliminar" 
-                                            onclick="return confirm('¿Estás seguro de eliminar este proveedor?')">
+                                        <button type="button" class="btn btn-danger btn-sm" title="Eliminar" 
+                                            onclick="handleDeleteSupplier({{ $supplier->supplier_id }}, '{{ addslashes($supplier->name) }}', {{ $supplier->supplies->count() }})">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
@@ -187,6 +198,10 @@
                                     <small class="text-muted d-block">
                                         <i class="fas fa-map-marker-alt me-1"></i>
                                         {{ Str::limit($supplier->address, 60) }}
+                                    </small>
+                                    <small class="text-muted d-block mt-1">
+                                        <i class="fas fa-clock me-1"></i>
+                                        Actualizado {{ $supplier->updated_at->diffForHumans() }}
                                     </small>
                                 </div>
                             </div>
@@ -239,11 +254,11 @@
                                     <i class="fas fa-edit me-1"></i>
                                     <span class="d-none d-sm-inline">Editar</span>
                                 </button>
-                                <form action="{{ route('suppliers.destroy', $supplier->supplier_id) }}" method="POST" class="flex-fill">
+                                <form action="{{ route('suppliers.destroy', $supplier->supplier_id) }}" method="POST" class="flex-fill" id="deleteForm{{ $supplier->supplier_id }}">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm w-100" 
-                                        onclick="return confirm('¿Estás seguro de eliminar este proveedor?')">
+                                    <button type="button" class="btn btn-danger btn-sm w-100" 
+                                        onclick="handleDeleteSupplier({{ $supplier->supplier_id }}, '{{ addslashes($supplier->name) }}', {{ $supplier->supplies->count() }})">
                                         <i class="fas fa-trash me-1"></i>
                                         <span class="d-none d-sm-inline">Eliminar</span>
                                     </button>
@@ -346,7 +361,20 @@
                 <div class="section-divider"></div>
                 
                 <div class="mb-3">
-                    <label class="form-label">Insumos que Provee <span class="info-tooltip" data-tooltip="Seleccione los insumos que este proveedor puede suministrar">ℹ️</span></label>
+                    <label class="form-label">
+                        Insumos que Provee 
+                        <span class="info-tooltip" data-bs-toggle="tooltip" data-bs-placement="right" 
+                              title="Seleccione los insumos que este proveedor puede suministrar a su negocio">
+                            <i class="fas fa-info-circle text-primary"></i>
+                        </span>
+                    </label>
+                    
+                    @if($supplies->count() > 5)
+                    <div class="mb-2">
+                        <input type="text" class="form-control form-control-sm" id="searchCreateInsumos" 
+                               placeholder="🔍 Buscar insumo..." onkeyup="filterInsumos('createProveedorInsumosList', this.value)">
+                    </div>
+                    @endif
                     
                     <div class="border p-3 rounded insumos-list-container" id="createProveedorInsumosList">
                         @foreach($supplies as $supply)
@@ -398,6 +426,141 @@
     </div>
 </div>
 
+<!-- Modal de Ayuda -->
+<div id="helpModal" class="custom-modal">
+    <div class="modal-content" style="max-width: 700px;">
+        <div class="modal-header bg-primary text-white">
+            <h3><i class="fas fa-question-circle"></i> Ayuda - Gestión de Proveedores</h3>
+            <span class="close text-white" onclick="closeHelpModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <ul class="nav nav-tabs" id="helpTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="help-general-tab" data-bs-toggle="tab" data-bs-target="#help-general" type="button">
+                        <i class="fas fa-home"></i> General
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="help-create-tab" data-bs-toggle="tab" data-bs-target="#help-create" type="button">
+                        <i class="fas fa-plus"></i> Crear
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="help-filters-tab" data-bs-toggle="tab" data-bs-target="#help-filters" type="button">
+                        <i class="fas fa-filter"></i> Filtros
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="help-shortcuts-tab" data-bs-toggle="tab" data-bs-target="#help-shortcuts" type="button">
+                        <i class="fas fa-keyboard"></i> Atajos
+                    </button>
+                </li>
+            </ul>
+            
+            <div class="tab-content mt-3" id="helpTabContent">
+                <!-- Pestaña General -->
+                <div class="tab-pane fade show active" id="help-general" role="tabpanel">
+                    <h5><i class="fas fa-info-circle text-primary"></i> ¿Qué son los Proveedores?</h5>
+                    <p>Los proveedores son las empresas o personas que suministran insumos a su negocio. Aquí puede gestionar toda la información de contacto, compras y los insumos que cada proveedor puede suministrar.</p>
+                    
+                    <h6 class="mt-3"><i class="fas fa-list-ul"></i> Acciones Disponibles:</h6>
+                    <ul>
+                        <li><strong><i class="fas fa-eye text-info"></i> Ver:</strong> Visualiza todos los detalles del proveedor y sus insumos asociados</li>
+                        <li><strong><i class="fas fa-edit text-warning"></i> Editar:</strong> Modifica la información del proveedor</li>
+                        <li><strong><i class="fas fa-trash text-danger"></i> Eliminar:</strong> Elimina permanentemente el proveedor (requiere confirmación)</li>
+                    </ul>
+                </div>
+                
+                <!-- Pestaña Crear -->
+                <div class="tab-pane fade" id="help-create" role="tabpanel">
+                    <h5><i class="fas fa-plus-circle text-success"></i> Cómo Crear un Proveedor</h5>
+                    <ol>
+                        <li>Haga clic en el botón <strong>"Nuevo Proveedor"</strong> o presione <kbd>Ctrl+N</kbd></li>
+                        <li>Complete los campos obligatorios marcados con asterisco (*):
+                            <ul>
+                                <li><strong>Nombre:</strong> Mínimo 3 caracteres</li>
+                                <li><strong>Teléfono:</strong> 8 dígitos para Costa Rica</li>
+                                <li><strong>Correo:</strong> Formato válido (usuario@dominio.com)</li>
+                                <li><strong>Dirección:</strong> Mínimo 10 caracteres para ser específica</li>
+                                <li><strong>Total de Compras:</strong> Puede iniciar con ₡0 para nuevos proveedores</li>
+                            </ul>
+                        </li>
+                        <li>Seleccione los insumos que este proveedor puede suministrar (opcional)</li>
+                        <li>Presione <kbd>Enter</kbd> o haga clic en <strong>"Guardar Proveedor"</strong></li>
+                    </ol>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-lightbulb"></i> <strong>Tip:</strong> Los campos se validan en tiempo real. Si ve un mensaje de error, corrija el campo antes de guardar.
+                    </div>
+                </div>
+                
+                <!-- Pestaña Filtros -->
+                <div class="tab-pane fade" id="help-filters" role="tabpanel">
+                    <h5><i class="fas fa-filter text-primary"></i> Usar los Filtros de Búsqueda</h5>
+                    <p>Los filtros le permiten encontrar proveedores específicos rápidamente:</p>
+                    
+                    <ul>
+                        <li><strong>Nombre:</strong> Búsqueda en tiempo real mientras escribe</li>
+                        <li><strong>Estado:</strong> Filtra por Activo o Inactivo</li>
+                        <li><strong>Insumos:</strong> Muestra solo proveedores con o sin insumos asignados</li>
+                    </ul>
+                    
+                    <h6 class="mt-3">Pasos:</h6>
+                    <ol>
+                        <li>Expanda el panel de filtros haciendo clic en <i class="fas fa-chevron-down"></i></li>
+                        <li>Ingrese sus criterios de búsqueda</li>
+                        <li>Los resultados se filtran automáticamente al escribir en "Nombre"</li>
+                        <li>Para otros campos, haga clic en "Aplicar Filtros"</li>
+                        <li>Use "Limpiar" para resetear todos los filtros</li>
+                    </ol>
+                    
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> Los filtros muestran cuántos proveedores coinciden con su búsqueda
+                    </div>
+                </div>
+                
+                <!-- Pestaña Atajos -->
+                <div class="tab-pane fade" id="help-shortcuts" role="tabpanel">
+                    <h5><i class="fas fa-keyboard text-primary"></i> Atajos de Teclado</h5>
+                    <p>Use estos atajos para trabajar más rápido:</p>
+                    
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Atajo</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><kbd>Ctrl</kbd> + <kbd>N</kbd></td>
+                                <td>Abrir formulario de Nuevo Proveedor</td>
+                            </tr>
+                            <tr>
+                                <td><kbd>Enter</kbd></td>
+                                <td>Guardar formulario (cuando está en un campo de texto)</td>
+                            </tr>
+                            <tr>
+                                <td><kbd>Esc</kbd></td>
+                                <td>Cerrar modal abierto</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Nota:</strong> Los atajos no funcionan cuando está escribiendo en un área de texto (dirección).
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeHelpModal()">
+                <i class="fas fa-times me-1"></i> Cerrar
+            </button>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -405,7 +568,103 @@
 <script src="{{ asset('js/supplier-validations.js') }}"></script>
 <script src="{{ asset('js/supplier-filters.js') }}"></script>
 <script>
+// Mostrar notificación con opción de deshacer desde el servidor (flash)
 document.addEventListener('DOMContentLoaded', function() {
+    @if(session('success'))
+        // Si hay URL de restauración, mostrar botón Deshacer
+        @if(session('restore_url'))
+            if (window.proveedorModals) {
+                window.proveedorModals.showNotification('success', @json(session('success')), {
+                    actionText: 'Deshacer',
+                    actionUrl: @json(session('restore_url')),
+                    timeout: 10000
+                });
+            }
+        @else
+            if (window.proveedorModals) {
+                window.proveedorModals.showNotification('success', @json(session('success')));
+            }
+        @endif
+    @endif
+});
+
+// Función para manejar eliminación con modal personalizado
+async function handleDeleteSupplier(supplierId, supplierName, suppliesCount) {
+    const confirmed = await confirmDeleteSupplier(supplierId, supplierName, suppliesCount);
+    if (confirmed) {
+        document.getElementById('deleteForm' + supplierId).submit();
+    }
+}
+
+// Inicializar tooltips de Bootstrap
+function initTooltips() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+}
+
+// Funciones para modal de ayuda
+function showHelpModal() {
+    const modal = document.getElementById('helpModal');
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        document.body.classList.add('modal-open');
+    }
+}
+
+function closeHelpModal() {
+    const modal = document.getElementById('helpModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        document.body.classList.remove('modal-open');
+    }
+}
+
+// Función para filtrar insumos en el formulario
+function filterInsumos(containerId, searchText) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    const checkboxes = container.querySelectorAll('.form-check');
+    const search = searchText.toLowerCase().trim();
+    let visibleCount = 0;
+    
+    checkboxes.forEach(checkbox => {
+        const label = checkbox.querySelector('.form-check-label');
+        if (!label) return;
+        
+        const text = label.textContent.toLowerCase();
+        
+        if (search === '' || text.includes(search)) {
+            checkbox.style.display = '';
+            visibleCount++;
+        } else {
+            checkbox.style.display = 'none';
+        }
+    });
+    
+    // Mostrar mensaje si no hay resultados
+    let noResultsMsg = container.querySelector('.no-results-message');
+    
+    if (visibleCount === 0 && search !== '') {
+        if (!noResultsMsg) {
+            noResultsMsg = document.createElement('div');
+            noResultsMsg.className = 'no-results-message text-center text-muted p-3';
+            noResultsMsg.innerHTML = '<i class="fas fa-search"></i> No se encontraron insumos que coincidan con "' + searchText + '"';
+            container.appendChild(noResultsMsg);
+        }
+    } else if (noResultsMsg) {
+        noResultsMsg.remove();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar tooltips
+    initTooltips();
+    
     var filtrosCollapse = document.getElementById('filtrosCollapse');
     var cardHeader = document.getElementById('filtrosCardHeader');
     if (filtrosCollapse && cardHeader) {

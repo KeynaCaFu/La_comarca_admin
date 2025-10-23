@@ -23,8 +23,9 @@ class ProveedorModals {
             });
         });
 
-        // Cerrar modal con la tecla Escape
+        // Atajos de teclado mejorados
         document.addEventListener('keydown', (event) => {
+            // ESC - Cerrar modal abierto
             if (event.key === 'Escape') {
                 const modals = ['showProveedorModal', 'createProveedorModal', 'editProveedorModal'];
                 modals.forEach(modalId => {
@@ -34,6 +35,27 @@ class ProveedorModals {
                     }
                 });
             }
+            
+            // Ctrl+N - Nuevo proveedor
+            if (event.ctrlKey && event.key === 'n') {
+                event.preventDefault();
+                this.openCreateModal();
+            }
+            
+            // Enter en formularios - Guardar (solo si no está en textarea)
+            if (event.key === 'Enter' && !event.shiftKey) {
+                const target = event.target;
+                if (target.form && target.tagName !== 'TEXTAREA' && target.type !== 'submit') {
+                    const form = target.form;
+                    if (form.id === 'createProveedorForm' || form.id === 'editProveedorForm') {
+                        event.preventDefault();
+                        const submitBtn = form.querySelector('button[type="submit"]');
+                        if (submitBtn && !submitBtn.disabled) {
+                            submitBtn.click();
+                        }
+                    }
+                }
+            }
         });
 
         // Manejar envío de formularios
@@ -42,6 +64,40 @@ class ProveedorModals {
                 this.handleCreateSubmit(event);
             } else if (event.target.id === 'editProveedorForm') {
                 this.handleEditSubmit(event);
+            }
+        });
+
+        // Alertas para asignación de Insumos (con deshacer)
+        document.addEventListener('change', (event) => {
+            const target = event.target;
+            if (target && target.matches('input[name="insumos[]"]')) {
+                const label = target.closest('.form-check')?.querySelector('.form-check-label');
+                const insumoTexto = label ? label.textContent.trim().split('\n')[0] : 'Insumo';
+                const asignado = target.checked;
+
+                // Guardar estado previo para deshacer
+                const prevState = !asignado;
+                const checkbox = target;
+
+                this.showNotification('info', `${asignado ? 'Asignado' : 'Quitado'}: ${insumoTexto}` , {
+                    actionText: 'Deshacer',
+                    actionUrl: null,
+                    timeout: 10000
+                });
+
+                // Vincular acción 'Deshacer' manualmente si existe botón
+                const notifications = document.querySelectorAll('.notification');
+                const lastNotif = notifications[notifications.length - 1];
+                const actionBtn = lastNotif?.querySelector('.notification-action');
+                if (actionBtn) {
+                    actionBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        checkbox.checked = prevState;
+                        // Disparar evento change para que cualquier lógica conectada se ejecute
+                        checkbox.dispatchEvent(new Event('change'));
+                        lastNotif.remove();
+                    }, { once: true });
+                }
             }
         });
     }
@@ -256,11 +312,43 @@ class ProveedorModals {
                 this.showNotification('success', data.message || 'Proveedor creado exitosamente');
                 setTimeout(() => location.reload(), 1000);
             } else {
-                throw new Error(data.message || 'Error al crear el proveedor');
+                // Manejar errores específicos del servidor
+                let errorMessage = 'Error al crear el proveedor';
+                
+                if (data.errors) {
+                    // Errores de validación Laravel
+                    const errorList = Object.values(data.errors).flat();
+                    errorMessage = errorList.join('<br>');
+                } else if (data.message) {
+                    errorMessage = data.message;
+                }
+                
+                this.showNotification('error', errorMessage);
             }
         } catch (error) {
             console.error('Error:', error);
-            this.showNotification('error', 'Error al crear el proveedor. Por favor, inténtalo de nuevo.');
+            let errorMessage = 'Error al crear el proveedor. Por favor, inténtalo de nuevo.';
+            
+            // Manejar diferentes tipos de errores
+            if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                errorMessage = 'Error de conexión. Verifique su conexión a internet e inténtelo de nuevo.';
+            } else if (error.response) {
+                switch (error.response.status) {
+                    case 422:
+                        errorMessage = 'Datos inválidos. Verifique todos los campos del formulario.';
+                        break;
+                    case 500:
+                        errorMessage = 'Error del servidor. Contacte al administrador si el problema persiste.';
+                        break;
+                    case 403:
+                        errorMessage = 'No tiene permisos para realizar esta acción.';
+                        break;
+                    default:
+                        errorMessage = `Error ${error.response.status}: ${error.response.statusText}`;
+                }
+            }
+            
+            this.showNotification('error', errorMessage);
         } finally {
             this.setButtonLoading(submitButton, false);
         }
@@ -294,11 +382,46 @@ class ProveedorModals {
                 this.showNotification('success', data.message || 'Proveedor actualizado exitosamente');
                 setTimeout(() => location.reload(), 1000);
             } else {
-                throw new Error(data.message || 'Error al actualizar el proveedor');
+                // Manejar errores específicos del servidor
+                let errorMessage = 'Error al actualizar el proveedor';
+                
+                if (data.errors) {
+                    // Errores de validación Laravel
+                    const errorList = Object.values(data.errors).flat();
+                    errorMessage = errorList.join('<br>');
+                } else if (data.message) {
+                    errorMessage = data.message;
+                }
+                
+                this.showNotification('error', errorMessage);
             }
         } catch (error) {
             console.error('Error:', error);
-            this.showNotification('error', 'Error al actualizar el proveedor. Por favor, inténtalo de nuevo.');
+            let errorMessage = 'Error al actualizar el proveedor. Por favor, inténtalo de nuevo.';
+            
+            // Manejar diferentes tipos de errores
+            if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                errorMessage = 'Error de conexión. Verifique su conexión a internet e inténtelo de nuevo.';
+            } else if (error.response) {
+                switch (error.response.status) {
+                    case 422:
+                        errorMessage = 'Datos inválidos. Verifique todos los campos del formulario.';
+                        break;
+                    case 500:
+                        errorMessage = 'Error del servidor. Contacte al administrador si el problema persiste.';
+                        break;
+                    case 403:
+                        errorMessage = 'No tiene permisos para realizar esta acción.';
+                        break;
+                    case 404:
+                        errorMessage = 'Proveedor no encontrado.';
+                        break;
+                    default:
+                        errorMessage = `Error ${error.response.status}: ${error.response.statusText}`;
+                }
+            }
+            
+            this.showNotification('error', errorMessage);
         } finally {
             this.setButtonLoading(submitButton, false);
         }
@@ -318,17 +441,100 @@ class ProveedorModals {
         }
     }
 
-    // Mostrar notificación
-    showNotification(type, message) {
+    // Mostrar modal de confirmación de eliminación
+    async showDeleteConfirmation(supplierId, supplierName, suppliesCount) {
+        return new Promise((resolve) => {
+            const modal = document.createElement('div');
+            modal.className = 'custom-modal';
+            modal.id = 'deleteConfirmModal';
+            modal.style.display = 'block';
+            
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px;">
+                    <div class="modal-header bg-danger text-white">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h3>
+                        <span class="close text-white" onclick="this.closest('.custom-modal').remove()">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-3"><strong>¿Está seguro de eliminar este proveedor?</strong></p>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-info-circle"></i> <strong>${supplierName}</strong>
+                        </div>
+                        ${suppliesCount > 0 ? `
+                        <p class="mb-2">Este proveedor tiene:</p>
+                        <ul>
+                            <li><strong>${suppliesCount}</strong> insumo(s) asociado(s)</li>
+                        </ul>
+                        ` : '<p class="text-muted">Este proveedor no tiene insumos asociados.</p>'}
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle"></i> 
+                            <strong>Esta acción no se puede deshacer</strong>
+                        </div>
+                    </div>
+                    <div class="modal-actions d-flex gap-2">
+                        <button type="button" class="btn btn-secondary flex-fill" onclick="this.closest('.custom-modal').remove()">
+                            <i class="fas fa-times me-1"></i> Cancelar
+                        </button>
+                        <button type="button" class="btn btn-danger flex-fill" id="confirmDeleteBtn">
+                            <i class="fas fa-trash me-1"></i> Sí, Eliminar
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            document.body.style.overflow = 'hidden';
+            document.body.classList.add('modal-open');
+            
+            // Manejar confirmación
+            document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+                modal.remove();
+                document.body.style.overflow = 'auto';
+                document.body.classList.remove('modal-open');
+                resolve(true);
+            });
+            
+            // Manejar cancelación con ESC
+            const escHandler = (e) => {
+                if (e.key === 'Escape') {
+                    modal.remove();
+                    document.body.style.overflow = 'auto';
+                    document.body.classList.remove('modal-open');
+                    document.removeEventListener('keydown', escHandler);
+                    resolve(false);
+                }
+            };
+            document.addEventListener('keydown', escHandler);
+            
+            // Manejar clic fuera del modal
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                    document.body.style.overflow = 'auto';
+                    document.body.classList.remove('modal-open');
+                    resolve(false);
+                }
+            });
+        });
+    }
+
+    // Mostrar notificación (con acción opcional y auto-cierre)
+    showNotification(type, message, options = {}) {
         // Crear elemento de notificación
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
+        
+        const actionHtml = options.actionText && options.actionUrl ? `
+            <button class="notification-action btn btn-sm btn-link">${options.actionText}</button>
+        ` : '';
+
         notification.innerHTML = `
             <div class="notification-content">
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'exclamation-circle'}"></i>
                 <span>${message}</span>
             </div>
-            <button class="notification-close" onclick="this.parentElement.remove()">
+            ${actionHtml}
+            <button class="notification-close" aria-label="Cerrar">
                 <i class="fas fa-times"></i>
             </button>
         `;
@@ -368,6 +574,11 @@ class ProveedorModals {
                     gap: 10px;
                     flex: 1;
                 }
+                .notification-action {
+                    color: inherit;
+                    text-decoration: underline;
+                    margin-right: 8px;
+                }
                 .notification-close {
                     background: none;
                     border: none;
@@ -396,13 +607,30 @@ class ProveedorModals {
         
         // Agregar al DOM
         document.body.appendChild(notification);
-        
-        // Auto-remover después de 5 segundos
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.remove();
-            }
-        }, 5000);
+
+        // Manejar cierre manual
+        notification.querySelector('.notification-close').addEventListener('click', () => {
+            notification.remove();
+        });
+
+        // Manejar acción opcional
+        const actionBtn = notification.querySelector('.notification-action');
+        if (actionBtn && options.actionUrl) {
+            actionBtn.addEventListener('click', () => {
+                // Navegar a la URL de acción (por ejemplo, restaurar)
+                window.location.href = options.actionUrl;
+            });
+        }
+
+        // Auto-remover después de X milisegundos (default 10s)
+        const timeout = typeof options.timeout === 'number' ? options.timeout : 10000;
+        if (timeout > 0) {
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, timeout);
+        }
     }
 }
 
@@ -452,4 +680,12 @@ function preloadEditProveedorModal(proveedorId) {
     if (window.proveedorModals) {
         window.proveedorModals.preloadModal('edit', proveedorId);
     }
+}
+
+// Función para confirmar eliminación con modal personalizado
+async function confirmDeleteSupplier(supplierId, supplierName, suppliesCount) {
+    if (window.proveedorModals) {
+        return await window.proveedorModals.showDeleteConfirmation(supplierId, supplierName, suppliesCount);
+    }
+    return confirm('¿Estás seguro de eliminar este proveedor?');
 }

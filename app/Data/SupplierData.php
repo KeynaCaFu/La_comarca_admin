@@ -114,8 +114,20 @@ class SupplierData
     public function delete($id)
     {
         $supplier = Supplier::findOrFail($id);
-        $supplier->supplies()->detach();
+        // Soft delete: no desvincular insumos para permitir restauración completa
         return $supplier->delete();
+    }
+
+    /**
+     * Restaurar supplier eliminado (soft deleted)
+     */
+    public function restore($id)
+    {
+        $supplier = Supplier::withTrashed()->findOrFail($id);
+        if ($supplier->trashed()) {
+            $supplier->restore();
+        }
+        return $supplier->fresh();
     }
 
     /**
@@ -196,5 +208,13 @@ class SupplierData
         $supplier->supplies()->detach($supplyId);
         
         return true;
+    }
+
+    /**
+     * Obtener modelo de Supplier para queries personalizados
+     */
+    public function getModel()
+    {
+        return new Supplier();
     }
 }
