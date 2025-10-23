@@ -257,8 +257,10 @@ th {
 }
 
 .table-dark th {
-    background: #485a1a;
-    color: white;
+   background-color: #485a1a;
+  color: white;
+  padding: 15px 12px;
+  font-weight: 600;
 }
 
 .accion{
