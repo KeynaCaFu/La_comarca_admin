@@ -168,9 +168,14 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1><i class="fas fa-boxes"></i> Gestión de Insumos</h1>
-    <button type="button" class="btn btn-primary" onclick="openCreateModal()">
-        <i class="fas fa-plus"></i> Nuevo Insumo
-    </button>
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-secondary" onclick="showHelpModal()" title="Ayuda">
+            <i class="fas fa-question-circle me-1"></i> Ayuda
+        </button>
+        <button type="button" class="btn btn-primary" onclick="openCreateModal()">
+            <i class="fas fa-plus"></i> Nuevo Insumo
+        </button>
+    </div>
 </div>
 
 <!-- Acordeón de Filtros -->
@@ -699,6 +704,218 @@
     </div>
 </div>
 
+<!-- Modal de Ayuda -->
+<div id="helpModal" class="custom-modal">
+    <div class="modal-content" style="max-width: 700px;">
+        <div class="modal-header bg-primary text-white">
+            <h3><i class="fas fa-question-circle"></i> Ayuda - Gestión de Insumos</h3>
+            <span class="close text-white" onclick="closeHelpModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <ul class="nav nav-tabs" id="helpTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="help-general-tab" data-bs-toggle="tab" data-bs-target="#help-general" type="button">
+                        <i class="fas fa-home"></i> General
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="help-create-tab" data-bs-toggle="tab" data-bs-target="#help-create" type="button">
+                        <i class="fas fa-plus"></i> Crear
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="help-filters-tab" data-bs-toggle="tab" data-bs-target="#help-filters" type="button">
+                        <i class="fas fa-filter"></i> Filtros
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="help-shortcuts-tab" data-bs-toggle="tab" data-bs-target="#help-shortcuts" type="button">
+                        <i class="fas fa-keyboard"></i> Atajos
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="help-glossary-tab" data-bs-toggle="tab" data-bs-target="#help-glossary" type="button">
+                        <i class="fas fa-book"></i> Glosario
+                    </button>
+                </li>
+            </ul>
+            
+            <div class="tab-content mt-3" id="helpTabContent">
+                <!-- Pestaña General -->
+                <div class="tab-pane fade show active" id="help-general" role="tabpanel">
+                    <h5><i class="fas fa-info-circle text-primary"></i> ¿Qué son los Insumos?</h5>
+                    <p>Los insumos son los productos o materias primas que necesita para operar su negocio. Aquí puede gestionar el inventario, precios, fechas de vencimiento, stock y proveedores de cada insumo.</p>
+                    
+                    <h6 class="mt-3"><i class="fas fa-list-ul"></i> Acciones Disponibles:</h6>
+                    <ul>
+                        <li><strong><i class="fas fa-eye text-info"></i> Ver:</strong> Visualiza todos los detalles del insumo, proveedores y fechas</li>
+                        <li><strong><i class="fas fa-edit text-warning"></i> Editar:</strong> Modifica información, actualiza stock o cambia estado</li>
+                        <li><strong><i class="fas fa-trash text-danger"></i> Eliminar:</strong> Elimina el insumo (puede deshacerse en 8 segundos)</li>
+                    </ul>
+                    
+                    <div class="alert alert-warning mt-3">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Importante:</strong> Los insumos marcados como "Vencidos" o con stock bajo aparecen resaltados en la tabla para una rápida identificación.
+                    </div>
+                </div>
+                
+                <!-- Pestaña Crear -->
+                <div class="tab-pane fade" id="help-create" role="tabpanel">
+                    <h5><i class="fas fa-plus-circle text-success"></i> Cómo Crear un Insumo</h5>
+                    <ol>
+                        <li>Haga clic en el botón <strong>"Nuevo Insumo"</strong> en la esquina superior derecha</li>
+                        <li>Complete los campos obligatorios marcados con asterisco (*):
+                            <ul>
+                                <li><strong>Nombre:</strong> Solo letras, espacios, guiones y puntos</li>
+                                <li><strong>Unidad de Medida:</strong> Seleccione entre kg, litros, unidades, etc.</li>
+                                <li><strong>Stock Actual:</strong> Cantidad disponible ahora (0-999,999)</li>
+                                <li><strong>Stock Mínimo:</strong> Cantidad mínima antes de reordenar</li>
+                                <li><strong>Cantidad:</strong> Unidades por paquete/caja (mínimo 1)</li>
+                                <li><strong>Precio:</strong> Entre ₡0.01 y ₡999,999.99</li>
+                                <li><strong>Estado:</strong> Disponible, Agotado o Vencido</li>
+                            </ul>
+                        </li>
+                        <li><strong>Opcional:</strong>
+                            <ul>
+                                <li><strong>Fecha de Vencimiento:</strong> Debe ser posterior a hoy. Recibirá alertas 30 días antes.</li>
+                                <li><strong>Proveedores:</strong> Seleccione uno o más. Use el buscador para filtrar por nombre o teléfono.</li>
+                            </ul>
+                        </li>
+                        <li>Haga clic en <strong>"Guardar Insumo"</strong></li>
+                    </ol>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-lightbulb"></i> <strong>Tip:</strong> Los campos se validan en tiempo real. Los mensajes de error aparecen debajo de cada campo que necesite corrección.
+                    </div>
+                </div>
+                
+                <!-- Pestaña Filtros -->
+                <div class="tab-pane fade" id="help-filters" role="tabpanel">
+                    <h5><i class="fas fa-filter text-primary"></i> Usar los Filtros de Búsqueda</h5>
+                    <p>Los filtros le permiten encontrar insumos específicos rápidamente:</p>
+                    
+                    <h6 class="mt-3">Filtros Disponibles:</h6>
+                    <ul>
+                        <li><strong>Buscar insumo:</strong> Escribe y filtra en tiempo real por nombre</li>
+                        <li><strong>Estado:</strong>
+                            <ul>
+                                <li>✅ <strong>Disponibles:</strong> Insumos listos para usar</li>
+                                <li>❌ <strong>Agotados:</strong> Sin stock disponible</li>
+                                <li>💀 <strong>Vencidos:</strong> Fecha de vencimiento pasada</li>
+                            </ul>
+                        </li>
+                        <li><strong>Alertas de Inventario:</strong>
+                            <ul>
+                                <li>⚠️ <strong>Stock Bajo:</strong> Stock actual ≤ Stock mínimo</li>
+                                <li>🕐 <strong>Por Vencer (30 días):</strong> Vencen en los próximos 30 días</li>
+                                <li>📅 <strong>Ya Vencidos:</strong> Fecha de vencimiento pasada</li>
+                                <li>✅ <strong>En Buen Estado:</strong> Sin fecha o vence en más de 30 días</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    
+                    <h6 class="mt-3">Cómo Usar:</h6>
+                    <ol>
+                        <li>Expanda el panel de filtros si está colapsado</li>
+                        <li>Escriba en el campo "Buscar insumo" para filtrar instantáneamente</li>
+                        <li>Haga clic en las píldoras de filtro (Disponible, Stock Bajo, etc.)</li>
+                        <li>Use "Limpiar Filtros" para resetear todo</li>
+                    </ol>
+                    
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> Los contadores en cada filtro muestran cuántos insumos cumplen ese criterio
+                    </div>
+                </div>
+                
+                <!-- Pestaña Atajos -->
+                <div class="tab-pane fade" id="help-shortcuts" role="tabpanel">
+                    <h5><i class="fas fa-keyboard text-primary"></i> Atajos de Teclado</h5>
+                    <p>Use estos atajos para trabajar más rápido:</p>
+                    
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>Atajo</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><kbd>Enter</kbd></td>
+                                <td>Aplicar filtros de búsqueda</td>
+                            </tr>
+                            <tr>
+                                <td><kbd>Esc</kbd></td>
+                                <td>Limpiar filtros de búsqueda / Cerrar modal</td>
+                            </tr>
+                            <tr>
+                                <td><kbd>Hover</kbd> sobre botones</td>
+                                <td>Precarga modales de Ver/Editar para apertura instantánea</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> <strong>Precarga Inteligente:</strong> Al pasar el mouse sobre los botones "Ver" o "Editar", el sistema precarga el contenido para una apertura más rápida.
+                    </div>
+                </div>
+                
+                <!-- Pestaña Glosario -->
+                <div class="tab-pane fade" id="help-glossary" role="tabpanel">
+                    <h5><i class="fas fa-book text-primary"></i> Glosario de Términos</h5>
+                    
+                    <dl class="row">
+                        <dt class="col-sm-4">Insumo</dt>
+                        <dd class="col-sm-8">Producto o materia prima necesaria para operar el negocio.</dd>
+                        
+                        <dt class="col-sm-4">Stock Actual</dt>
+                        <dd class="col-sm-8">Cantidad de unidades disponibles en inventario en este momento.</dd>
+                        
+                        <dt class="col-sm-4">Stock Mínimo</dt>
+                        <dd class="col-sm-8">Cantidad de alerta: cuando el stock actual llega o baja de este nivel, se marca como "Stock Bajo".</dd>
+                        
+                        <dt class="col-sm-4">Cantidad</dt>
+                        <dd class="col-sm-8">Unidades que vienen en cada paquete, caja o presentación del insumo.</dd>
+                        
+                        <dt class="col-sm-4">Unidad de Medida</dt>
+                        <dd class="col-sm-8">Cómo se mide el insumo: kilogramos, litros, unidades, cajas, etc.</dd>
+                        
+                        <dt class="col-sm-4">Estado: Disponible</dt>
+                        <dd class="col-sm-8">✅ Insumo listo para usar, con stock disponible.</dd>
+                        
+                        <dt class="col-sm-4">Estado: Agotado</dt>
+                        <dd class="col-sm-8">❌ Sin stock disponible. Necesita reabastecimiento urgente.</dd>
+                        
+                        <dt class="col-sm-4">Estado: Vencido</dt>
+                        <dd class="col-sm-8">💀 La fecha de vencimiento ha pasado. No debe usarse.</dd>
+                        
+                        <dt class="col-sm-4">Stock Bajo</dt>
+                        <dd class="col-sm-8">⚠️ Alerta: Stock Actual ≤ Stock Mínimo. Considere reordenar pronto.</dd>
+                        
+                        <dt class="col-sm-4">Por Vencer</dt>
+                        <dd class="col-sm-8">🕐 Insumo que vence en los próximos 30 días. Planifique su uso.</dd>
+                        
+                        <dt class="col-sm-4">Proveedores</dt>
+                        <dd class="col-sm-8">Empresas o personas que pueden suministrar este insumo. Un insumo puede tener múltiples proveedores.</dd>
+                        
+                        <dt class="col-sm-4">Deshacer Eliminación</dt>
+                        <dd class="col-sm-8">Al eliminar un insumo, tiene <strong>8 segundos</strong> para deshacer. Después, se elimina permanentemente.</dd>
+                    </dl>
+                    
+                    <div class="alert alert-success mt-3">
+                        <i class="fas fa-lightbulb"></i> <strong>Buenas Prácticas:</strong>
+                        <ul class="mb-0">
+                            <li>Configure el <strong>Stock Mínimo</strong> considerando el tiempo de entrega de proveedores</li>
+                            <li>Revise regularmente la sección <strong>"Por Vencer"</strong> para usar insumos a tiempo</li>
+                            <li>Asigne varios proveedores a insumos críticos para evitar desabastecimiento</li>
+                            <li>Actualice el estado a "Agotado" cuando el stock llegue a cero</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -730,6 +947,42 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 100);
         });
         obs.observe(editModalContent, { childList: true, subtree: true });
+    }
+});
+</script>
+<script>
+// Funciones para modal de ayuda
+function showHelpModal() {
+    const modal = document.getElementById('helpModal');
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeHelpModal() {
+    const modal = document.getElementById('helpModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Cerrar modal de ayuda con tecla Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const helpModal = document.getElementById('helpModal');
+        if (helpModal && helpModal.style.display === 'block') {
+            closeHelpModal();
+        }
+    }
+});
+
+// Cerrar modal al hacer clic fuera
+window.addEventListener('click', function(event) {
+    const helpModal = document.getElementById('helpModal');
+    if (event.target === helpModal) {
+        closeHelpModal();
     }
 });
 </script>
