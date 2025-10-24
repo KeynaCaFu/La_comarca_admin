@@ -97,7 +97,7 @@
                 <table class="table proveedores-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th hidden>ID</th>
                             <th>Nombre</th>
                             <th>Contacto</th>
                             <th>Total Compras</th>
@@ -113,7 +113,7 @@
                             data-estado="{{ $supplier->status_in_spanish }}" 
                             data-contacto="{{ strtolower($supplier->phone . ' ' . $supplier->email) }}" 
                             data-supplies="{{ $supplier->supplies->count() }}">
-                            <td>{{ $supplier->supplier_id }}</td>
+                            <td hidden>{{ $supplier->supplier_id }}</td>
                             <td>
                                 <strong>{{ $supplier->name }}</strong>
                                 <br>
