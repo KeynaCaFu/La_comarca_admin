@@ -405,3 +405,31 @@
     white-space: nowrap;
     z-index: 1000;
 }
+
+/* ===================================================================
+   PAGINACIÓN - ESTILOS AMIGABLES
+   =================================================================== */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagination {
+    margin: 0;
+}
+
+.page-link {
+    border-radius: 8px !important;
+    padding: 8px 14px;
+}
+
+.page-item.active .page-link {
+    background-color: #485a1a;
+    border-color: #485a1a;
+}
+
+.page-item.disabled .page-link {
+    color: #6c757d;
+}
