@@ -343,7 +343,7 @@
     <table class="table">
         <thead class="table-dark">
             <tr>
-                <th>ID</th>
+                <th hidden>ID</th>
                 <th>Nombre</th>
                 <th>Stock</th>
                 <th>Precio</th>
@@ -372,7 +372,7 @@
                         data-estado="{{ $supply->status_in_spanish }}"
                         data-stock-bajo="{{ $supply->current_stock <= $supply->minimum_stock ? 'true' : 'false' }}"
                         data-vencimiento="{{ $vencimientoEstado }}">
-                        <td>{{ $supply->supply_id }}</td>
+                        <td hidden>{{ $supply->supply_id }}</td>
                         <td>
                             <strong>{{ $supply->name }}</strong>
                             <br>
