@@ -13,12 +13,12 @@
 }
 
 .badge-insumo {
-   background-color: #ba7d0b;
-  color: white;
-  font-weight: 522;
+   /* background-color: #ba7d0b; */
+  color: #171313;
+  font-weight: bold;
   padding: 1px 7px;
   border-radius: 19px;
- font-size: 0.75rem;
+  font-size: 0.95rem;
 }
 
 .insumo-card:hover {
@@ -404,4 +404,32 @@
     font-size: 0.8rem;
     white-space: nowrap;
     z-index: 1000;
+}
+
+/* ===================================================================
+   PAGINACIÓN - ESTILOS AMIGABLES
+   =================================================================== */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagination {
+    margin: 0;
+}
+
+.page-link {
+    border-radius: 8px !important;
+    padding: 8px 14px;
+}
+
+.page-item.active .page-link {
+    background-color: #485a1a;
+    border-color: #485a1a;
+}
+
+.page-item.disabled .page-link {
+    color: #6c757d;
 }

@@ -51,7 +51,10 @@ class SupplyData
             }
         }
 
-        return $query->get();
+        // Paginación (similar a proveedores) y mantener query string para conservar filtros
+        return $query->orderBy('supply_id', 'desc')
+            ->paginate(6)
+            ->withQueryString();
     }
 
     /**
@@ -59,7 +62,8 @@ class SupplyData
      */
     public function allMinimal()
     {
-        return Supply::select('supply_id', 'name')
+        // Incluir precio porque algunas vistas de proveedores muestran nombre y precio
+        return Supply::select('supply_id', 'name', 'price')
             ->orderBy('name')
             ->get();
     }

@@ -92,6 +92,32 @@ body {
     margin-right: 10px;
 }
 
+/* Sidebar Footer - Admin Info */
+.sidebar-footer {
+    margin-top: auto;
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.admin-info i {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.admin-info span {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
 /* Main Content */
 .main-content {
     flex: 1;
@@ -112,7 +138,7 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: -60px;
-  padding-bottom: 40px;
+  padding-bottom: 69px;
   border-bottom: 1px solid #ddd;
 }
 
@@ -214,7 +240,7 @@ body {
 table {
     width: 100%;
     border-collapse: collapse;
-    background-color: white;
+    background-color: #ffffff78;
     border-radius: 8px;
     overflow: hidden;
 }
@@ -231,8 +257,10 @@ th {
 }
 
 .table-dark th {
-    background: #485a1a;
-    color: white;
+   background-color: #485a1a;
+  color: white;
+  padding: 15px 12px;
+  font-weight: 600;
 }
 
 .accion{

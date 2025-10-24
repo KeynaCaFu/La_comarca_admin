@@ -54,6 +54,16 @@ class SupplyController extends Controller
     }
 
     /**
+     * Mostrar formulario de creación de supply
+     */
+    public function create()
+    {
+        // Proveedores activos mínimos para checkboxes
+        $suppliers = $this->supplierData->allActiveMinimal();
+        return view('supplies.create', compact('suppliers'));
+    }
+
+    /**
      * Crear nuevo supply
      */
     public function store(Request $request)
