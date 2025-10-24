@@ -51,7 +51,10 @@ class SupplyData
             }
         }
 
-        return $query->get();
+        // Paginación (similar a proveedores) y mantener query string para conservar filtros
+        return $query->orderBy('supply_id', 'desc')
+            ->paginate(6)
+            ->withQueryString();
     }
 
     /**

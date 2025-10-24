@@ -470,6 +470,16 @@
 </div>
 @endif
 
+@if(method_exists($supplies, 'links'))
+<div class="row mt-3">
+    <div class="col-12 d-flex justify-content-center">
+        <div class="pagination-container">
+            {{ $supplies->onEachSide(1)->links() }}
+        </div>
+    </div>
+</div>
+@endif
+
 <!-- Modal para Ver Detalles -->
 <div id="showModal" class="custom-modal">
     <div class="modal-content">
