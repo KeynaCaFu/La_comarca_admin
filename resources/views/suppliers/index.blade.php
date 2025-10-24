@@ -116,13 +116,6 @@
                             <td hidden>{{ $supplier->supplier_id }}</td>
                             <td>
                                 <strong>{{ $supplier->name }}</strong>
-                                <br>
-                                <small class="text-muted">{{ Str::limit($supplier->address, 50) }}</small>
-                                <br>
-                                <small class="text-muted">
-                                    <i class="fas fa-clock"></i> 
-                                    Actualizado {{ $supplier->updated_at->diffForHumans() }}
-                                </small>
                             </td>
                             <td class="contacto-info">
                                 <i class="fas fa-phone"></i> {{ $supplier->phone }}<br>
