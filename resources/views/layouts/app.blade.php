@@ -21,7 +21,6 @@
         <nav class="sidebar">
             <div class="sidebar-header">
                 <a href="{{ route('dashboard') }}" class="brand text-decoration-none">
-                    <img src="{{ asset('images/logo_comarca.png') }}" alt="Logo La Comarca" class="sidebar-logo">
                     <span class="brand-text">La Comarca</span>
                 </a>
             </div>
