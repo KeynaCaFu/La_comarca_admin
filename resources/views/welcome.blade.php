@@ -86,10 +86,17 @@
         Sistema de administración <strong>La Comarca Gastro Park</strong><br>
     </p>
     
-    <a href="{{ route('dashboard') }}" class="btn-gestionar">
-        <i class="fas fa-home me-2"></i>
-        Gestionar mi Local
-    </a>
+    <div style="display:flex; gap:12px; justify-content:center; margin-top:12px; flex-wrap:wrap;">
+        <a href="{{ route('enter.local') }}" class="btn-gestionar" title="Entrar como admin local">
+            <i class="fas fa-store me-2"></i>
+            Entrar como admin local
+        </a>
+
+        <a href="{{ route('enter.global') }}" class="btn-gestionar" style="background:linear-gradient(135deg,#2b6a9a,#1f4f78);" title="Entrar como admin global">
+            <i class="fas fa-globe me-2"></i>
+            Entrar como admin global
+        </a>
+    </div>
     
     <div class="feature-icons">
         <i class="fas fa-boxes" title="Insumos"></i>

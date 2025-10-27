@@ -22,14 +22,14 @@ class InsumoModals {
         // Cerrar modal con la tecla Escape
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') {
-                const modals = ['showModal', 'createModal', 'editModal'];
-                modals.forEach(modalId => {
-                    const modal = document.getElementById(modalId);
-                    if (modal && modal.style.display === 'block') {
-                        this.closeModal(modalId);
-                    }
-                });
-            }
+                    const modals = ['showModal', 'createModal', 'editModal'];
+                    modals.forEach(modalId => {
+                        const modal = document.getElementById(modalId);
+                        if (modal && (modal.style.display === 'block' || modal.style.display === 'flex')) {
+                            this.closeModal(modalId);
+                        }
+                    });
+                }
         });
 
         // Manejar envío de formularios
@@ -85,7 +85,7 @@ class InsumoModals {
     openCreateModal() {
         const modal = document.getElementById('createModal');
         if (modal) {
-            modal.style.display = 'block';
+            modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
             
             // Limpiar formulario
@@ -103,8 +103,8 @@ class InsumoModals {
         
         if (!modal || !content) return;
 
-        // Mostrar modal inmediatamente
-        modal.style.display = 'block';
+    // Mostrar modal inmediatamente
+    modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         
         // Verificar si ya está en caché
@@ -138,8 +138,8 @@ class InsumoModals {
         
         if (!modal || !content) return;
 
-        // Mostrar modal inmediatamente
-        modal.style.display = 'block';
+    // Mostrar modal inmediatamente
+    modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         
         // Verificar si ya está en caché

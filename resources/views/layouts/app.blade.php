@@ -12,6 +12,8 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/fixes.css') }}" rel="stylesheet">
     <link href="{{ asset('css/modals.css') }}" rel="stylesheet">
+   
+    
     @stack('styles')
 </head>
 <body>
@@ -26,26 +28,41 @@
             </div>
             <div class="sidebar-menu">
                 <ul>
-                    <li>
-                        <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                            <i class="fas fa-home"></i> Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('supplies.index') }}" class="{{ request()->routeIs('supplies*') ? 'active' : '' }}">
-                            <i class="fas fa-boxes"></i> Insumos
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('suppliers.index') }}" class="{{ request()->routeIs('suppliers*') ? 'active' : '' }}">
-                            <i class="fas fa-truck"></i> Proveedores
-                        </a>
-                    </li>
-                    <li class="mt-3">
-                        <a href="{{ route('welcome') }}" class="text-danger">
-                            <i class="fas fa-sign-out-alt"></i> Cerrar sesión
-                        </a>
-                    </li>
+                    @php $mode = session('admin_mode', 'local'); @endphp
+
+                    @if($mode === 'global')
+                        <li>
+                            <a href="{{ route('eventos.index') }}" class="{{ request()->routeIs('eventos*') ? 'active' : '' }}">
+                                <i class="fas fa-calendar-days"></i> Eventos
+                            </a>
+                        </li>
+                        <li class="mt-3">
+                            <a href="{{ route('welcome') }}" class="text-danger">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                            </a>
+                        </li>
+                    @else
+                        <li>
+                            <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                                <i class="fas fa-home"></i> Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('supplies.index') }}" class="{{ request()->routeIs('supplies*') ? 'active' : '' }}">
+                                <i class="fas fa-boxes"></i> Insumos
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('suppliers.index') }}" class="{{ request()->routeIs('suppliers*') ? 'active' : '' }}">
+                                <i class="fas fa-truck"></i> Proveedores
+                            </a>
+                        </li>
+                        <li class="mt-3">
+                            <a href="{{ route('welcome') }}" class="text-danger">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </div>
             

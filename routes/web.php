@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplyController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\EventController;
+use Illuminate\Http\Request;
 
 // ============================================================================
 // Ruta de bienvenida
@@ -14,6 +16,17 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
+
+// Rutas rápidas para entrar como admin local/global (guardan modo en sesión)
+Route::get('/entrar/admin/local', function (Request $request) {
+    $request->session()->put('admin_mode', 'local');
+    return redirect()->route('dashboard');
+})->name('enter.local');
+
+Route::get('/entrar/admin/global', function (Request $request) {
+    $request->session()->put('admin_mode', 'global');
+    return redirect()->route('eventos.index');
+})->name('enter.global');
 
 // ============================================================================
 
@@ -42,6 +55,27 @@ Route::prefix('insumos')->name('supplies.')->group(function () {
 });
 
 // ============================================================================
+
+Route::prefix('eventos')->name('eventos.')->group(function () {
+    // Lista de eventos
+    Route::get('/', [EventController::class, 'index'])->name('index');
+    // Guardar evento (vista crea usa 'eventos.guardar')
+    Route::post('/', [EventController::class, 'store'])->name('guardar');
+
+    // Editar evento (vista usa 'eventos.editar')
+    Route::get('/{evento}/edit', [EventController::class, 'edit'])->name('editar');
+
+    // Modales (AJAX) para eventos
+    Route::get('/{id}/show-modal', [EventController::class, 'showModal'])->name('show.modal');
+    Route::get('/{id}/edit-modal', [EventController::class, 'editModal'])->name('edit.modal');
+
+    // Actualizar evento (vista usa 'eventos.actualizar')
+    Route::put('/{evento}', [EventController::class, 'update'])->name('actualizar');
+
+    // Eliminar evento (vista usa 'eventos.eliminar')
+    Route::delete('/{evento}', [EventController::class, 'destroy'])->name('eliminar');
+});
+
 
 
 Route::prefix('proveedores')->name('suppliers.')->group(function () {
