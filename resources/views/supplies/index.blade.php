@@ -965,7 +965,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function showHelpModal() {
     const modal = document.getElementById('helpModal');
     if (modal) {
-        modal.style.display = 'block';
+        modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
 }
@@ -982,7 +982,7 @@ function closeHelpModal() {
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         const helpModal = document.getElementById('helpModal');
-        if (helpModal && helpModal.style.display === 'block') {
+        if (helpModal && (helpModal.style.display === 'block' || helpModal.style.display === 'flex')) {
             closeHelpModal();
         }
     }

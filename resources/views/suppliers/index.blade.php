@@ -670,7 +670,7 @@ function initTooltips() {
 function showHelpModal() {
     const modal = document.getElementById('helpModal');
     if (modal) {
-        modal.style.display = 'block';
+        modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         document.body.classList.add('modal-open');
     }
@@ -684,6 +684,24 @@ function closeHelpModal() {
         document.body.classList.remove('modal-open');
     }
 }
+
+// Cerrar modal de ayuda con tecla Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const helpModal = document.getElementById('helpModal');
+        if (helpModal && (helpModal.style.display === 'block' || helpModal.style.display === 'flex')) {
+            closeHelpModal();
+        }
+    }
+});
+
+// Cerrar modal al hacer clic fuera
+window.addEventListener('click', function(event) {
+    const helpModal = document.getElementById('helpModal');
+    if (event.target === helpModal) {
+        closeHelpModal();
+    }
+});
 
 // Función para filtrar insumos en el formulario
 function filterInsumos(containerId, searchText) {
