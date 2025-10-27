@@ -18,28 +18,28 @@ class SupplyController extends Controller
     }
 
     /**
-     * Mostrar lista de supplies con filtros
+     * Mostrar lista de insumos con filtros
      */
     public function index(Request $request)
     {
         // Mapear nombres de filtros de español a inglés
         $filters = [
-            'search' => $request->input('buscar'), // buscar → search
-            'status' => $this->mapStatusToEnglish($request->input('estado')), // estado → status
-            'stock' => $this->mapStockFilter($request->input('stock')), // stock → stock
-            'expiration' => $this->mapExpirationFilter($request->input('vencimiento')) // vencimiento → expiration
+            'search' => $request->input('buscar'), 
+            'status' => $this->mapStatusToEnglish($request->input('estado')), 
+            'stock' => $this->mapStockFilter($request->input('stock')), 
+            'expiration' => $this->mapExpirationFilter($request->input('vencimiento')) 
         ];
 
         $supplies = $this->supplyData->all($filters);
         $totals = $this->supplyData->countTotals();
-        // Solo cargar nombre e ID de suppliers para el modal de crear
+        // Solo cargar nombre e ID de proveedor para el modal de crear
         $suppliers = $this->supplierData->allActiveMinimal();
 
         return view('supplies.index', compact('supplies', 'totals', 'suppliers'));
     }
 
     /**
-     * Mostrar detalles de un supply
+     * Mostrar detalles de un insumo
      */
     public function show($id)
     {
@@ -54,7 +54,7 @@ class SupplyController extends Controller
     }
 
     /**
-     * Mostrar formulario de creación de supply
+     * Mostrar formulario de creación de insumo
      */
     public function create()
     {
@@ -64,7 +64,7 @@ class SupplyController extends Controller
     }
 
     /**
-     * Crear nuevo supply
+     * Crear nuevo insumo
      */
     public function store(Request $request)
     {
@@ -108,7 +108,7 @@ class SupplyController extends Controller
     }
 
     /**
-     * Actualizar supply existente
+     * Actualizar insumo existente
      */
     public function update(Request $request, $id)
     {
@@ -151,7 +151,7 @@ class SupplyController extends Controller
     }
 
     /**
-     * Eliminar supply
+     * Eliminar insumo existente
      */
     public function destroy($id)
     {
@@ -174,7 +174,7 @@ class SupplyController extends Controller
      */
     public function showModal($id)
     {
-        // Solo cargar el supply con los campos necesarios para el modal
+        // Solo cargar el insumo con datos completos de proveedores
         $supply = $this->supplyData->findForModal($id);
         
         if (!$supply) {
@@ -189,14 +189,14 @@ class SupplyController extends Controller
      */
     public function editModal($id)
     {
-        // Solo cargar el supply con IDs de suppliers (sin todos sus datos)
+        // Solo cargar el insumo con IDs de suppliers 
         $supply = $this->supplyData->findForEdit($id);
         
         if (!$supply) {
             return response()->json(['error' => 'Insumo no encontrado'], 404);
         }
         
-        // Solo cargar nombre e ID de suppliers activos (no todos sus datos)
+        // Solo cargar nombre e ID de proveedor activos 
         $suppliers = $this->supplierData->allActiveMinimal();
         
         return view('supplies.partials.edit-modal', compact('supply', 'suppliers'));

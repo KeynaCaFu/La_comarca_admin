@@ -1,7 +1,3 @@
-/**
- *  ORDENAMIENTO Y FLEXIBILIDAD
- * Implementa ordenamiento de columnas y otras mejoras de eficiencia
- */
 
 class TableSorter {
     constructor(tableSelector) {
@@ -92,9 +88,7 @@ class TableSorter {
     }
 }
 
-/**
- * MEJORAS DE VALIDACIÓN EN TIEMPO REAL
- */
+
 class FormValidator {
     constructor(formSelector) {
         this.form = document.querySelector(formSelector);
@@ -231,9 +225,7 @@ class FormValidator {
     }
 }
 
-/**
- * CONFIRMACIÓN MEJORADA DE ELIMINACIÓN
- */
+
 function enhancedDeleteConfirmation(supplierId, supplierName, suppliesCount) {
     const modal = document.getElementById('deleteConfirmModal') || createDeleteConfirmModal();
     const content = modal.querySelector('.modal-body');
@@ -364,9 +356,7 @@ function confirmDelete(supplierId) {
     }
 }
 
-/**
- * ATAJOS DE TECLADO ADICIONALES
- */
+//atajos
 function initKeyboardShortcuts() {
     document.addEventListener('keydown', (e) => {
         // Ctrl + F - Focus en búsqueda
@@ -397,9 +387,7 @@ function initKeyboardShortcuts() {
     });
 }
 
-/**
- * INICIALIZACIÓN
- */
+
 document.addEventListener('DOMContentLoaded', () => {
     // Inicializar ordenamiento de tabla
     new TableSorter('.proveedores-table');

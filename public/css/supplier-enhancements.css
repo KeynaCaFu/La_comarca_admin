@@ -1,11 +1,4 @@
-/* ===================================================================
-    MÓDULO DE PROVEEDORES
-   Implementa mejoras según evaluación heurística de Nielsen
-   =================================================================== */
 
-/* ===================================================================
-   PROBLEMA 3: INFORMACIÓN UNIFICADA Y TOOLTIPS CONTEXTUALES
-   =================================================================== */
 
 /* Tooltip mejorado con Bootstrap */
 .info-tooltip {
@@ -28,7 +21,6 @@
     gap: 4px;
 }
 
-/* Información de contacto unificada */
 .contact-unified {
     display: flex;
     flex-direction: column;
@@ -58,9 +50,7 @@
     min-width: 65px;
 }
 
-/* ===================================================================
-   PAGINACIÓN - ESTILOS AMIGABLES
-   =================================================================== */
+
 .pagination-container {
     display: flex;
     justify-content: center;
@@ -86,9 +76,6 @@
     color: #6c757d;
 }
 
-/* ===================================================================
-   PROBLEMA 4: FLEXIBILIDAD Y EFICIENCIA - ORDENAMIENTO
-   =================================================================== */
 
 /* Cabeceras de tabla ordenables */
 .sortable-header {
@@ -143,9 +130,7 @@
     margin-left: 8px;
 }
 
-/* ===================================================================
-   PROBLEMA 5: AYUDA Y DOCUMENTACIÓN MEJORADA
-   =================================================================== */
+
 
 /* Glosario de términos */
 .glossary-term {
@@ -212,9 +197,7 @@
     transform: scale(1.1);
 }
 
-/* ===================================================================
-   PROBLEMA 6: CONTROL DEL USUARIO - PREVISUALIZACIÓN
-   =================================================================== */
+
 
 /* Modal de previsualización de cambios */
 .preview-changes-modal {
@@ -329,9 +312,7 @@
     color: #dc3545;
 }
 
-/* ===================================================================
-   PROBLEMA 7: CONSISTENCIA EN FORMULARIOS
-   =================================================================== */
+
 
 /* Estructura unificada de formularios */
 .form-section {

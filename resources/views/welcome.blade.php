@@ -13,10 +13,10 @@
         box-shadow: 0 10px 30px rgba(0,0,0,.08);
         text-align: center;
     }
-    /* Reducimos el espacio bajo el logo para acercarlo al título */
+   
     .logo-icon{ margin-bottom: 6px; }
     .logo-image{
-        /* Hacemos el logo más grande manteniendo respuesta en móviles */
+       
         width: min(300px, 70%);
         height: auto;
         filter: drop-shadow(0 6px 16px rgba(0,0,0,.15));
@@ -25,7 +25,7 @@
     .logo-image:hover{ transform: scale(1.02); }
     .welcome-title{
         font-size: clamp(28px, 4vw, 42px);
-        /* Menos margen superior para estar más cerca del logo */
+        
         margin: -52px 0 8px;
         font-weight: 800;
         letter-spacing: .3px;
@@ -86,10 +86,17 @@
         Sistema de administración <strong>La Comarca Gastro Park</strong><br>
     </p>
     
-    <a href="{{ route('dashboard') }}" class="btn-gestionar">
-        <i class="fas fa-home me-2"></i>
-        Gestionar mi Local
-    </a>
+    <div style="display:flex; gap:12px; justify-content:center; margin-top:12px; flex-wrap:wrap;">
+        <a href="{{ route('enter.local') }}" class="btn-gestionar" title="Entrar como admin local">
+            <i class="fas fa-store me-2"></i>
+            Entrar como admin local
+        </a>
+
+        <a href="{{ route('enter.global') }}" class="btn-gestionar" style="background:linear-gradient(135deg,#2b6a9a,#1f4f78);" title="Entrar como admin global">
+            <i class="fas fa-globe me-2"></i>
+            Entrar como admin global
+        </a>
+    </div>
     
     <div class="feature-icons">
         <i class="fas fa-boxes" title="Insumos"></i>

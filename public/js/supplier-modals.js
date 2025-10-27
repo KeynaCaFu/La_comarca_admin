@@ -142,7 +142,7 @@ class ProveedorModals {
                 const modals = ['showProveedorModal', 'createProveedorModal', 'editProveedorModal'];
                 modals.forEach(modalId => {
                     const modal = document.getElementById(modalId);
-                    if (modal && modal.style.display === 'block') {
+                    if (modal && (modal.style.display === 'block' || modal.style.display === 'flex')) {
                         this.closeModal(modalId);
                     }
                 });
@@ -235,7 +235,7 @@ class ProveedorModals {
     openCreateModal() {
         const modal = document.getElementById('createProveedorModal');
         if (modal) {
-            modal.style.display = 'block';
+            modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
             document.body.classList.add('modal-open');
             
@@ -260,7 +260,7 @@ class ProveedorModals {
         if (!modal || !content) return;
 
     // Mostrar modal inmediatamente
-    modal.style.display = 'block';
+    modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
     document.body.classList.add('modal-open');
         
@@ -303,7 +303,7 @@ class ProveedorModals {
         }
 
     // Mostrar modal inmediatamente
-    modal.style.display = 'block';
+    modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
     document.body.classList.add('modal-open');
         
@@ -573,7 +573,7 @@ class ProveedorModals {
             const modal = document.createElement('div');
             modal.className = 'custom-modal';
             modal.id = 'deleteConfirmModal';
-            modal.style.display = 'block';
+            modal.style.display = 'flex';
             
             modal.innerHTML = `
                 <div class="modal-content" style="max-width: 500px;">

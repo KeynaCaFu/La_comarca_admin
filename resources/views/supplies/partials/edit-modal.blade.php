@@ -31,26 +31,36 @@
                     Unidad de Medida *
                 </label>
                 <select class="form-select" id="edit_unidad_medida" name="unidad_medida" required>
+                    <?php
+                        // Normalizar unidad seleccionada para evitar diferencias de mayúsculas, espacios o variantes
+                        $selectedUnit = old('unidad_medida', $supply->unit_of_measure ?? '');
+                        $selectedUnitNorm = trim(strtolower($selectedUnit));
+                        $predefined = ['kg','gramos','litros','ml','metros','cm','unidades','cajas','bolsas','botellas','latas','paquetes'];
+                    ?>
                     <option value="">Seleccionar unidad...</option>
+                    {{-- Si la unidad guardada no está en la lista predefinida, mostrarla como opción seleccionada --}}
+                    @if($selectedUnitNorm !== '' && !in_array($selectedUnitNorm, $predefined))
+                        <option value="{{ $selectedUnit }}" selected>{{ $selectedUnit }}</option>
+                    @endif
                     <optgroup label="Peso">
-                        <option value="kg" {{ $supply->unit_of_measure == 'kg' ? 'selected' : '' }}>Kilogramos (kg)</option>
-                        <option value="gramos" {{ $supply->unit_of_measure == 'gramos' ? 'selected' : '' }}>Gramos (g)</option>
+                        <option value="kg" {{ $selectedUnitNorm == 'kg' ? 'selected' : '' }}>Kilogramos (kg)</option>
+                        <option value="gramos" {{ $selectedUnitNorm == 'gramos' ? 'selected' : '' }}>Gramos (g)</option>
                     </optgroup>
                     <optgroup label="Volumen">
-                        <option value="litros" {{ $supply->unit_of_measure == 'litros' ? 'selected' : '' }}>Litros (L)</option>
-                        <option value="ml" {{ $supply->unit_of_measure == 'ml' ? 'selected' : '' }}>Mililitros (ml)</option>
+                        <option value="litros" {{ $selectedUnitNorm == 'litros' ? 'selected' : '' }}>Litros (L)</option>
+                        <option value="ml" {{ $selectedUnitNorm == 'ml' ? 'selected' : '' }}>Mililitros (ml)</option>
                     </optgroup>
                     <optgroup label="Longitud">
-                        <option value="metros" {{ $supply->unit_of_measure == 'metros' ? 'selected' : '' }}>Metros (m)</option>
-                        <option value="cm" {{ $supply->unit_of_measure == 'cm' ? 'selected' : '' }}>Centímetros (cm)</option>
+                        <option value="metros" {{ $selectedUnitNorm == 'metros' ? 'selected' : '' }}>Metros (m)</option>
+                        <option value="cm" {{ $selectedUnitNorm == 'cm' ? 'selected' : '' }}>Centímetros (cm)</option>
                     </optgroup>
                     <optgroup label="Cantidad">
-                        <option value="unidades" {{ $supply->unit_of_measure == 'unidades' ? 'selected' : '' }}>Unidades</option>
-                        <option value="cajas" {{ $supply->unit_of_measure == 'cajas' ? 'selected' : '' }}>Cajas</option>
-                        <option value="bolsas" {{ $supply->unit_of_measure == 'bolsas' ? 'selected' : '' }}>Bolsas</option>
-                        <option value="botellas" {{ $supply->unit_of_measure == 'botellas' ? 'selected' : '' }}>Botellas</option>
-                        <option value="latas" {{ $supply->unit_of_measure == 'latas' ? 'selected' : '' }}>Latas</option>
-                        <option value="paquetes" {{ $supply->unit_of_measure == 'paquetes' ? 'selected' : '' }}>Paquetes</option>
+                        <option value="unidades" {{ $selectedUnitNorm == 'unidades' ? 'selected' : '' }}>Unidades</option>
+                        <option value="cajas" {{ $selectedUnitNorm == 'cajas' ? 'selected' : '' }}>Cajas</option>
+                        <option value="bolsas" {{ $selectedUnitNorm == 'bolsas' ? 'selected' : '' }}>Bolsas</option>
+                        <option value="botellas" {{ $selectedUnitNorm == 'botellas' ? 'selected' : '' }}>Botellas</option>
+                        <option value="latas" {{ $selectedUnitNorm == 'latas' ? 'selected' : '' }}>Latas</option>
+                        <option value="paquetes" {{ $selectedUnitNorm == 'paquetes' ? 'selected' : '' }}>Paquetes</option>
                     </optgroup>
                 </select>
                 <div class="invalid-feedback"></div>
@@ -126,10 +136,10 @@
                        data-bs-placement="right" 
                        title="Fecha en la que el insumo expirará. Recibirá alertas 30 días antes del vencimiento."></i>
                 </label>
-                <input type="date" class="form-control" id="edit_fecha_vencimiento" name="fecha_vencimiento"
-                       value="{{ $supply->expiration_date }}"
-                       min="{{ date('Y-m-d', strtotime('+1 day')) }}"
-                       title="La fecha debe ser posterior a hoy">
+          <input type="date" class="form-control" id="edit_fecha_vencimiento" name="fecha_vencimiento"
+              value="{{ old('fecha_vencimiento', $supply->expiration_date ? $supply->expiration_date->format('Y-m-d') : '') }}"
+              min="{{ date('Y-m-d', strtotime('+1 day')) }}"
+              title="La fecha debe ser posterior a hoy">
                 <div class="invalid-feedback"></div>
                 <small class="form-text text-muted">Opcional - debe ser posterior a hoy</small>
             </div>
