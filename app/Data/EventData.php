@@ -9,9 +9,7 @@ class EventData
 {
     protected $table = 'events';
 
-    /**
-     * Obtener eventos con filtros y paginación
-     */
+   
     public function all(array $filters = [])
     {
         $query = Event::query();

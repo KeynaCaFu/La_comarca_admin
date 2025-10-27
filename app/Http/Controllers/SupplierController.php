@@ -21,26 +21,26 @@ class SupplierController extends Controller
     }
 
     /**
-     * Mostrar lista de suppliers con filtros
+     * Mostrar lista de Proveedores con filtros
      */
     public function index(Request $request)
     {
-        // Mapear nombres de filtros de español a inglés
+        // Mapear nombres de filtros 
         $filters = [
-            'search' => $request->input('buscar'), // buscar → search
-            'status' => $this->mapStatusToEnglish($request->input('estado')) // estado → status
+            'search' => $request->input('buscar'), 
+            'status' => $this->mapStatusToEnglish($request->input('estado')) 
         ];
 
         $suppliers = $this->supplierData->all($filters);
         $totals = $this->supplierData->countTotals();
-        // Solo cargar nombre e ID de supplies para el modal de crear
+        // Solo cargar nombre e ID de Insumos para el modal de crear
         $supplies = $this->supplyData->allMinimal();
 
         return view('suppliers.index', compact('suppliers', 'totals', 'supplies'));
     }
 
     /**
-     * Mostrar detalles de un supplier
+     * Mostrar detalles de un Proveedor
      */
     public function show($id)
     {
@@ -55,7 +55,7 @@ class SupplierController extends Controller
     }
 
     /**
-     * Crear nuevo supplier
+     * Crear nuevo Proveedor
      */
     public function store(Request $request)
     {
@@ -116,7 +116,7 @@ class SupplierController extends Controller
     }
 
     /**
-     * Actualizar supplier existente
+     * Actualizar Proveedor existente
      */
     public function update(Request $request, $id)
     {
@@ -178,7 +178,7 @@ class SupplierController extends Controller
     }
 
     /**
-     * Eliminar supplier
+     * Eliminar Proveedor
      */
     public function destroy($id)
     {
@@ -222,7 +222,7 @@ class SupplierController extends Controller
         $token = (string) Str::uuid();
         Cache::put('supplier_restore_' . $token, $snapshot, now()->addSeconds(10));
 
-        // Eliminar definitivamente (sin migraciones)
+        // Eliminar definitivamente 
         $this->supplierData->delete($id);
 
         // Generar URL firmada temporal para restaurar (10 segundos) usando token
@@ -243,7 +243,7 @@ class SupplierController extends Controller
     }
 
     /**
-     * Restaurar supplier eliminado
+     * Restaurar Proveedor eliminado
      */
     public function restore(Request $request, $token)
     {
@@ -281,7 +281,7 @@ class SupplierController extends Controller
      */
     public function showModal($id)
     {
-        // Solo cargar el supplier con datos mínimos de supplies
+        // Solo cargar el Proveedor con datos mínimos de insumos
         $supplier = $this->supplierData->findForModal($id);
         
         if (!$supplier) {
@@ -296,14 +296,14 @@ class SupplierController extends Controller
      */
     public function editModal($id)
     {
-        // Solo cargar el supplier con IDs de supplies
+        // Solo cargar el Proveedor con IDs de insumos asociados
         $supplier = $this->supplierData->findForEdit($id);
         
         if (!$supplier) {
             return response()->json(['error' => 'Proveedor no encontrado'], 404);
         }
         
-        // Solo cargar nombre e ID de supplies (no todos sus datos)
+        // Solo cargar nombre e ID de insumos (no todos sus datos)
         $supplies = $this->supplyData->allMinimal();
         
         return view('suppliers.partials.edit-modal', compact('supplier', 'supplies'));

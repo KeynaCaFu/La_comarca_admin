@@ -1,7 +1,7 @@
 // Gestión de Modales para Insumos
 class InsumoModals {
     constructor() {
-        this.cache = new Map(); // Cache para contenido de modales
+        this.cache = new Map(); 
         this.preloadTimeout = null;
         this.initEventListeners();
     }

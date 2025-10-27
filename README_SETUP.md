@@ -96,12 +96,10 @@ php artisan serve
 
 ---
 
-## 📞 SOPORTE
+## ✅ EVENTO
+- Ver lista completa
+- Crear nuevos eventos
+- Editar eventos existentes
+- Eliminar eventos
 
-Si encuentras problemas:
-1. Verifica que XAMPP esté ejecutándose
-2. Asegúrate de que la BD `bdsage` existe
-3. Verifica que el servidor Laravel esté corriendo
-4. Revisa que todas las dependencias estén instaladas
 
-**¡Listo para usar!** 🎉

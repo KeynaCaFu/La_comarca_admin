@@ -3,8 +3,8 @@
     
 @section('title','Gestión de Eventos')
 
-<link href="{{ asset('css/styles.css') }}" rel="stylesheet">
 
+ {{-- Incluir estilos específicos para la gestión de eventos --}} 
 @push('styles')
  <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
   <link href="{{ asset('css/modals.css') }}" rel="stylesheet">

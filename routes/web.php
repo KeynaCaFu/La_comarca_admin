@@ -17,7 +17,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
-// Rutas rápidas para entrar como admin local/global (guardan modo en sesión)
+// Rutas rápidas para entrar como admin local/global 
 Route::get('/entrar/admin/local', function (Request $request) {
     $request->session()->put('admin_mode', 'local');
     return redirect()->route('dashboard');
@@ -31,22 +31,22 @@ Route::get('/entrar/admin/global', function (Request $request) {
 // ============================================================================
 
 Route::prefix('insumos')->name('supplies.')->group(function () {
-    // Lista de supplies
+    // Lista de Insumos
     Route::get('/', [SupplyController::class, 'index'])->name('index');
 
-    // Formulario crear supply
+    // Formulario crear Insumo
     Route::get('/create', [SupplyController::class, 'create'])->name('create');
     
-    // Crear supply
+    // Crear Insumo
     Route::post('/', [SupplyController::class, 'store'])->name('store');
     
-    // Ver supply
+    // Ver Insumo
     Route::get('/{id}', [SupplyController::class, 'show'])->name('show');
     
-    // Actualizar supply
+    // Actualizar Insumo
     Route::put('/{id}', [SupplyController::class, 'update'])->name('update');
     
-    // Eliminar supply
+    // Eliminar Insumo
     Route::delete('/{id}', [SupplyController::class, 'destroy'])->name('destroy');
     
     // Modales (AJAX)
@@ -59,30 +59,30 @@ Route::prefix('insumos')->name('supplies.')->group(function () {
 Route::prefix('eventos')->name('eventos.')->group(function () {
     // Lista de eventos
     Route::get('/', [EventController::class, 'index'])->name('index');
-    // Guardar evento (vista crea usa 'eventos.guardar')
+    // Guardar evento 
     Route::post('/', [EventController::class, 'store'])->name('guardar');
 
-    // Editar evento (vista usa 'eventos.editar')
+    // Editar evento
     Route::get('/{evento}/edit', [EventController::class, 'edit'])->name('editar');
 
     // Modales (AJAX) para eventos
     Route::get('/{id}/show-modal', [EventController::class, 'showModal'])->name('show.modal');
     Route::get('/{id}/edit-modal', [EventController::class, 'editModal'])->name('edit.modal');
 
-    // Actualizar evento (vista usa 'eventos.actualizar')
+    // Actualizar evento
     Route::put('/{evento}', [EventController::class, 'update'])->name('actualizar');
 
-    // Eliminar evento (vista usa 'eventos.eliminar')
+    // Eliminar evento 
     Route::delete('/{evento}', [EventController::class, 'destroy'])->name('eliminar');
 });
 
 
 
 Route::prefix('proveedores')->name('suppliers.')->group(function () {
-    // Lista de suppliers
+    // Lista de proveedores
     Route::get('/', [SupplierController::class, 'index'])->name('index');
     
-    // Restaurar supplier (URL firmada por 10s) con token de restauración
+    // Restaurar proveedor (URL firmada por 10s) con token de restauración
     Route::get('/restore/{token}', [SupplierController::class, 'restore'])
         ->name('restore')
         ->middleware('signed');
@@ -90,16 +90,16 @@ Route::prefix('proveedores')->name('suppliers.')->group(function () {
     // Verificar email duplicado
     Route::post('/check-email', [SupplierController::class, 'checkEmail'])->name('check.email');
     
-    // Crear supplier
+    // Crear proveedores
     Route::post('/', [SupplierController::class, 'store'])->name('store');
     
-    // Ver supplier
+    // Ver proveedor
     Route::get('/{id}', [SupplierController::class, 'show'])->name('show');
     
-    // Actualizar supplier
+    // Actualizar proveedor
     Route::put('/{id}', [SupplierController::class, 'update'])->name('update');
     
-    // Eliminar supplier
+    // Eliminar proveedor
     Route::delete('/{id}', [SupplierController::class, 'destroy'])->name('destroy');
     
     // Modales (AJAX)

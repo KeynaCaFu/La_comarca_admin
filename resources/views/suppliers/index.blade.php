@@ -10,7 +10,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <!-- Header responsive -->
+   
     <div class="row mb-4">
         <div class="col-12">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">

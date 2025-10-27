@@ -1,4 +1,4 @@
-// Sistema de Filtrado para Insumos (Supplies) - Cliente lado
+// Sistema de Filtrado para Insumos (Supplies) 
 class SupplyFilters {
     constructor() {
         this.initializeFilters();

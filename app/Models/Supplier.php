@@ -26,7 +26,7 @@ class Supplier extends Model
 
     public function supplies()
     {
-        // Only select pivot created_at; the pivot table doesn't have updated_at
+       
         return $this->belongsToMany(Supply::class, 'supplier_supply', 'supplier_id', 'supply_id')
             ->withPivot('created_at');
     }
@@ -92,7 +92,7 @@ class Supplier extends Model
     }
 
     /**
-     * Accessor: Obtener número de supplies asociados
+     * Accessor: Obtener número de insumos asociados
      */
     public function getSuppliesCountAttribute()
     {
@@ -100,7 +100,7 @@ class Supplier extends Model
     }
 
     /**
-     * Accessor: Verificar si tiene supplies asociados
+     * Accessor: Verificar si tiene insumos asociados
      */
     public function getHasSuppliesAttribute()
     {

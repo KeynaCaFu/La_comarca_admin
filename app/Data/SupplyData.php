@@ -12,11 +12,11 @@ class SupplyData
     protected $pivot = 'supplier_supply';
 
     /**
-     * Obtener todos los supplies con filtros opcionales
+     * Obtener todos los Insumos con filtros opcionales
      */
     public function all(array $filters = [])
     {
-        // Solo cargar conteo de suppliers, no todos los datos
+        // Solo cargar conteo de Proveedores, no todos los datos
         $query = Supply::withCount('suppliers');
 
         // Filtro de búsqueda por nombre
@@ -51,14 +51,14 @@ class SupplyData
             }
         }
 
-        // Paginación (similar a proveedores) y mantener query string para conservar filtros
+        // Paginación y mantener query string para conservar filtros
         return $query->orderBy('supply_id', 'desc')
             ->paginate(6)
             ->withQueryString();
     }
 
     /**
-     * Obtener todos los supplies con datos mínimos (para select/modales)
+     * Obtener todos los insumos 
      */
     public function allMinimal()
     {
@@ -69,7 +69,7 @@ class SupplyData
     }
 
     /**
-     * Buscar supply por ID
+     * Buscar insumo por ID
      */
     public function find($id)
     {
@@ -77,7 +77,7 @@ class SupplyData
     }
 
     /**
-     * Buscar supply por ID para modal de ver (con suppliers mínimos)
+     * Buscar insumo por ID para modal de ver (detalles completos)
      */
     public function findForModal($id)
     {
@@ -87,7 +87,7 @@ class SupplyData
     }
 
     /**
-     * Buscar supply por ID para modal de editar (solo IDs de suppliers)
+     * Buscar insumo por ID para modal de editar 
      */
     public function findForEdit($id)
     {
@@ -95,7 +95,7 @@ class SupplyData
     }
 
     /**
-     * Crear nuevo supply
+     * Crear nuevo Insumo
      */
     public function create(array $data, array $suppliers = [])
     {
@@ -109,14 +109,14 @@ class SupplyData
     }
 
     /**
-     * Actualizar supply existente
+     * Actualizar Insumo existente
      */
     public function update($id, array $data, array $suppliers = null)
     {
         $supply = Supply::findOrFail($id);
         $supply->update($data);
 
-        // Si se proporciona array de suppliers, sincronizar
+        // Si se proporciona array de proveedores, sincronizar
         if (is_array($suppliers)) {
             $supply->suppliers()->sync($suppliers);
         }
@@ -125,7 +125,7 @@ class SupplyData
     }
 
     /**
-     * Eliminar supply
+     * Eliminar Insumo
      */
     public function delete($id)
     {
@@ -141,7 +141,7 @@ class SupplyData
     {
         $totals = [];
         
-        // Total de supplies
+        // Total de Insumos
         $totals['all'] = Supply::count();
         
         // Por estado
@@ -162,7 +162,7 @@ class SupplyData
     }
 
     /**
-     * Obtener supplies con stock bajo
+     * Obtener Insumos con stock bajo
      */
     public function getLowStock()
     {
@@ -172,7 +172,7 @@ class SupplyData
     }
 
     /**
-     * Obtener supplies por vencer
+     * Obtener Insumos por vencer
      */
     public function getExpiringSoon()
     {
@@ -182,7 +182,7 @@ class SupplyData
     }
 
     /**
-     * Obtener supplies vencidos
+     * Obtener Insumos vencidos
      */
     public function getExpired()
     {
@@ -192,7 +192,7 @@ class SupplyData
     }
 
     /**
-     * Actualizar stock de un supply
+     * Actualizar stock de un Insumos
      */
     public function updateStock($id, $newStock)
     {

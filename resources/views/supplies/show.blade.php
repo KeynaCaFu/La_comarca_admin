@@ -3,7 +3,7 @@
 @section('title', 'Detalles del Insumo')
 
 @section('content')
-<!-- Encabezado de página -->
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1><i class="fas fa-info-circle"></i> Detalles del Insumo</h1>
     <div>

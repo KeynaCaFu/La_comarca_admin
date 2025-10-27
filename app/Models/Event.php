@@ -10,7 +10,7 @@ class Event extends Model
 {
     use HasFactory;
 
-    // Mantener consistencia con Supply/Supplier
+    
     protected $table = 'events';
     protected $primaryKey = 'id';
     public $timestamps = true; // usa created_at y updated_at
@@ -59,7 +59,7 @@ class Event extends Model
     }
 
     /**
-     * Mutator convenience: set start_at from date+time strings (optional)
+     * Mutator convenience: set start_at from date+time strings 
      */
     public function setStartAtAttribute($value)
     {

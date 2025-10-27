@@ -11,11 +11,11 @@ class SupplierData
     protected $pivot = 'supplier_supply';
 
     /**
-     * Obtener todos los suppliers con filtros opcionales
+     * Obtener todos los Proveedores con filtros opcionales
      */
     public function all(array $filters = [])
     {
-        // Solo cargar conteo de supplies, no todos los datos
+        // Solo cargar conteo de Proveedores, no todos los datos
         $query = Supplier::withCount('supplies');
 
         // Filtro de búsqueda por nombre
@@ -33,7 +33,7 @@ class SupplierData
     }
 
     /**
-     * Obtener solo suppliers activos
+     * Obtener solo Proveedores activos
      */
     public function allActive()
     {
@@ -41,7 +41,7 @@ class SupplierData
     }
 
     /**
-     * Obtener solo suppliers activos con datos mínimos (para modales/select)
+     * Obtener solo Proveedores activos con datos mínimos 
      */
     public function allActiveMinimal()
     {
@@ -52,7 +52,7 @@ class SupplierData
     }
 
     /**
-     * Buscar supplier por ID
+     * Buscar Proveedor por ID
      */
     public function find($id)
     {
@@ -60,7 +60,7 @@ class SupplierData
     }
 
     /**
-     * Buscar supplier por ID para modal de ver (con supplies mínimos)
+     * Buscar Proveedor por ID para modal de ver (detalles completos)
      */
     public function findForModal($id)
     {
@@ -71,7 +71,7 @@ class SupplierData
     }
 
     /**
-     * Buscar supplier por ID para modal de editar (solo IDs de supplies)
+     * Buscar Proveedor por ID para modal de editar 
      */
     public function findForEdit($id)
     {
@@ -79,13 +79,13 @@ class SupplierData
     }
 
     /**
-     * Crear nuevo supplier
+     * Crear nuevo Proveedor
      */
     public function create(array $data, array $supplies = [])
     {
         $supplier = Supplier::create($data);
         
-        // Asociar supplies si se proporcionaron
+        // Asociar insumos si se proporcionaron
         if (count($supplies) > 0) {
             $supplier->supplies()->attach($supplies);
         }
@@ -94,14 +94,14 @@ class SupplierData
     }
 
     /**
-     * Actualizar supplier existente
+     * Actualizar Proveedor existente
      */
     public function update($id, array $data, array $supplies = null)
     {
         $supplier = Supplier::findOrFail($id);
         $supplier->update($data);
         
-        // Sincronizar supplies si se proporcionaron
+        // Sincronizar insumos si se proporcionaron
         if (is_array($supplies)) {
             $supplier->supplies()->sync($supplies);
         }
@@ -110,7 +110,7 @@ class SupplierData
     }
 
     /**
-     * Eliminar supplier
+     * Eliminar Proveedor
      */
     public function delete($id)
     {
@@ -122,7 +122,7 @@ class SupplierData
 
     /**
      * Crear un snapshot para poder restaurar tras eliminar.
-     * Contiene los atributos del supplier y los IDs de sus supplies.
+     * Contiene los atributos del Proveedor y los IDs de sus insumos.
      */
     public function snapshotForRestore($id)
     {
@@ -145,7 +145,7 @@ class SupplierData
     }
 
     /**
-     * Recrear un supplier a partir de un snapshot y re-asociar sus supplies.
+     * Recrear un Proveedor a partir de un snapshot y re-asociar sus insumos.
      */
     public function recreateFromSnapshot(array $snapshot)
     {
@@ -173,24 +173,24 @@ class SupplierData
     {
         $totals = [];
         
-        // Total de suppliers
+        // Total de Proveedores
         $totals['all'] = Supplier::count();
         
         // Por estado
         $totals['active'] = Supplier::where('status', 'Active')->count();
         $totals['inactive'] = Supplier::where('status', 'Inactive')->count();
         
-        // Suppliers con supplies
+        // Proveedores con insumos
         $totals['with_supplies'] = Supplier::has('supplies')->count();
         
-        // Suppliers sin supplies
+        // Proveedores sin insumos
         $totals['without_supplies'] = Supplier::doesntHave('supplies')->count();
 
         return $totals;
     }
 
     /**
-     * Obtener suppliers sin supplies asociados
+     * Obtener Proveedores sin insumos asociados
      */
     public function getWithoutSupplies()
     {
@@ -198,7 +198,7 @@ class SupplierData
     }
 
     /**
-     * Obtener top suppliers por total de compras
+     * Obtener top Proveedores por total de compras
      */
     public function getTopByPurchases($limit = 10)
     {
@@ -209,7 +209,7 @@ class SupplierData
     }
 
     /**
-     * Incrementar total de compras de un supplier
+     * Incrementar total de compras de un Proveedor
      */
     public function incrementTotalPurchases($id, $amount)
     {
@@ -221,7 +221,7 @@ class SupplierData
     }
 
     /**
-     * Asociar supply a supplier
+     * Asociar insumo a Proveedor
      */
     public function attachSupply($supplierId, $supplyId)
     {
@@ -236,7 +236,7 @@ class SupplierData
     }
 
     /**
-     * Desasociar supply de supplier
+     * Desasociar insumo de Proveedor
      */
     public function detachSupply($supplierId, $supplyId)
     {
@@ -247,7 +247,7 @@ class SupplierData
     }
 
     /**
-     * Obtener modelo de Supplier para queries personalizados
+     * Obtener modelo de Proveedores para  personalizados
      */
     public function getModel()
     {

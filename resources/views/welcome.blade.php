@@ -13,10 +13,10 @@
         box-shadow: 0 10px 30px rgba(0,0,0,.08);
         text-align: center;
     }
-    /* Reducimos el espacio bajo el logo para acercarlo al título */
+   
     .logo-icon{ margin-bottom: 6px; }
     .logo-image{
-        /* Hacemos el logo más grande manteniendo respuesta en móviles */
+       
         width: min(300px, 70%);
         height: auto;
         filter: drop-shadow(0 6px 16px rgba(0,0,0,.15));
@@ -25,7 +25,7 @@
     .logo-image:hover{ transform: scale(1.02); }
     .welcome-title{
         font-size: clamp(28px, 4vw, 42px);
-        /* Menos margen superior para estar más cerca del logo */
+        
         margin: -52px 0 8px;
         font-weight: 800;
         letter-spacing: .3px;

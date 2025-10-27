@@ -1,5 +1,5 @@
 
-    // Sistema de Filtrado para Proveedores (sin filtro de contacto)
+    // Sistema de Filtrado para Proveedores 
     class ProveedorFilters {
         constructor() {
             this.initializeFilters();

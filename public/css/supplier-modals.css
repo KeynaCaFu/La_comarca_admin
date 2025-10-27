@@ -1,4 +1,4 @@
-/* ESTILOS ESPECÍFICOS PARA MODALES DE PROVEEDORES */
+
 
 /* Contenedor de lista de insumos */
 .insumos-list-container {
@@ -49,9 +49,7 @@
     line-height: 1.4;
 }
 
-/* ===================================================================
-   LOADING SPINNERS Y ESTADOS DEL SISTEMA
-   =================================================================== */
+
 
 /* Overlay de loading global */
 .loading-overlay {

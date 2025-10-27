@@ -1,4 +1,4 @@
-<!-- Create modal unified with .custom-modal styles (same system as AJAX modals) -->
+
 <div id="createModal" class="custom-modal" style="display:none;">
     <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="createTitle">
         <div class="modal-header">

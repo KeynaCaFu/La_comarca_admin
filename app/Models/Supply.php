@@ -34,7 +34,7 @@ class Supply extends Model
     ];
 
     /**
-     * Relación muchos a muchos con Suppliers (Proveedores)
+     * Relación muchos a muchos con Proveedores
      */
     public function suppliers()
     {
@@ -44,7 +44,7 @@ class Supply extends Model
             'supply_id',
             'supplier_id'
         )
-            // Only select pivot created_at; the pivot table doesn't have updated_at
+            
             ->withPivot('created_at');
     }
 

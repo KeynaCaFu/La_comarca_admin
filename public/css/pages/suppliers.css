@@ -25,9 +25,6 @@
     border-left-color: #6c757d;
 }
 
-/* ========================================
-   SISTEMA DE FILTROS
-   ======================================== */
 
 /* Panel de filtros */
 .card-header .btn {
@@ -381,9 +378,6 @@
     }
 }
 
-/* ========================================
-   ESTILOS RESPONSIVE PARA CARDS
-   ======================================== */
 
 /* Card responsive para proveedores */
 .proveedor-card-responsive {

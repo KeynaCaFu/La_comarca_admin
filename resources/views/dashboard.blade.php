@@ -3,10 +3,10 @@
 @section('title', 'Dashboard - La Comarca Admin')
 
 @section('content')
-<!-- Dashboard Content -->
+
 <div class="dashboard-content">
     <div class="row">
-        <!-- Stats Cards -->
+    
         <div class="col-lg-3 col-md-6 mb-4">
             <div class="stat-card">
                 <div class="stat-icon bg-primary">
@@ -72,9 +72,9 @@
         </div>
     </div>
 
-    <!-- Quick Actions & Recent Activity Row -->
+    
     <div class="row">
-        <!-- Quick Actions -->
+       
         <div class="col-lg-6 mb-4">
             <div class="action-card">
                 <div class="card-header">
@@ -126,7 +126,7 @@
             </div>
         </div>
         
-        <!-- Recent Activity -->
+       
         <div class="col-lg-6 mb-4">
             <div class="action-card">
                 <div class="card-header">
@@ -172,9 +172,9 @@
         </div>
     </div>
 
-    <!-- Additional Info Row -->
+    
     <div class="row">
-        <!-- Low Stock Alert -->
+        
         <div class="col-lg-4 mb-4">
             <div class="alert-card alert-warning">
                 <div class="alert-header">
@@ -190,7 +190,7 @@
             </div>
         </div>
         
-        <!-- System Status -->
+   
         <div class="col-lg-4 mb-4">
             <div class="alert-card alert-success">
                 <div class="alert-header">
@@ -227,14 +227,14 @@
 
 @push('styles')
 <style>
-/* Dashboard Content */
+
 .dashboard-content {
     padding: 30px;
     background: #f8f9fa;
     min-height: calc(100vh - 80px);
 }
 
-/* Enhanced Stat Cards */
+
 .stat-card {
     background: white;
     border-radius: 15px;
@@ -330,7 +330,7 @@
     font-weight: 600;
 }
 
-/* Enhanced Action Cards */
+
 .action-card {
     background: white;
     border-radius: 15px;
@@ -362,7 +362,7 @@
     padding: 25px;
 }
 
-/* Quick Actions Grid */
+
 .quick-actions-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -458,7 +458,7 @@
     opacity: 0.9;
 }
 
-/* Activity Timeline */
+
 .activity-timeline {
     max-height: 300px;
     overflow-y: auto;
@@ -509,7 +509,7 @@
     color: #adb5bd;
 }
 
-/* Alert Cards */
+
 .alert-card {
     background: white;
     border-radius: 12px;
@@ -577,7 +577,7 @@
     padding: 6px 15px;
 }
 
-/* Responsive Design */
+
 @media (max-width: 991.98px) {
     .dashboard-content {
         padding: 20px 15px;
@@ -630,7 +630,7 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Load dashboard stats
+    
     loadDashboardStats();
 });
 

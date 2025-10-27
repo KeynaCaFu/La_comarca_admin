@@ -49,7 +49,7 @@
                 } elseif (str_starts_with($event->image_url, 'storage/')) {
                     $imgUrl = asset($event->image_url);
                 } else {
-                    // fallback: try storage path
+                    
                     $imgUrl = asset('storage/' . ltrim($event->image_url, '/'));
                 }
             }

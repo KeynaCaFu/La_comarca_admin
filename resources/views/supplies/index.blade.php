@@ -6,7 +6,7 @@
 <link href="{{ asset('css/validations.css') }}" rel="stylesheet">
 <link href="{{ asset('css/pages/supplies.css') }}" rel="stylesheet">
 <style>
-/* Estilos para los filtros colapsables */
+/* Estilos para los filtros */
 .filtros-simples {
     background: white;
     border-radius: 10px;
@@ -143,7 +143,7 @@
     }
 }
 
-/* Acordeón de filtros (look limpio como la captura) */
+/* Acordeón de filtros  */
 .accordion-filtros { border-radius: 10px; overflow: hidden; }
 .accordion-filtros-header {
     background: #ffffff;
@@ -932,7 +932,7 @@
 <script src="{{ asset('js/supply-modals.js') }}"></script>
 <script src="{{ asset('js/supply-validations.js') }}"></script>
 <script src="{{ asset('js/supply-filters.js') }}"></script>
-<!-- Inicializar tooltips de Bootstrap en la página y dentro de los modales -->
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Inicializar tooltips presentes en el DOM

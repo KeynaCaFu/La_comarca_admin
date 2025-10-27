@@ -18,7 +18,7 @@ class EventController extends Controller
         $this->eventData = $eventData;
     }
 
-    // Lista de eventos (filtros compatibles con el index.js de la vista)
+    // Lista de eventos (filtros compatibles con Data/EventData.php)
     public function index(Request $request)
     {
         $filters = [
@@ -31,7 +31,7 @@ class EventController extends Controller
         return view('events.index', compact('events'));
     }
 
-    // Guardar nuevo evento (ruta 'eventos.guardar')
+    // Guardar nuevo evento 
     public function store(Request $request)
     {
         $validated = $request->validate([

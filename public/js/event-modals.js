@@ -9,7 +9,7 @@ class EventoModals {
     initGlobalListeners(){
         // cerrar al click fuera
         window.addEventListener('click', (ev) => {
-            // include both possible create-modal ids to be robust (modalCreate vs createModal)
+            
             ['showModal','modalCreate','createModal','editModal'].forEach(id => {
                 const modal = document.getElementById(id);
                 if(modal && ev.target === modal) this.closeModal(id);
@@ -117,7 +117,7 @@ class EventoModals {
 
     closeModal(id){ const modal = document.getElementById(id); if(!modal) return; modal.style.display='none'; document.body.style.overflow='auto'; }
 
-    // Open the server-rendered create modal (already in the page)
+    
     openCreateModal(){
         const modal = document.getElementById('createModal');
         if(!modal) return;

@@ -406,9 +406,7 @@
     z-index: 1000;
 }
 
-/* ===================================================================
-   PAGINACIÓN - ESTILOS AMIGABLES
-   =================================================================== */
+
 .pagination-container {
     display: flex;
     justify-content: center;
