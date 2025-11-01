@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="La Comarca - restaurante">
+  <!-- Fondo con esquinas redondeadas -->
+  <rect width="64" height="64" rx="8" fill="#485a1a" />
+
+  <!-- Tenedor -->
+  <g transform="translate(12,10)" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.8">
+    <!-- Puntas del tenedor -->
+    <path d="M6 0v10" />
+    <path d="M10 0v10" />
+    <path d="M14 0v10" />
+    <!-- Cuerpo y mango -->
+    <path d="M6 10c0 6 8 10 8 14v6" />
+  </g>
+
+  <!-- Cuchillo -->
+  <g transform="translate(36,10) rotate(12 0 0)" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.8">
+    <path d="M0 2c6 0 10 18 0 26" />
+    <path d="M2 0c-1 0-2 2-1 4l8 22" />
+  </g>
+
+</svg>
