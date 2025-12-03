@@ -45,7 +45,7 @@
         $fg  = $ev->is_active ? '#1d3320' : '#7a1d12';
       @endphp
 
-  <article class="event-card fade-in" onmouseenter="preloadShowModal({{ $ev->id }})" onclick="openShowModal({{ $ev->id }})">
+  <article class="event-card fade-in" onmouseenter="preloadShowModal({{ $ev->event_id }})" onclick="openShowModal({{ $ev->event_id }})">
         <div class="event-thumb">
           <img src="{{ $imgSrc($ev) }}" alt="{{ $ev->title }}">
         </div>
@@ -66,20 +66,20 @@
         </div>
 
         <div class="event-actions">
-          <button type="button" class="btn btn-edit" onclick="event.stopPropagation(); openEditModal({{ $ev->id }});">
+          <button type="button" class="btn btn-edit" onclick="event.stopPropagation(); openEditModal({{ $ev->event_id }});">
             <i class="fas fa-edit"></i> Editar
           </button>
 
           {{-- Botón Eliminar separado a la derecha --}}
     <button type="button"
       class="btn btn-danger btn-del push-right"
-      data-id="{{ $ev->id }}"
+      data-id="{{ $ev->event_id }}"
       data-name="{{ $ev->title }}"
       onclick="event.stopPropagation();">
             <i class="fas fa-trash"></i> Eliminar
           </button>
 
-          <form id="del-{{ $ev->id }}" action="{{ route('eventos.eliminar', ['evento' => $ev->id]) }}" method="POST" style="display:none;">
+          <form id="del-{{ $ev->event_id }}" action="{{ route('eventos.eliminar', ['evento' => $ev->event_id]) }}" method="POST" style="display:none;">
             @csrf
             @method('DELETE')
           </form>

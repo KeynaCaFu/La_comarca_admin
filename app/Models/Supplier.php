@@ -9,7 +9,7 @@ class Supplier extends Model
 {
     use HasFactory;
 
-    protected $table = 'suppliers';
+    protected $table = 'tbsuppliers';
     protected $primaryKey = 'supplier_id';
     public $timestamps = true; // Usando created_at y updated_at
 
@@ -27,7 +27,7 @@ class Supplier extends Model
     public function supplies()
     {
        
-        return $this->belongsToMany(Supply::class, 'supplier_supply', 'supplier_id', 'supply_id')
+        return $this->belongsToMany(Supply::class, 'tbsupplier_supply', 'supplier_id', 'supply_id')
             ->withPivot('created_at');
     }
 

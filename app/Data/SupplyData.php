@@ -8,8 +8,8 @@ use Carbon\Carbon;
 
 class SupplyData
 {
-    protected $table = 'supplies';
-    protected $pivot = 'supplier_supply';
+    protected $table = 'tbsupplies';
+    protected $pivot = 'tbsupplier_supply';
 
     /**
      * Obtener todos los Insumos con filtros opcionales
@@ -17,7 +17,8 @@ class SupplyData
     public function all(array $filters = [])
     {
         // Solo cargar conteo de Proveedores, no todos los datos
-        $query = Supply::withCount('suppliers');
+        $query = Supply::select('tbsupplies.*')
+            ->selectRaw('(select count(*) from `tbsuppliers` inner join `tbsupplier_supply` on `tbsuppliers`.`supplier_id` = `tbsupplier_supply`.`supplier_id` where `tbsupplies`.`supply_id` = `tbsupplier_supply`.`supply_id`) as `suppliers_count`');
 
         // Filtro de búsqueda por nombre
         if (!empty($filters['search'])) {
@@ -82,7 +83,7 @@ class SupplyData
     public function findForModal($id)
     {
         return Supply::with(['suppliers' => function($query) {
-            $query->select('suppliers.supplier_id', 'suppliers.name', 'suppliers.phone', 'suppliers.email');
+            $query->select('tbsuppliers.supplier_id', 'tbsuppliers.name', 'tbsuppliers.phone', 'tbsuppliers.email');
         }])->find($id);
     }
 

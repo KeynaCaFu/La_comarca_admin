@@ -19,7 +19,7 @@
           : asset('images/default.jpg');
       @endphp
 
-      <form id="formEdit" action="{{ route('eventos.actualizar', ['evento' => $event->id]) }}" method="POST" enctype="multipart/form-data">
+      <form id="formEdit" action="{{ route('eventos.actualizar', ['evento' => $event->event_id]) }}" method="POST" enctype="multipart/form-data">
         @csrf @method('PUT')
 
         <div class="modal-body">

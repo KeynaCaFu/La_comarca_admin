@@ -66,8 +66,8 @@ Route::prefix('eventos')->name('eventos.')->group(function () {
     Route::get('/{evento}/edit', [EventController::class, 'edit'])->name('editar');
 
     // Modales (AJAX) para eventos
-    Route::get('/{id}/show-modal', [EventController::class, 'showModal'])->name('show.modal');
-    Route::get('/{id}/edit-modal', [EventController::class, 'editModal'])->name('edit.modal');
+    Route::get('/{event_id}/show-modal', [EventController::class, 'showModal'])->name('show.modal');
+    Route::get('/{event_id}/edit-modal', [EventController::class, 'editModal'])->name('edit.modal');
 
     // Actualizar evento
     Route::put('/{evento}', [EventController::class, 'update'])->name('actualizar');

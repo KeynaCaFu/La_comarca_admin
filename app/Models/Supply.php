@@ -7,7 +7,7 @@ use Carbon\Carbon;
 
 class Supply extends Model
 {
-    protected $table = 'supplies';
+    protected $table = 'tbsupplies';
     protected $primaryKey = 'supply_id';
     public $timestamps = true; // Usando created_at y updated_at
     
@@ -40,7 +40,7 @@ class Supply extends Model
     {
         return $this->belongsToMany(
             Supplier::class,
-            'supplier_supply',
+            'tbsupplier_supply',
             'supply_id',
             'supplier_id'
         )

@@ -26,6 +26,6 @@
 
   <div class="d-flex justify-content-end gap-2">
     <button class="btn btn-secondary btn-sm" onclick="closeModal('showModal')">Cerrar</button>
-    <button class="btn btn-primary btn-sm" onclick="openEditModal({{ $event->id }})">Editar</button>
+    <button class="btn btn-primary btn-sm" onclick="openEditModal({{ $event->event_id }})">Editar</button>
   </div>
 </div>

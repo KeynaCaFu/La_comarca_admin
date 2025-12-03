@@ -11,8 +11,8 @@ class Event extends Model
     use HasFactory;
 
     
-    protected $table = 'events';
-    protected $primaryKey = 'id';
+    protected $table = 'tbevents';
+    protected $primaryKey = 'event_id';
     public $timestamps = true; // usa created_at y updated_at
 
     const CREATED_AT = 'created_at';

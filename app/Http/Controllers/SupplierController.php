@@ -60,9 +60,9 @@ class SupplierController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255|unique:suppliers,name',
+            'nombre' => 'required|string|max:255|unique:tbsuppliers,name',
             'telefono' => 'nullable|string|max:20',
-            'correo' => 'nullable|email|max:100|unique:suppliers,email',
+            'correo' => 'nullable|email|max:100|unique:tbsuppliers,email',
             'direccion' => 'nullable|string|max:500',
             'total_compras' => 'nullable|numeric|min:0',
             'estado' => 'required|string|in:Activo,Inactivo'
@@ -121,9 +121,9 @@ class SupplierController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255|unique:suppliers,name,' . $id . ',supplier_id',
+            'nombre' => 'required|string|max:255|unique:tbsuppliers,name,' . $id . ',supplier_id',
             'telefono' => 'nullable|string|max:20',
-            'correo' => 'nullable|email|max:100|unique:suppliers,email,' . $id . ',supplier_id',
+            'correo' => 'nullable|email|max:100|unique:tbsuppliers,email,' . $id . ',supplier_id',
             'direccion' => 'nullable|string|max:500',
             'total_compras' => 'nullable|numeric|min:0',
             'estado' => 'required|string|in:Activo,Inactivo'

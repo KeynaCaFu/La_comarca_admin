@@ -102,7 +102,7 @@ class EventController extends Controller
             $data['image_url'] = 'storage/' . $path;
         }
 
-        $this->eventData->update($evento->id, $data);
+        $this->eventData->update($evento->event_id, $data);
 
         return redirect()->route('eventos.index')->with('ok', 'saved');
     }
@@ -116,22 +116,22 @@ class EventController extends Controller
             }
         }
 
-        $this->eventData->delete($evento->id);
+        $this->eventData->delete($evento->event_id);
 
         return redirect()->route('eventos.index')->with('ok', 'deleted');
     }
 
     // Cargar partial con detalles (AJAX)
-    public function showModal($id)
+    public function showModal($event_id)
     {
-        $event = Event::findOrFail($id);
+        $event = Event::findOrFail($event_id);
         return view('events.partials.show-modal', ['event' => $event]);
     }
 
     // Cargar partial con formulario de edición (AJAX)
-    public function editModal($id)
+    public function editModal($event_id)
     {
-        $event = Event::findOrFail($id);
+        $event = Event::findOrFail($event_id);
         return view('events.partials.edit-modal', ['event' => $event]);
     }
 }

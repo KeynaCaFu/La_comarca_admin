@@ -7,7 +7,7 @@ use Carbon\Carbon;
 
 class EventData
 {
-    protected $table = 'events';
+    protected $table = 'tbevents';
 
    
     public function all(array $filters = [])
@@ -35,7 +35,7 @@ class EventData
 
     public function create(array $data)
     {
-        return Event::create($data)->id;
+        return Event::create($data)->event_id;
     }
 
     public function update($id, array $data)

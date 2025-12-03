@@ -7,16 +7,17 @@ use Illuminate\Support\Facades\DB;
 
 class SupplierData
 {
-    protected $table = 'suppliers';
-    protected $pivot = 'supplier_supply';
+    protected $table = 'tbsuppliers';
+    protected $pivot = 'tbsupplier_supply';
 
     /**
      * Obtener todos los Proveedores con filtros opcionales
      */
     public function all(array $filters = [])
     {
-        // Solo cargar conteo de Proveedores, no todos los datos
-        $query = Supplier::withCount('supplies');
+        // Solo cargar conteo de Insumos, no todos los datos
+        $query = Supplier::select('tbsuppliers.*')
+            ->selectRaw('(select count(*) from `tbsupplies` inner join `tbsupplier_supply` on `tbsupplies`.`supply_id` = `tbsupplier_supply`.`supply_id` where `tbsuppliers`.`supplier_id` = `tbsupplier_supply`.`supplier_id`) as `supplies_count`');
 
         // Filtro de búsqueda por nombre
         if (!empty($filters['search'])) {
@@ -65,8 +66,8 @@ class SupplierData
     public function findForModal($id)
     {
         return Supplier::with(['supplies' => function($query) {
-            $query->select('supplies.supply_id', 'supplies.name', 'supplies.unit_of_measure', 
-                          'supplies.current_stock', 'supplies.minimum_stock', 'supplies.price', 'supplies.status');
+            $query->select('tbsupplies.supply_id', 'tbsupplies.name', 'tbsupplies.unit_of_measure', 
+                          'tbsupplies.current_stock', 'tbsupplies.minimum_stock', 'tbsupplies.price', 'tbsupplies.status');
         }])->find($id);
     }
 
