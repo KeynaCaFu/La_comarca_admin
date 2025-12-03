@@ -5,14 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'La Comarca - Admin')</title>
-    <!-- Favicon: SVG primary + PNG fallbacks for wider compatibility -->
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
-    <!-- Fallback shortcut pointing to a PNG (works in most browsers) -->
-    <link rel="shortcut icon" href="{{ asset('favicon-32x32.png') }}" />
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
-    <meta name="theme-color" content="#ffffff">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
@@ -31,7 +23,6 @@
         <nav class="sidebar">
             <div class="sidebar-header">
                 <a href="{{ route('dashboard') }}" class="brand text-decoration-none">
-                    <img src="{{ asset('favicon.svg') }}" alt="La Comarca" class="sidebar-logo">
                     <span class="brand-text">La Comarca</span>
                 </a>
             </div>
