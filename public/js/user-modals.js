@@ -95,7 +95,12 @@ class UserModals {
         form.addEventListener('submit', async function(e){
             e.preventDefault();
             
-            const submitBtn = form.querySelector('button[type="submit"]');
+            // El submitBtn puede estar dentro del form o referenciado con form="editUserForm"
+            let submitBtn = form.querySelector('button[type="submit"]');
+            if(!submitBtn) {
+                submitBtn = document.querySelector('button[type="submit"][form="editUserForm"]');
+            }
+            if(!submitBtn) return; // Si no encuentra el botón, salir
             if(submitBtn.disabled) return; // Evitar envíos múltiples
             
             const originalText = submitBtn.innerHTML;
