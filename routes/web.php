@@ -37,9 +37,8 @@ Route::get('/entrar/admin/global', function () {
 Route::get('/dashboard', function () {
     if (auth()->user()->isAdminGlobal()) {
         return redirect()->route('eventos.index');
-    } elseif (auth()->user()->isAdminLocal()) {
-        return redirect()->route('supplies.index');
     }
+    // For local managers, show the dashboard
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
