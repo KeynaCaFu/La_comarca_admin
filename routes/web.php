@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplyController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\EventController;
 use Illuminate\Http\Request;
 
@@ -105,5 +106,35 @@ Route::prefix('proveedores')->name('suppliers.')->group(function () {
     // Modales (AJAX)
     Route::get('/{id}/show-modal', [SupplierController::class, 'showModal'])->name('show.modal');
     Route::get('/{id}/edit-modal', [SupplierController::class, 'editModal'])->name('edit.modal');
+});
+
+// ============================================================================
+
+Route::prefix('productos')->name('products.')->group(function () {
+    // Lista de productos
+    Route::get('/', [ProductController::class, 'index'])->name('index');
+    
+    // Formulario crear producto
+    Route::get('/create', [ProductController::class, 'create'])->name('create');
+    
+    // Crear producto
+    Route::post('/', [ProductController::class, 'store'])->name('store');
+    
+    // Ver producto
+    Route::get('/{id}', [ProductController::class, 'show'])->name('show');
+    
+    // Formulario editar producto
+    Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('edit');
+    
+    // Actualizar producto
+    Route::put('/{id}', [ProductController::class, 'update'])->name('update');
+    
+    // Eliminar producto
+    Route::delete('/{id}', [ProductController::class, 'destroy'])->name('destroy');
+    
+    // Galería de imágenes
+    Route::get('/{id}/gallery', [ProductController::class, 'gallery'])->name('gallery');
+    Route::post('/{id}/gallery/add', [ProductController::class, 'addGalleryImage'])->name('gallery.add');
+    Route::delete('/gallery/{galleryId}', [ProductController::class, 'removeGalleryImage'])->name('gallery.remove');
 });
 

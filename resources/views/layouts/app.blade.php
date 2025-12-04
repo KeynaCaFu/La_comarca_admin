@@ -57,6 +57,11 @@
                                 <i class="fas fa-truck"></i> Proveedores
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route('products.index') }}" class="{{ request()->routeIs('products*') ? 'active' : '' }}">
+                                <i class="fas fa-box-open"></i> Productos
+                            </a>
+                        </li>
                         <li class="mt-3">
                             <a href="{{ route('welcome') }}" class="text-danger">
                                 <i class="fas fa-sign-out-alt"></i> Cerrar sesión
