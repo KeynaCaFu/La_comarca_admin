@@ -79,7 +79,7 @@
             <i class="fas fa-trash"></i> Eliminar
           </button>
 
-          <form id="del-{{ $ev->event_id }}" action="{{ route('eventos.eliminar', ['evento' => $ev->event_id]) }}" method="POST" style="display:none;">
+          <form id="del-{{ $ev->event_id }}" action="{{ route('eventos.destroy', $ev->event_id) }}" method="POST" style="display:none;">
             @csrf
             @method('DELETE')
           </form>
