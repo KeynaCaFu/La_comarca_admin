@@ -87,15 +87,24 @@
     </p>
     
     <div style="display:flex; gap:12px; justify-content:center; margin-top:12px; flex-wrap:wrap;">
-        <a href="{{ route('enter.local') }}" class="btn-gestionar" title="Entrar como admin local">
-            <i class="fas fa-store me-2"></i>
-            Entrar como admin local
-        </a>
-
-        <a href="{{ route('enter.global') }}" class="btn-gestionar" style="background:linear-gradient(135deg,#2b6a9a,#1f4f78);" title="Entrar como admin global">
-            <i class="fas fa-globe me-2"></i>
-            Entrar como admin global
-        </a>
+        @auth
+            <a href="{{ route('dashboard') }}" class="btn-gestionar" title="Ir al panel de control">
+                <i class="fas fa-tachometer-alt me-2"></i>
+                Panel de Control
+            </a>
+            <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                @csrf
+                <button type="submit" class="btn-gestionar" style="background:linear-gradient(135deg,#7c2d12,#c2410c);" title="Cerrar sesión">
+                    <i class="fas fa-sign-out-alt me-2"></i>
+                    Cerrar Sesión
+                </button>
+            </form>
+        @else
+            <a href="{{ route('login') }}" class="btn-gestionar" title="Iniciar sesión">
+                <i class="fas fa-sign-in-alt me-2"></i>
+                Iniciar Sesión
+            </a>
+        @endauth
     </div>
     
     <div class="feature-icons">
