@@ -50,11 +50,11 @@ Route::middleware(['auth', 'verified', 'admin.global'])->group(function () {
     Route::prefix('eventos')->name('eventos.')->group(function () {
         Route::get('/', [EventController::class, 'index'])->name('index');
         Route::get('/create', [EventController::class, 'create'])->name('create');
-        Route::post('/', [EventController::class, 'store'])->name('store')->name('guardar');
+        Route::post('/', [EventController::class, 'store'])->name('guardar');
         Route::get('/{id}', [EventController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [EventController::class, 'edit'])->name('edit')->name('editar');
-        Route::put('/{id}', [EventController::class, 'update'])->name('update')->name('actualizar');
-        Route::delete('/{id}', [EventController::class, 'destroy'])->name('destroy')->name('eliminar');
+        Route::get('/{id}/edit', [EventController::class, 'edit'])->name('editar');
+        Route::put('/{id}', [EventController::class, 'update'])->name('actualizar');
+        Route::delete('/{id}', [EventController::class, 'destroy'])->name('eliminar');
         // Modales (AJAX)
         Route::get('/{event_id}/show-modal', [EventController::class, 'showModal'])->name('show.modal');
         Route::get('/{event_id}/edit-modal', [EventController::class, 'editModal'])->name('edit.modal');
