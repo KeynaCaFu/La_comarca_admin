@@ -6,6 +6,7 @@ use App\Http\Controllers\SupplyController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 
 /*
@@ -46,6 +47,16 @@ Route::get('/dashboard', function () {
 // RUTAS PARA ADMIN GLOBAL (Administrador Principal)
 // ============================================================================
 Route::middleware(['auth', 'verified', 'admin.global'])->group(function () {
+    // Usuarios
+    Route::prefix('usuarios')->name('users.')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::post('/', [UserController::class, 'store'])->name('store');
+        Route::get('/{user}', [UserController::class, 'show'])->name('show');
+        Route::match(['put', 'post'], '/{user}', [UserController::class, 'update'])->name('update');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+        Route::get('/{user}/edit-modal', [UserController::class, 'editModal'])->name('edit.modal');
+    });
+
     // Eventos
     Route::prefix('eventos')->name('eventos.')->group(function () {
         Route::get('/', [EventController::class, 'index'])->name('index');

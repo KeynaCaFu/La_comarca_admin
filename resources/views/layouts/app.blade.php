@@ -33,6 +33,11 @@
 
                         @if($mode === 'global')
                             <li>
+                                <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users*') ? 'active' : '' }}">
+                                    <i class="fas fa-users"></i> Usuarios
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('eventos.index') }}" class="{{ request()->routeIs('eventos*') ? 'active' : '' }}">
                                     <i class="fas fa-calendar-days"></i> Eventos
                                 </a>
