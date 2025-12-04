@@ -50,11 +50,14 @@ Route::middleware(['auth', 'verified', 'admin.global'])->group(function () {
     Route::prefix('eventos')->name('eventos.')->group(function () {
         Route::get('/', [EventController::class, 'index'])->name('index');
         Route::get('/create', [EventController::class, 'create'])->name('create');
-        Route::post('/', [EventController::class, 'store'])->name('store');
+        Route::post('/', [EventController::class, 'store'])->name('store')->name('guardar');
         Route::get('/{id}', [EventController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [EventController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [EventController::class, 'update'])->name('update');
-        Route::delete('/{id}', [EventController::class, 'destroy'])->name('destroy');
+        Route::get('/{id}/edit', [EventController::class, 'edit'])->name('edit')->name('editar');
+        Route::put('/{id}', [EventController::class, 'update'])->name('update')->name('actualizar');
+        Route::delete('/{id}', [EventController::class, 'destroy'])->name('destroy')->name('eliminar');
+        // Modales (AJAX)
+        Route::get('/{event_id}/show-modal', [EventController::class, 'showModal'])->name('show.modal');
+        Route::get('/{event_id}/edit-modal', [EventController::class, 'editModal'])->name('edit.modal');
     });
 
     // Productos
@@ -66,6 +69,9 @@ Route::middleware(['auth', 'verified', 'admin.global'])->group(function () {
         Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('edit');
         Route::put('/{id}', [ProductController::class, 'update'])->name('update');
         Route::delete('/{id}', [ProductController::class, 'destroy'])->name('destroy');
+        // Modales (AJAX)
+        Route::get('/{id}/show-modal', [ProductController::class, 'showModal'])->name('show.modal');
+        Route::get('/{id}/edit-modal', [ProductController::class, 'editModal'])->name('edit.modal');
     });
 
     // Proveedores
@@ -77,6 +83,13 @@ Route::middleware(['auth', 'verified', 'admin.global'])->group(function () {
         Route::get('/{id}/edit', [SupplierController::class, 'edit'])->name('edit');
         Route::put('/{id}', [SupplierController::class, 'update'])->name('update');
         Route::delete('/{id}', [SupplierController::class, 'destroy'])->name('destroy');
+        // Restaurar proveedor (URL firmada por 10s) con token de restauración
+        Route::get('/restore/{token}', [SupplierController::class, 'restore'])->name('restore')->middleware('signed');
+        // Verificar email duplicado
+        Route::post('/check-email', [SupplierController::class, 'checkEmail'])->name('check.email');
+        // Modales (AJAX)
+        Route::get('/{id}/show-modal', [SupplierController::class, 'showModal'])->name('show.modal');
+        Route::get('/{id}/edit-modal', [SupplierController::class, 'editModal'])->name('edit.modal');
     });
 });
 
@@ -93,6 +106,9 @@ Route::middleware(['auth', 'verified', 'admin.local'])->group(function () {
         Route::get('/{id}/edit', [SupplyController::class, 'edit'])->name('edit');
         Route::put('/{id}', [SupplyController::class, 'update'])->name('update');
         Route::delete('/{id}', [SupplyController::class, 'destroy'])->name('destroy');
+        // Modales (AJAX)
+        Route::get('/{id}/show-modal', [SupplyController::class, 'showModal'])->name('show.modal');
+        Route::get('/{id}/edit-modal', [SupplyController::class, 'editModal'])->name('edit.modal');
     });
 });
 
