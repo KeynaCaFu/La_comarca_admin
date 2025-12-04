@@ -107,10 +107,22 @@ body {
     padding: 10px;
     background-color: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.admin-info:hover {
+    background-color: rgba(72, 90, 26, 0.3);
+    color: rgba(255, 255, 255, 1);
 }
 
 .admin-info i {
     color: rgba(255, 255, 255, 0.8);
+    transition: color 0.3s ease;
+}
+
+.admin-info:hover i {
+    color: #ff9900;
 }
 
 .admin-info span {

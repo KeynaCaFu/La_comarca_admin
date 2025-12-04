@@ -37,7 +37,7 @@
                                     <i class="fas fa-calendar-days"></i> Eventos
                                 </a>
                             </li>
-                            <li>
+                            {{-- <li>
                                 <a href="{{ route('products.index') }}" class="{{ request()->routeIs('products*') ? 'active' : '' }}">
                                     <i class="fas fa-box"></i> Productos
                                 </a>
@@ -46,7 +46,7 @@
                                 <a href="{{ route('suppliers.index') }}" class="{{ request()->routeIs('suppliers*') ? 'active' : '' }}">
                                     <i class="fas fa-truck"></i> Proveedores
                                 </a>
-                            </li>
+                            </li> --}}
                             <li class="mt-3">
                                 <form method="POST" action="{{ route('logout') }}" class="d-inline">
                                     @csrf
@@ -71,6 +71,11 @@
                                     <i class="fas fa-truck"></i> Proveedores
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ route('products.index') }}" class="{{ request()->routeIs('products*') ? 'active' : '' }}">
+                                    <i class="fas fa-box"></i> Productos
+                                </a>
+                            </li>
                             <li class="mt-3">
                                 <form method="POST" action="{{ route('logout') }}" class="d-inline">
                                     @csrf
@@ -85,10 +90,10 @@
                 
                 <!-- Usuario administrador al final del sidebar -->
                 <div class="sidebar-footer">
-                    <div class="admin-info">
+                    <a href="{{ route('profile.edit') }}" class="admin-info text-decoration-none">
                         <i class="fas fa-user-circle fa-2x"></i>
                         <span>{{ auth()->user()->full_name ?? auth()->user()->name }}</span>
-                    </div>
+                    </a>
                 </div>
             </nav>
 

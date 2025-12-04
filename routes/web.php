@@ -59,6 +59,25 @@ Route::middleware(['auth', 'verified', 'admin.global'])->group(function () {
         Route::get('/{event_id}/show-modal', [EventController::class, 'showModal'])->name('show.modal');
         Route::get('/{event_id}/edit-modal', [EventController::class, 'editModal'])->name('edit.modal');
     });
+});
+
+// ============================================================================
+// RUTAS PARA ADMIN LOCAL (Gerentes)
+// ============================================================================
+Route::middleware(['auth', 'verified', 'admin.local'])->group(function () {
+    // Insumos (Supplies)
+    Route::prefix('insumos')->name('supplies.')->group(function () {
+        Route::get('/', [SupplyController::class, 'index'])->name('index');
+        Route::get('/create', [SupplyController::class, 'create'])->name('create');
+        Route::post('/', [SupplyController::class, 'store'])->name('store');
+        Route::get('/{id}', [SupplyController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [SupplyController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [SupplyController::class, 'update'])->name('update');
+        Route::delete('/{id}', [SupplyController::class, 'destroy'])->name('destroy');
+        // Modales (AJAX)
+        Route::get('/{id}/show-modal', [SupplyController::class, 'showModal'])->name('show.modal');
+        Route::get('/{id}/edit-modal', [SupplyController::class, 'editModal'])->name('edit.modal');
+    });
 
     // Productos
     Route::prefix('productos')->name('products.')->group(function () {
@@ -69,6 +88,10 @@ Route::middleware(['auth', 'verified', 'admin.global'])->group(function () {
         Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('edit');
         Route::put('/{id}', [ProductController::class, 'update'])->name('update');
         Route::delete('/{id}', [ProductController::class, 'destroy'])->name('destroy');
+        // Galería de imágenes
+        Route::get('/{id}/gallery', [ProductController::class, 'gallery'])->name('gallery');
+        Route::post('/{id}/gallery', [ProductController::class, 'addGalleryImage'])->name('gallery.add');
+        Route::delete('/gallery/{galleryId}', [ProductController::class, 'removeGalleryImage'])->name('gallery.remove');
         // Modales (AJAX)
         Route::get('/{id}/show-modal', [ProductController::class, 'showModal'])->name('show.modal');
         Route::get('/{id}/edit-modal', [ProductController::class, 'editModal'])->name('edit.modal');
@@ -90,25 +113,6 @@ Route::middleware(['auth', 'verified', 'admin.global'])->group(function () {
         // Modales (AJAX)
         Route::get('/{id}/show-modal', [SupplierController::class, 'showModal'])->name('show.modal');
         Route::get('/{id}/edit-modal', [SupplierController::class, 'editModal'])->name('edit.modal');
-    });
-});
-
-// ============================================================================
-// RUTAS PARA ADMIN LOCAL (Gerentes)
-// ============================================================================
-Route::middleware(['auth', 'verified', 'admin.local'])->group(function () {
-    // Insumos (Supplies)
-    Route::prefix('insumos')->name('supplies.')->group(function () {
-        Route::get('/', [SupplyController::class, 'index'])->name('index');
-        Route::get('/create', [SupplyController::class, 'create'])->name('create');
-        Route::post('/', [SupplyController::class, 'store'])->name('store');
-        Route::get('/{id}', [SupplyController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [SupplyController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [SupplyController::class, 'update'])->name('update');
-        Route::delete('/{id}', [SupplyController::class, 'destroy'])->name('destroy');
-        // Modales (AJAX)
-        Route::get('/{id}/show-modal', [SupplyController::class, 'showModal'])->name('show.modal');
-        Route::get('/{id}/edit-modal', [SupplyController::class, 'editModal'])->name('edit.modal');
     });
 });
 
