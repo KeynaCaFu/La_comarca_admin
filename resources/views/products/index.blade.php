@@ -207,11 +207,15 @@
     </div>
 
     <!-- Paginación -->
+    @if(method_exists($products, 'links'))
     <div class="row mt-4">
-        <div class="col-md-12">
-            {{ $products->links() }}
+        <div class="col-md-12 d-flex justify-content-center">
+            <div class="pagination-container">
+                {{ $products->onEachSide(1)->links() }}
+            </div>
         </div>
     </div>
+    @endif
 </div>
 
 @push('scripts')
